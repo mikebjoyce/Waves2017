@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641252, b: 0.574817, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.5748171, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -324,17 +324,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dca27a93fe5cdb4181c4def964230a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightScale: 8
-  detailScale: 6
-  terrainAltitudeConstant: -6
-  centerProxBiasConstant: 3
+  heightScale: 4
+  detailScale: 3
+  terrainAltitudeConstant: -1
+  centerProxBiasConstant: 2
   heightScaleDecay: 1
   heightDecayControl: 3
-  smoothDecay: 0.1
-  volcano: 1
+  smoothDecay: 0.3
+  volcano: 0
   volcanoIntensity: 0.4
   mapCenterImperfect: 1
-  mapCenterRange: 0.5
+  mapCenterRange: 0.2
 --- !u!4 &1475594597
 Transform:
   m_ObjectHideFlags: 0
@@ -348,6 +348,59 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1994428505
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4324912488615054, guid: dcb561a2de011054a8f4236ff6166180, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324912488615054, guid: dcb561a2de011054a8f4236ff6166180, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324912488615054, guid: dcb561a2de011054a8f4236ff6166180, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324912488615054, guid: dcb561a2de011054a8f4236ff6166180, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324912488615054, guid: dcb561a2de011054a8f4236ff6166180, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324912488615054, guid: dcb561a2de011054a8f4236ff6166180, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324912488615054, guid: dcb561a2de011054a8f4236ff6166180, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4324912488615054, guid: dcb561a2de011054a8f4236ff6166180, type: 2}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114758992408097828, guid: dcb561a2de011054a8f4236ff6166180,
+        type: 2}
+      propertyPath: rad
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: dcb561a2de011054a8f4236ff6166180, type: 2}
+  m_IsPrefabParent: 0
+--- !u!114 &1998071192 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114097881802743178, guid: dcb561a2de011054a8f4236ff6166180,
+    type: 2}
+  m_PrefabInternal: {fileID: 1994428505}
+  m_Script: {fileID: 11500000, guid: 9b378d4363e070047ba0f6c1c16c9aee, type: 3}
 --- !u!1 &2129472742
 GameObject:
   m_ObjectHideFlags: 0
@@ -358,6 +411,7 @@ GameObject:
   - component: {fileID: 2129472745}
   - component: {fileID: 2129472744}
   - component: {fileID: 2129472743}
+  - component: {fileID: 2129472746}
   m_Layer: 0
   m_Name: MainScripts
   m_TagString: Untagged
@@ -389,6 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3fd9f87766a89c47b2104fc35ac589f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p1: {fileID: 1998071192}
 --- !u!4 &2129472745
 Transform:
   m_ObjectHideFlags: 0
@@ -402,3 +457,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2129472746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2129472742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbd4ee7199fd5e54d8fedb4cdcd7a3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundParent: {fileID: 0}
+  waterParent: {fileID: 0}
+  mainFountain: []

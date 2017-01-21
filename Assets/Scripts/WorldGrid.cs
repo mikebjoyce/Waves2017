@@ -80,8 +80,8 @@ public class WorldGrid  {
 
     public void PreformSnapCleanup() //every once in a while, things build up tiny (like E-8) float values that mess calcs
     {
-        for(int x = 0; x <= GV.World_Size_X; x++)
-            for (int z = 0; z <= GV.World_Size_Z; z++)
+        for(int x = 0; x < GV.World_Size_X; x++)
+            for (int z = 0; z < GV.World_Size_Z; z++)
             {
                 Pillar groundPillar = GetPillarAt(new Vector2(x, z), true);
                 CleanPillar(groundPillar);

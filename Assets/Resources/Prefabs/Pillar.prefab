@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4852375909766012}
   - component: {fileID: 33717824509170058}
   - component: {fileID: 23305331457739036}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,8 +89,8 @@ GameObject:
   - component: {fileID: 4514953874857396}
   - component: {fileID: 33682735421633980}
   - component: {fileID: 23700445380145520}
-  m_Layer: 0
   m_Name: Midtop
+  m_Layer: 8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 4995873043421036}
   - component: {fileID: 114926177838868688}
   - component: {fileID: 65499117422718166}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pillar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4570396274012686}
   - component: {fileID: 33401351687179230}
   - component: {fileID: 23819443622511534}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}

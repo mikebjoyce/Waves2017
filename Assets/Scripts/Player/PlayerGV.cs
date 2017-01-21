@@ -12,5 +12,6 @@ public class PlayerGV {
 
 	public static readonly float G_PlayerJumpForce = 5;
 	public static readonly float G_PlayerRunForce = 25;
+	public static readonly int G_RadiusOfColliLoad = 2;
 
 }
