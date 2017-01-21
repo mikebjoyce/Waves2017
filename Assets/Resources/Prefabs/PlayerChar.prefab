@@ -11,6 +11,21 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1769980641843948}
   m_IsPrefabParent: 1
+--- !u!1 &1741747990329788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4274529773705598}
+  m_Layer: 0
+  m_Name: Forward
+  m_TagString: Untagged
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1769980641843948
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,6 +48,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &4274529773705598
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1741747990329788}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4324912488615054}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4324912488615054
 Transform:
   m_ObjectHideFlags: 1
@@ -40,9 +68,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1769980641843948}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 13.486546, y: 3.1201158, z: -0.8810816}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 2, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4274529773705598}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -92,7 +121,7 @@ Rigidbody:
   m_GameObject: {fileID: 1769980641843948}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 0.05
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -122,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9fb932843f6b3c4291c7b92fb8819fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlType: 2
+  controlType: 0
   pControl: {fileID: 114097881802743178}
 --- !u!114 &114097881802743178
 MonoBehaviour:
@@ -139,7 +168,7 @@ MonoBehaviour:
   collBox: {fileID: 65716155999755348}
   body: {fileID: 54008861078731058}
   isGrounded: 0
-  _pos: {x: 0, y: 0}
+  position: {x: 0, y: 0}
 --- !u!114 &114758992408097828
 MonoBehaviour:
   m_ObjectHideFlags: 1

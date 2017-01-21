@@ -12,6 +12,7 @@ public class PlayerControl : MonoBehaviour {
 	public bool isGrounded = false;
 	private Vector3 forward;
 	private bool isHolding = false;
+	private bool lockMove = false;
 
 	public Vector2 position;
 
@@ -46,21 +47,25 @@ public class PlayerControl : MonoBehaviour {
 	void OnCollisionExit(Collision collision){
 		if (collision.gameObject.layer == 8 && isGrounded) {
 			isGrounded = false;
+			lockMove = false;
 		}
-
 	}
 
 
 	//player Movement and Actions
 	public void Move(Vector3 input){
+		Debug.Log ("Input " + input.ToString ());
 		//moves with constant speed 
-		Debug.Log("Input " + input.ToString());
+		//Debug.Log("Input " + input.ToString());
 		float xAxis = (input.x != 0) ? input.x/Mathf.Abs(input.x): 0;
-		Debug.Log ("yAxis " + xAxis);
-		Debug.Log ("rotate b4 " + transform.rotation);
+		//Debug.Log ("yAxis " + xAxis);
+		//Debug.Log ("rotate b4 " + transform.rotation);
 		transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
-		body.AddForce (input.y * forward * Time.deltaTime, ForceMode.Impulse);
-		Debug.Log ("force applied " + input.y * forward * Time.deltaTime);
+		Debug.Log ("lockMove " + lockMove);
+		if(!lockMove)
+			body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime, ForceMode.Impulse);
+		//Debug.Log ("force applied " + PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime);
+		//Debug.Log ("forward " + forward + " Time.DeltaTime" + Time.deltaTime);
 
 		//body.AddForce (moveDir * PlayerGV.G_PlayerRunForce, ForceMode.Impulse);
 	}
@@ -76,6 +81,7 @@ public class PlayerControl : MonoBehaviour {
 		//jumps a certain high always
 		if (isGrounded) {
 			body.AddForce (Vector3.up * PlayerGV.G_PlayerJumpForce, ForceMode.Impulse);
+			lockMove = true;
 		}
 	}
 

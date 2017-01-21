@@ -245,6 +245,31 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4372370046082694, guid: 3bca7c7c4ef2d9c4aae60b780aeb55a4, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 8.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 4372370046082694, guid: 3bca7c7c4ef2d9c4aae60b780aeb55a4, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -9.817
+      objectReference: {fileID: 0}
+    - target: {fileID: 4372370046082694, guid: 3bca7c7c4ef2d9c4aae60b780aeb55a4, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0.41067126
+      objectReference: {fileID: 0}
+    - target: {fileID: 4372370046082694, guid: 3bca7c7c4ef2d9c4aae60b780aeb55a4, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 0.9117835
+      objectReference: {fileID: 0}
+    - target: {fileID: 4372370046082694, guid: 3bca7c7c4ef2d9c4aae60b780aeb55a4, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 48.494003
+      objectReference: {fileID: 0}
+    - target: {fileID: 54522168436525554, guid: 3bca7c7c4ef2d9c4aae60b780aeb55a4,
+        type: 2}
+      propertyPath: m_Drag
+      value: 0.05
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3bca7c7c4ef2d9c4aae60b780aeb55a4, type: 2}
   m_IsPrefabParent: 0
@@ -407,6 +432,7 @@ GameObject:
   - component: {fileID: 2129472744}
   - component: {fileID: 2129472743}
   - component: {fileID: 2129472746}
+  - component: {fileID: 2129472747}
   m_Layer: 0
   m_Name: MainScripts
   m_TagString: Untagged
@@ -439,6 +465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   p1: {fileID: 1998071192}
+  cameraVisible: {fileID: 2129472747}
 --- !u!4 &2129472745
 Transform:
   m_ObjectHideFlags: 0
@@ -466,3 +493,14 @@ MonoBehaviour:
   groundParent: {fileID: 0}
   waterParent: {fileID: 0}
   mainFountain: []
+--- !u!114 &2129472747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2129472742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a5c83de4c509e9499b296ac0e189618, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
