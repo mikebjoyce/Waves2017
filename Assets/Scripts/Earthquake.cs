@@ -39,17 +39,17 @@ public class Earthquake : MonoBehaviour {
 	private void TestCircle(List<Vector2> points)
 	{
 		
-		foreach (Vector2 _point in points) 
+		/*foreach (Vector2 _point in points) 
 		{
 			Vector3 pos = new Vector3 (_point.x, 0, _point.y);
 			GameObject marker = (GameObject) Instantiate(Resources.Load ("Prefabs/markerPrefab"), pos, Quaternion.identity);
-		}
+		}*/
 			
 	}
 
 	// Use this for initialization
 	void Start () {
-		TestCircle (FindVoxelCircle(0, 0, 50));
+		//TestCircle (FindVoxelCircle(0, 0, 50));
 	}
 	
 	// Update is called once per frame
