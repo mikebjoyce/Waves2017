@@ -16,10 +16,10 @@ public class MapGenerator : MonoBehaviour {
 		int seed = (int)Network.time * 10; 
 		for (int x = 0; x < GV.World_Size_X; x++) 
 		{
-			for (int z = 0; z < GV.World_Size_Y; z++)
+			for (int z = 0; z < GV.World_Size_Z; z++)
 			{       
 					float centerProxFactor = CalculatePillarCenterProxFactor (x, z);
-					y = (int)((Mathf.PerlinNoise((x + seed) / detailScale, (z + seed) / detailScale) * heightScale) + terrainAltitudeConstant - (centerProxFactor * centerProxBiasConstant));
+					int y = (int)((Mathf.PerlinNoise((x + seed) / detailScale, (z + seed) / detailScale) * heightScale) + terrainAltitudeConstant - (centerProxFactor * centerProxBiasConstant));
 
 			}
 		}
@@ -32,8 +32,8 @@ public class MapGenerator : MonoBehaviour {
 	{
 
 		float centerProxFactor = 0f;
-		int xProx = Mathf.Abs (_x - WorldGrid.worldCenterPoint.x);
-		int zProx = Mathf.Abs (_z - WorldGrid.worldCenterPoint.z);
+		int xProx = (int) Mathf.Abs (_x - WorldGrid.worldCenterPoint.x);
+		int zProx = (int) Mathf.Abs (_z - WorldGrid.worldCenterPoint.y);
 
 		if (xProx >= zProx) 
 		{
@@ -43,7 +43,7 @@ public class MapGenerator : MonoBehaviour {
 		else
 		{
 			
-			centerProxFactor = zProx / WorldGrid.worldCenterPoint.z;
+			centerProxFactor = zProx / WorldGrid.worldCenterPoint.y;
 		}
 
 		return(centerProxFactor);

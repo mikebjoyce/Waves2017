@@ -25,7 +25,7 @@ public class WorldGrid  {
 
     WaterManager waterManager;
 
-	public Vector2 worldCenterPoint = new Vector2((int)(GV.World_Size_X)/2 ,(int) (GV.World_Size_Z)/2);
+	static public Vector2 worldCenterPoint = new Vector2((int)(GV.World_Size_X)/2 ,(int) (GV.World_Size_Z)/2);
 
     public bool isMattTestScene = true;
 
@@ -61,7 +61,7 @@ public class WorldGrid  {
 
     public float GetHeightAt(Vector2 atLoc)
     {
-        if (atLoc.x >= GV.World_Size_X || atLoc.x < 0 || atLoc.y >= GV.World_Size_Y || atLoc.y < 0)
+        if (atLoc.x >= GV.World_Size_X || atLoc.x < 0 || atLoc.y >= GV.World_Size_Z || atLoc.y < 0)
         {
             Debug.Log("invalid grid loc: " + atLoc);
             return 9999;
