@@ -23,7 +23,7 @@ public class WorldGrid  {
 
     private WorldGrid() { waterManager = new WaterManager(); }
 
-    WaterManager waterManager;
+    public WaterManager waterManager;
 
 	static public Vector2 worldCenterPoint = new Vector2((int)(GV.World_Size_X)/2 ,(int) (GV.World_Size_Z)/2);
 
@@ -64,8 +64,14 @@ public class WorldGrid  {
         if (atLoc.x >= GV.World_Size_X || atLoc.x < 0 || atLoc.y >= GV.World_Size_Z || atLoc.y < 0)
             return 9999;
 
-        if(!groundOnly && waterGrid[(int)atLoc.x,(int)atLoc.y]) // if water exists
-            return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
+        Pillar waterPillar = waterGrid[(int)atLoc.x, (int)atLoc.y];
+        if (!groundOnly && waterPillar) // if water exists
+        {
+            if (waterManager.staticPillars.Contains(waterPillar))
+                return 9999;
+            else
+                return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
+        }
         else
             return groundGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
     }

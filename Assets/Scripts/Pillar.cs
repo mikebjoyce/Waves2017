@@ -18,6 +18,12 @@ public class Pillar : MonoBehaviour {
         pillarType = _pillarType;
         SetHeight(pos.y);
         flowDir = new Vector2(0, 1);
+        SkinPillar(pillarType);
+    }
+
+    public void ModHeight(float modAmt)
+    {
+        SetHeight(pos.y + modAmt);
     }
 
     public void SetHeight(float newHeight)
@@ -26,6 +32,19 @@ public class Pillar : MonoBehaviour {
         newPos.y = newHeight;
         transform.position = newPos;
         pos.y = newHeight;
+    }
+
+    private void SkinPillar(GV.PillarType pillarType)
+    {
+        Renderer top = transform.FindChild("Top").GetComponent<Renderer>();
+        Renderer mid = transform.FindChild("Middle").GetComponent<Renderer>();
+        Renderer bot = transform.FindChild("Bottom").GetComponent<Renderer>();
+        if (pillarType == GV.PillarType.Water)
+        { //ground is already it by default
+            top.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
+            mid.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
+            bot.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
+        }
     }
 
     public float GetHeight()
