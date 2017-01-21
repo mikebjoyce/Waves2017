@@ -14,13 +14,6 @@ public class WaterManager  {
         GV.Water_Flow = GV.GetWaterFlowRate();
     }
 
-    public void AddStaticActiveWater(List<Pillar> _staticPillars)
-    {
-        staticPillars.AddRange(_staticPillars);
-        activeWater.AddRange(_staticPillars);
-        activeWater = SortPillarsByTallestHeight(activeWater);
-        //UpdateWater(activeWater[0]);
-    }
 
     public void UpdateAllWater()
     {
@@ -42,7 +35,7 @@ public class WaterManager  {
 
     private void UpdateWater(Pillar toUpdate)
     {
-        float actualHeight = toUpdate.GetHeight() - WorldGrid.Instance.groundGrid[(int)toUpdate.pos.x, (int)toUpdate.pos.z].GetHeight();
+        //float actualHeight = toUpdate.GetHeight() - WorldGrid.Instance.groundGrid[(int)toUpdate.pos.x, (int)toUpdate.pos.z].GetHeight();
         //Debug.Log("Updating water at location: " + toUpdate.pos);
         //Get random possible spread directions, with the first being the direction of the flow
         Vector2 flowDir = toUpdate.GetCurrent();
@@ -154,14 +147,15 @@ public class WaterManager  {
         MonoBehaviour.Destroy(toDestroy.gameObject);
     }
 
-    private void CreateWater(Vector2 loc, float initialHeight)
+    public void CreateWater(Vector2 loc, float initialHeight, bool staticWater = false)
     {
         GameObject go = MonoBehaviour.Instantiate(Resources.Load("Prefabs/Pillar"), new Vector3((int)loc.x, initialHeight, (int)loc.y), Quaternion.identity) as GameObject;
+        go.transform.SetParent(GameObject.FindObjectOfType<WorldLinks>().waterParent);
         Pillar newWater = go.GetComponent<Pillar>();
         newWater.Initialize(new Vector3(loc.x, initialHeight, loc.y), GV.PillarType.Water);
         activeWater.Add(newWater);
-        if (WorldGrid.Instance.waterGrid[(int)loc.x, (int)loc.y] != null)
-            Debug.LogError("Attempting to create new water to grid where water already existed at loc " + loc);
+        if (staticWater)
+            staticPillars.Add(newWater);
         WorldGrid.Instance.waterGrid[(int)loc.x, (int)loc.y] = newWater;
     }
 

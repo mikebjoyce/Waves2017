@@ -56,6 +56,8 @@ public class MapGenerator : MonoBehaviour {
 	    }
 	    else
 	    	Debug.Log("detailScale cannot be 0!");
+
+        OceanFiller();
 	}
 
 	public float CalculatePillarCenterProxFactor(int _x, int _z) //uses pillar's proximity to map center to calculate altitude bias factor (makes the map slope downwards from center out)
@@ -99,16 +101,54 @@ public class MapGenerator : MonoBehaviour {
 
         if ((_pillarPos.x == 0 || _pillarPos.x == GV.World_Size_X - 1) || (_pillarPos.z == 0 || _pillarPos.z == GV.World_Size_Z - 1)) //is edge sea piece
         {
-            Vector3 seaPos = _pillarPos;
-            seaPos.y = GV.Water_Sea_Level;
-            GameObject seaPillarObj = (GameObject)Instantiate(Resources.Load("Prefabs/Pillar"), seaPos, Quaternion.identity);
-            seaPillarObj.transform.SetParent(GameObject.FindObjectOfType<WorldLinks>().waterParent);
-            Pillar seaPillar = seaPillarObj.GetComponent<Pillar>();
-            seaPillar.Initialize(seaPos, GV.PillarType.Water);
-            WorldGrid.Instance.groundGrid[(int)seaPos.x, (int)seaPos.z] = newPillar.GetComponent<Pillar>();
+            //Vector3 seaPos = _pillarPos;
+            //seaPos.y = GV.Water_Sea_Level;
+            WorldGrid.Instance.waterManager.CreateWater(new Vector2(_pillarPos.x, _pillarPos.z), GV.Water_Sea_Level, true);
+            //GameObject seaPillarObj = (GameObject)Instantiate(Resources.Load("Prefabs/Pillar"), seaPos, Quaternion.identity);
+            //seaPillarObj.transform.SetParent(GameObject.FindObjectOfType<WorldLinks>().waterParent);
+            //Pillar seaPillar = seaPillarObj.GetComponent<Pillar>();
+            //seaPillar.Initialize(seaPos, GV.PillarType.Water);
+            //WorldGrid.Instance.groundGrid[(int)seaPos.x, (int)seaPos.z] = newPillar.GetComponent<Pillar>();
         }
 
     }
 
+    private void OceanFiller()
+    {
+        List<Vector2> openList = new List<Vector2>();
+        List<Vector2> closedList = new List<Vector2>();
+        List<Vector2> toAddWater = new List<Vector2>();
+
+        //start at inner ring, since outer ring has sea tiles already
+        for (int x = 1; x < GV.World_Size_X; x++)
+        {
+            openList.Add(new Vector2(x, 1));
+            openList.Add(new Vector2(x, GV.World_Size_X - 2));
+        }
+        for (int z = 1; z < GV.World_Size_Z; z++)
+        {
+            openList.Add(new Vector2(1,z));
+            openList.Add(new Vector2(GV.World_Size_Z - 2,z));
+        }
+
+        while(openList.Count > 0)
+        {
+           if(WorldGrid.Instance.GetHeightAt(openList[0]) < GV.Water_Sea_Level)
+           {
+                toAddWater.Add(openList[0]);
+                foreach(Vector2 offset in GV.Water_Spread_Directions)
+                {
+                    if (!openList.Contains(openList[0] + offset) && !closedList.Contains(openList[0] + offset) && !toAddWater.Contains(openList[0] + offset))
+                        openList.Add(openList[0] + offset);
+                }
+            
+           }
+           closedList.Add(openList[0]);
+           openList.RemoveAt(0);
+        }
+
+        foreach(Vector2 addLoc in toAddWater)
+            WorldGrid.Instance.waterManager.CreateWater(addLoc, GV.Water_Sea_Level, false);
+    }
 
 }

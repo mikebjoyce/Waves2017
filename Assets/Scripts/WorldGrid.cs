@@ -42,7 +42,7 @@ public class WorldGrid  {
             p.Initialize(loc, GV.PillarType.Ground);
             groundGrid[(int)loc.x, (int)loc.z] = p;
         }
-
+        /*
         List<Pillar> waterPillars = new List<Pillar>();
         foreach (Transform t in GameObject.FindObjectOfType<WorldLinks>().waterParent)
         {
@@ -53,7 +53,7 @@ public class WorldGrid  {
             waterGrid[(int)loc.x, (int)loc.z] = p;
             waterPillars.Add(p);
         }
-        waterManager.AddStaticActiveWater(waterPillars);
+        waterManager.AddStaticActiveWater(waterPillars);*/
         
     }
 
