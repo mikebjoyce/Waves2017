@@ -7,6 +7,7 @@ public class Pillar : MonoBehaviour {
     public GV.PillarType pillarType;
     public Vector3 cord;
     public BoxCollider pillarCollider;
+    public Vector2 flowDir;
 
     public void Initialize(Vector3 _cord, GV.PillarType _pillarType)
     {
