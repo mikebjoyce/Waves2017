@@ -4,13 +4,24 @@ using UnityEngine;
 
 public class Pillar : MonoBehaviour {
 
-    public GV.pillarType pillarType;
+    public GV.PillarType pillarType;
     public Vector3 cord;
     public BoxCollider pillarCollider;
 
+    public void Initialize(Vector3 _cord, GV.PillarType _pillarType)
+    {
+        cord = _cord;
+        pillarType = _pillarType;
+        SetHeight(cord.y);
+
+    }
+
     public void SetHeight(float newHeight)
     {
-        cord.z = newHeight;
+        Vector3 newPos = transform.position;
+        newPos.y = newHeight;
+        transform.position = newPos;
+        cord.y = newHeight;
     }
 
     public float GetHeight()
