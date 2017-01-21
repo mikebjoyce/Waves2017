@@ -7215,11 +7215,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2029070433}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7091423b5ca7f804195a964dec30d0d9, type: 3}
+  m_Script: {fileID: 11500000, guid: fbd4ee7199fd5e54d8fedb4cdcd7a3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundParent: {fileID: 0}
-  isMattTestScene: 0
+  groundParent: {fileID: 947157539}
 --- !u!4 &2029070435
 Transform:
   m_ObjectHideFlags: 0
