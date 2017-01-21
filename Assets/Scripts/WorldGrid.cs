@@ -70,6 +70,9 @@ public class WorldGrid  {
 
     public Pillar GetPillarAt(Vector2 atLoc, bool groundOnly = false)
     { //returns the highest one, ground or water
+		if (!InBounds(atLoc))
+			return null;
+
         if (!groundOnly && waterGrid[(int)atLoc.x, (int)atLoc.y]) // if water exists
         {
             return waterGrid[(int)atLoc.x, (int)atLoc.y];
