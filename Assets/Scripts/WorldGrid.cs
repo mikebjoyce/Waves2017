@@ -25,10 +25,12 @@ public class WorldGrid  {
 
     WaterManager waterManager;
 
+	public Vector2 worldCenterPoint = new Vector2((int)(GV.World_Size_X)/2 ,(int) (GV.World_Size_Z)/2);
+
     public bool isMattTestScene = true;
 
-	public Pillar[,] groundGrid = new Pillar[GV.World_Size_X, GV.World_Size_Y];
-    public Pillar[,] waterGrid  = new Pillar[GV.World_Size_X, GV.World_Size_Y];
+	public Pillar[,] groundGrid = new Pillar[GV.World_Size_X, GV.World_Size_Z];
+    public Pillar[,] waterGrid  = new Pillar[GV.World_Size_X, GV.World_Size_Z];
 
     public void Initialize() //used for default load in test scene
     {
