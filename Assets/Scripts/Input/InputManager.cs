@@ -37,7 +37,7 @@ public class InputManager : MonoBehaviour {
 	 void Update () {
 		moveDirection = new Vector2 (Input.GetAxis (keyList [0]), Input.GetAxis (keyList [1]));
 		if(!moveDirection.Equals(Vector2.zero))
-			pControl.Move (moveDirection);
+			pControl.Move (new Vector3(moveDirection.x, moveDirection.y, 0));
 		if (Input.GetButtonDown (keyList [2]))
 			pControl.Jump ();
 		if (Input.GetButtonDown (keyList [3]))

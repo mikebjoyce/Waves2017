@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour {
 
+	public Camera playerCam;
+
 	//Vars
 	public BoxCollider collBox;
 	public Rigidbody body;
 	public bool isGrounded = false;
-	private Vector2 forward = Vector2.zero;
+	private Vector3 forward;
 	private bool isHolding = false;
 
-	public Vector2 _pos;
+	public Vector2 position;
 
 	public void Initialize(){
+		forward = transform.forward;
 		transform.position = new Vector3(WorldGrid.worldCenterPoint.x, WorldGrid.Instance.GetHeightAt(WorldGrid.worldCenterPoint) + 5, WorldGrid.worldCenterPoint.y);
 	}
 
@@ -28,7 +31,8 @@ public class PlayerControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		_pos = new Vector2 (transform.position.x, transform.position.z);
+		position = new Vector2 (transform.position.x, transform.position.z);
+		forward = transform.forward;
 	}
 
 
@@ -48,19 +52,24 @@ public class PlayerControl : MonoBehaviour {
 
 
 	//player Movement and Actions
-	public void Move(Vector2 direction){
+	public void Move(Vector3 input){
 		//moves with constant speed 
-		if (isGrounded) {
-			RotateBodyTo (direction);
-			body.AddForce (new Vector3(direction.x, 0, direction.y) * PlayerGV.G_PlayerRunForce * Time.deltaTime, ForceMode.Impulse);
-		}
+		Debug.Log("Input " + input.ToString());
+		float xAxis = (input.x != 0) ? input.x/Mathf.Abs(input.x): 0;
+		Debug.Log ("yAxis " + xAxis);
+		Debug.Log ("rotate b4 " + transform.rotation);
+		transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
+		body.AddForce (input.y * forward * Time.deltaTime, ForceMode.Impulse);
+		Debug.Log ("force applied " + input.y * forward * Time.deltaTime);
+
+		//body.AddForce (moveDir * PlayerGV.G_PlayerRunForce, ForceMode.Impulse);
 	}
 
+	/*
 	public void Move(){
 		Debug.Log ("Move");
-		forward = transform.forward;
 		Move (forward);
-	}
+	}*/
 
 	public void Jump(){
 		Debug.Log ("Jump");
@@ -83,9 +92,10 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	//internal
-	private void RotateBodyTo(Vector2 input){
-		transform.rotation = Quaternion.LookRotation(new Vector3(input.x, 0, input.y));
+	private void RotateBodyTo(Vector3 input){
+		transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(input), Time.deltaTime * PlayerGV.G_PlayerRotateSpeed);
 	}
+		
 
 }
 

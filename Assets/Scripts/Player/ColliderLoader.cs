@@ -12,22 +12,22 @@ public class ColliderLoader : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		player = GetComponent<PlayerControl>();
-		lastPos = player._pos;
+		lastPos = player.position;
 		pillars = new Pillar[2*rad+1,2*rad+1];
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (lastPos != player._pos) {
+		if (lastPos != player.position) {
 			DeactivatePillarCol ();
 			UpdatePillarArr ();
 			ActivatePillarCol ();
 		}
-		lastPos = player._pos;
+		lastPos = player.position;
 	}
 
 	public void UpdatePillarArr(){
-		Vector2 pos = player._pos;
+		Vector2 pos = player.position;
 		for (int x = -rad; x < rad; x++) {
 			for (int y = -rad; y < rad; y++) {
 				pillars [x + rad,y + rad] = WorldGrid.Instance.GetPillarAt (new Vector2 (x + pos.x, y + pos.y),true);
