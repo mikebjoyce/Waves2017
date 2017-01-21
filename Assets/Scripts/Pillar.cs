@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class Pillar : MonoBehaviour {
 
+    [HideInInspector]
     public GV.PillarType pillarType;
-    public Vector3 cord;
+    [HideInInspector]
+    public Vector3 pos;
     public BoxCollider pillarCollider;
-    public Vector2 flowDir;
+    [HideInInspector]
+    public Vector2 flowDir; //can be float, but will be int cast on use
 
-    public void Initialize(Vector3 _cord, GV.PillarType _pillarType)
+    public void Initialize(Vector3 _pos, GV.PillarType _pillarType)
     {
-        cord = _cord;
+        pos = _pos;
         pillarType = _pillarType;
-        SetHeight(cord.y);
-
+        SetHeight(pos.y);
+        flowDir = new Vector2(0, 1);
     }
 
     public void SetHeight(float newHeight)
@@ -22,11 +25,11 @@ public class Pillar : MonoBehaviour {
         Vector3 newPos = transform.position;
         newPos.y = newHeight;
         transform.position = newPos;
-        cord.y = newHeight;
+        pos.y = newHeight;
     }
 
     public float GetHeight()
     {
-        return cord.y;
+        return pos.y;
     } 
 }

@@ -36,27 +36,35 @@ public class WorldGrid  {
         {
             foreach(Transform t in GameObject.FindObjectOfType<MattTest>().groundParent)
             {
-                try
-                {
-                    Pillar p = t.GetComponent<Pillar>();
-                    Vector3 loc = t.position;
-                    loc = new Vector3((int)loc.x, (int)loc.y, (int)loc.z);
-                    p.Initialize(loc, GV.PillarType.Ground);
-                    groundGrid[(int)loc.x, (int)loc.z] = p;
-                }
-                catch
-                {
-                    Debug.Log("Error for: " + t.transform.position + t.name);
-                }
+                Pillar p = t.GetComponent<Pillar>();
+                Vector3 loc = t.position;
+                loc = new Vector3((int)loc.x, (int)loc.y, (int)loc.z);
+                p.Initialize(loc, GV.PillarType.Ground);
+                groundGrid[(int)loc.x, (int)loc.z] = p;
             }
+
             List<Pillar> waterPillars = new List<Pillar>();
-            waterPillars.AddRange(GameObject.FindObjectOfType<MattTest>().waterParent.GetComponentsInChildren<Pillar>());
+            foreach (Transform t in GameObject.FindObjectOfType<MattTest>().waterParent)
+            {
+                Pillar p = t.GetComponent<Pillar>();
+                Vector3 loc = t.position;
+                loc = new Vector3((int)loc.x, (int)loc.y, (int)loc.z);
+                p.Initialize(loc, GV.PillarType.Water);
+                waterGrid[(int)loc.x, (int)loc.z] = p;
+                waterPillars.Add(p);
+            }
             waterManager.AddStaticActiveWater(waterPillars);
         }
     }
 
     public float GetHeightAt(Vector2 atLoc)
     {
+        if (atLoc.x >= GV.World_Size_X || atLoc.x < 0 || atLoc.y >= GV.World_Size_Y || atLoc.y < 0)
+        {
+            Debug.Log("invalid grid loc: " + atLoc);
+            return 9999;
+        }
+
         if(waterGrid[(int)atLoc.x,(int)atLoc.y]) // if water exists
             return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
         else

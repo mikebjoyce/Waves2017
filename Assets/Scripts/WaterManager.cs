@@ -18,11 +18,48 @@ public class WaterManager  {
         staticPillars.AddRange(_staticPillars);
         activeWater.AddRange(_staticPillars);
         SortActiveWaterByHeight();
+        UpdateWater(activeWater[0]);
     }
 
-    public void UpdateWater()
+    public void UpdateAllWater()
     {
         SortActiveWaterByHeight();
+        foreach (Pillar toUpdate in activeWater)
+            UpdateWater(toUpdate);
+    }
+
+    private void UpdateWater(Pillar toUpdate)
+    {
+        float actualHeight = toUpdate.GetHeight() - WorldGrid.Instance.groundGrid[(int)toUpdate.pos.x, (int)toUpdate.pos.z].GetHeight();
+
+        //Get random possible spread directions, with the first being the direction of the flow
+        Vector2 flowDir = new Vector2(Mathf.RoundToInt(toUpdate.flowDir.x), Mathf.RoundToInt(toUpdate.flowDir.y));
+        List<Vector2> spreadDirections = new List<Vector2>(GV.Water_Spread_Directions.OrderBy(item => Random.Range(0, 4)));
+        if(spreadDirections.Contains(flowDir))
+        {
+            spreadDirections.Remove(flowDir);
+            spreadDirections.Insert(0, flowDir);
+        }
+        //Trim the list to only lower heights
+        for(int i = spreadDirections.Count - 1; i >= 0; i--)
+        {
+            float height = WorldGrid.Instance.GetHeightAt(new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z));
+            if (toUpdate.GetHeight() <= height)
+            {
+                Debug.Log(string.Format("water height {0} vs {1} removed", toUpdate.GetHeight(), height));
+                spreadDirections.RemoveAt(i);
+            }
+        }
+        
+        string toOut = "spreadDir: ";
+        foreach (Vector2 v2 in spreadDirections)
+            toOut += v2 + ",";
+        Debug.Log(toOut);
+    }
+
+    private float CalculateFlow(float flowingHeight, float neighborHeight)
+    {
+        return 0;
     }
 
     private void SortActiveWaterByHeight()
