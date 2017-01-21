@@ -19,8 +19,14 @@ public class MapGenerator : MonoBehaviour {
 	int xOffset = 0;
 	int zOffset = 0;
 
+    public List<Vector3> tilesToLoad;
+    public int tileLoadingIndex = 0;
+   // public float loadWaitCycle = false;
+
 	public void GenerateLand()
 	{
+        tilesToLoad = new List<Vector3>();
+        tileLoadingIndex = 0;
         if (mapCenterImperfect)
         {
             int absoluteCenterRangeX = Mathf.RoundToInt(mapCenterRange * (GV.World_Size_X / 2));
@@ -50,14 +56,15 @@ public class MapGenerator : MonoBehaviour {
 		    			int y = Mathf.RoundToInt((Mathf.PerlinNoise((x + seed ) / (detailScale ), (z + seed) / (detailScale)) * heightScale * heightScaleDecayFactor) + terrainAltitudeConstant - (sqrtProxFactor * centerProxBiasConstant));
 		    				
 		    			Vector3 pillarPos = new Vector3 (x, y, z);
-		    			InstantiatePillar (pillarPos);
+                        tilesToLoad.Add(pillarPos);
+		    			//InstantiatePillar (pillarPos);
 		    	}
 		    }
 	    }
 	    else
 	    	Debug.Log("detailScale cannot be 0!");
 
-        OceanFiller();
+        
 	}
 
 	public float CalculatePillarCenterProxFactor(int _x, int _z) //uses pillar's proximity to map center to calculate altitude bias factor (makes the map slope downwards from center out)
@@ -113,7 +120,7 @@ public class MapGenerator : MonoBehaviour {
 
     }
 
-    private void OceanFiller()
+    public void OceanFiller()
     {
         List<Vector2> openList = new List<Vector2>();
         List<Vector2> closedList = new List<Vector2>();
@@ -151,4 +158,14 @@ public class MapGenerator : MonoBehaviour {
             WorldGrid.Instance.waterManager.CreateWater(addLoc, GV.Water_Sea_Level, false);
     }
 
+    public bool LoadTiles()
+    {
+        float timeToExit = Time.time + GV.MapGen_Time_spent_Creating;
+        while(timeToExit > Time.time && tileLoadingIndex < tilesToLoad.Count)
+        {
+            InstantiatePillar(tilesToLoad[tileLoadingIndex]);
+            tileLoadingIndex++;
+        }
+        return tileLoadingIndex >= tilesToLoad.Count;
+    }
 }

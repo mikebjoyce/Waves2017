@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class WaterManager  {
 
+    float timeAtNextUpdate = 0;
+
     public List<Pillar> staticPillars = new List<Pillar>();
     List<Pillar> activeWater = new List<Pillar>();
     List<Pillar> toDestroy = new List<Pillar>();
@@ -20,13 +22,28 @@ public class WaterManager  {
     public void PrepWaterUpdate()
     {
         activeWater = SortPillarsByTallestHeight(activeWater);
-        List<Pillar> toUpdate = new List<Pillar>(activeWater); //Since list will be modified internally
+        toUpdate = new List<Pillar>(activeWater); //Since list will be modified internally
+        currentUpdateIndex = 0;
     }
 
-    public void UpdateNextPortion()
+    public void UpdateWaterManager()
     {
+        if(Time.time > timeAtNextUpdate)
+        {
+            for (int i = 0; currentUpdateIndex < toUpdate.Count && i < toUpdate.Count / GV.Water_Update_Steps; currentUpdateIndex++, i++)
+                if(toUpdate[currentUpdateIndex]) //since can be killed elsewhere
+                    UpdateWater(toUpdate[currentUpdateIndex]);
 
+            if(currentUpdateIndex >= toUpdate.Count)
+                PrepWaterUpdate();
+
+            timeAtNextUpdate = Time.time + GV.Water_Update_Time_Step;
+        }
+        foreach (Pillar _toDestroy in toDestroy)
+            DestroyWater(_toDestroy);
+        toDestroy = new List<Pillar>();
     }
+    
 
     public void UpdateAllWater()
     {

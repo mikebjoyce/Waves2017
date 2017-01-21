@@ -11,8 +11,8 @@ public class GV : MonoBehaviour {
 
     //Water
     public static readonly float Water_Sea_Width = 3;
-    public static readonly float Water_Update_Time_Step = .50f;
-    public static readonly float Water_Update_Steps_ = .20f;
+    public static readonly float Water_Update_Time_Step = .20f;
+    public static readonly float Water_Update_Steps = 5f;
 
     private static readonly float Water_Sections = 5; //Using 1/this in calculations does not yeild .2f... it just yeilds a nonsensical number that outputs as .2f... use the function below
     public static float Water_Flow_Rate; //not readonly, so careful dont overite it
@@ -21,8 +21,14 @@ public class GV : MonoBehaviour {
     public static readonly float Water_Chance_To_Break_From_Current = .2f;
     public static readonly float Water_Current_Power_Per_Bonus_Mult = .5f;
 
+    //Tsunami
+    public static readonly float Tsunami_Update_Step = .5f;
+
+    //Map Generator
+    public static readonly float MapGen_Time_spent_Creating = 1f;
+
     //system
-    public static float System_Pillar_Cleanup_Interval = 12; //perodically cleans up the strange floaters that appear
+    public static float System_Pillar_Cleanup_Interval = 20; //perodically cleans up the strange floaters that appear
 
     public static void SetupWaterFlowRate()
     {

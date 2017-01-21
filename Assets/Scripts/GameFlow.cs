@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GameFlow : MonoBehaviour {
 
-    float timeAtNextUpdate = 0;
     float timeAtNextSystemCleanup;
 
 	//public PlayerControl[] players = new PlayerControl[4];
@@ -13,9 +12,12 @@ public class GameFlow : MonoBehaviour {
 
     public void Start()
     {
-        GameObject.FindObjectOfType<MapGenerator>().GenerateLand();
+        MapGenerator mapGen = GameObject.FindObjectOfType<MapGenerator>();
+        mapGen.GenerateLand();
+        while(!mapGen.LoadTiles()){}
+        mapGen.OceanFiller();
         WorldGrid.Instance.Initialize();
-        timeAtNextSystemCleanup = Time.time + GV.Water_Update_Time_Step*2; //bit of buffer for first cleanup
+        timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval * 2; //bit of buffer for first cleanup
         cameraVisible.UpdateWorld();
 		/*foreach (PlayerControl p in players) {
 			
@@ -27,11 +29,7 @@ public class GameFlow : MonoBehaviour {
     public void Update()
     {
         WorldGrid.Instance.tsunamiManager.UpdateTsunami();
-        if (Time.time >= timeAtNextUpdate)
-        {
-            WorldGrid.Instance.waterManager.UpdateAllWater();
-            timeAtNextUpdate += GV.Water_Update_Time_Step;
-        }
+        WorldGrid.Instance.waterManager.UpdateWaterManager();
         if(Time.time >= timeAtNextSystemCleanup)
         {
             WorldGrid.Instance.PreformSnapCleanup();
