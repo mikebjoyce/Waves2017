@@ -66,6 +66,7 @@ artifacts/
 
 *.sln
 *.vcsproj
+*.csproj
 *_i.c
 *_p.c
 *_i.h
@@ -322,3 +323,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.csproj
