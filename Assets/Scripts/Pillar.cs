@@ -75,11 +75,11 @@ public class Pillar : MonoBehaviour {
 
         if (current == new Vector2())
         {
-            transform.FindChild("Top").GetComponent<Renderer>().material.color = Color.red;
+            //transform.FindChild("Top").GetComponent<Renderer>().material.color = Color.red;
         }
         else
         {
-            transform.FindChild("Top").GetComponent<Renderer>().material.color = Color.white;
+            //transform.FindChild("Top").GetComponent<Renderer>().material.color = Color.white;
             if (current == new Vector2(1, 0))
             {
                 transform.eulerAngles = new Vector3(0, 0, 0);

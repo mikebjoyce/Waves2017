@@ -11,7 +11,7 @@ public class WaterManager  {
 
     public WaterManager()
     {
-        GV.Water_Flow = GV.GetWaterFlowRate();
+        GV.SetupWaterFlowRate();
     }
 
 
@@ -30,7 +30,7 @@ public class WaterManager  {
     {
         if (heightDiff <= 0)
             return false;
-        return ((heightDiff > GV.GetWaterFlowRate() && otherPillarType == GV.PillarType.Ground) || (heightDiff >= GV.GetWaterFlowRate() && otherPillarType == GV.PillarType.Water));
+        return ((heightDiff > GV.Water_Flow_Rate && otherPillarType == GV.PillarType.Ground) || (heightDiff >= GV.Water_Flow_Rate && otherPillarType == GV.PillarType.Water));
     }
 
     private void UpdateWater(Pillar toUpdate)
@@ -55,7 +55,7 @@ public class WaterManager  {
                 //if (heightDiff > GV.GetWaterFlowRate())// (1 / GV.Water_Sections))
                 {
                     neighborPillars.Add(otherPillar);
-                    if (offset == flowDir)
+                    if (offset == flowDir && Random.Range(0f,1f) > GV.Water_Chance_To_Break_From_Current)
                         flowDirectionPillar = otherPillar;
                 }
             }
@@ -103,13 +103,16 @@ public class WaterManager  {
                 int rounded = Mathf.RoundToInt(waterDepth * percentSurfaceDistributing);
                 rounded = Mathf.Max(1, rounded);
                 //float flowRate = waterDepth * percentSurfaceDistributing * GV.Water_Flow_Rate;
-                float flowRate = rounded * GV.GetWaterFlowRate();
+                float flowRate = rounded * GV.Water_Flow_Rate;
                 //if(toUpdate.DebugLogs) Debug.Log(string.Format("Flow Rate {0} = waterDepth{1} * percDistr{2} * GV{3}; For pos{4}", flowRate, waterDepth, percentSurfaceDistributing, GV.GetWaterFlowRate(), new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z)));
 
                 //Now spread the water
                 if (neighborPillar.pillarType == GV.PillarType.Water && !staticPillars.Contains(neighborPillar))
                 {//spread water to existing water
-                    if (toUpdate.DebugLogs) Debug.Log(string.Format("{0} adding water at {1} neighborHeight original is {2} and added flowrate is {3}", toUpdate.pos ,neighborLoc, flowRate, neighborHeight));
+                    if (toUpdate.DebugLogs)
+                    {
+                        Debug.Log(string.Format("Water at {0} of height {1}, is adding water to {2} at height {3}, the flowrate calculated: {4}", toUpdate.pos, toUpdate.GetHeight(), neighborLoc, neighborHeight, flowRate));
+                    }
                     neighborPillar.ModHeight(flowRate);
                     neighborPillar.AddCurrent(new Vector2(toUpdate.pos.x, toUpdate.pos.z), flowRate);
                     if (toDestroy.Contains(neighborPillar))

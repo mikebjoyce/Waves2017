@@ -324,17 +324,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dca27a93fe5cdb4181c4def964230a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightScale: 8
-  detailScale: 6
-  terrainAltitudeConstant: -6
-  centerProxBiasConstant: 3
+  heightScale: 4
+  detailScale: 3
+  terrainAltitudeConstant: -1
+  centerProxBiasConstant: 2
   heightScaleDecay: 1
   heightDecayControl: 3
-  smoothDecay: 0.1
-  volcano: 1
+  smoothDecay: 0.3
+  volcano: 0
   volcanoIntensity: 0.4
   mapCenterImperfect: 1
-  mapCenterRange: 0.5
+  mapCenterRange: 0.2
 --- !u!4 &1475594597
 Transform:
   m_ObjectHideFlags: 0
@@ -358,6 +358,7 @@ GameObject:
   - component: {fileID: 2129472745}
   - component: {fileID: 2129472744}
   - component: {fileID: 2129472743}
+  - component: {fileID: 2129472746}
   m_Layer: 0
   m_Name: MainScripts
   m_TagString: Untagged
@@ -402,3 +403,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2129472746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2129472742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbd4ee7199fd5e54d8fedb4cdcd7a3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundParent: {fileID: 0}
+  waterParent: {fileID: 0}
+  mainFountain: []
