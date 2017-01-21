@@ -40,15 +40,36 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
+[Oo]bj/
+[Ll]ibrary/
+[Bb]uild/
+[Tt]emp/
+
+ ExportedObj/
+     *.svd
+     *.userprefs
+     *.csproj
+     *.pidb
+     *.suo
+     *.sln
+     *.user
+     *.unityproj
+     *.booproj
+     *.orig
+     *.app
+     *.exe
+     *.*_data
+	 
 # DNX
 project.lock.json
 artifacts/
 
+*.sln
+*.vcsproj
 *_i.c
 *_p.c
 *_i.h
 *.ilk
-*.meta
 *.obj
 *.pch
 *.pdb
