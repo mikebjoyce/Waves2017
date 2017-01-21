@@ -27,8 +27,8 @@ public class WorldGrid  {
 
     public bool isMattTestScene = true;
 
-    public Pillar[,] groundGrid = new Pillar[(int)GV.World_Size.x, (int)GV.World_Size.y];
-    public Pillar[,] waterGrid  = new Pillar[(int)GV.World_Size.x, (int)GV.World_Size.y];
+	public Pillar[,] groundGrid = new Pillar[GV.World_Size_X, GV.World_Size_Y];
+    public Pillar[,] waterGrid  = new Pillar[GV.World_Size_X, GV.World_Size_Y];
 
     public void Initialize() //used for default load in test scene
     {

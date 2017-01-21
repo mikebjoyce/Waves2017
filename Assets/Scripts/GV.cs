@@ -6,5 +6,7 @@ public class GV : MonoBehaviour {
 
     public enum PillarType { Ground, Water}
     public static readonly Vector2 World_Size = new Vector2(10, 10);
+	public static readonly int World_Size_X = 50;
+	public static readonly int World_Size_Y = 50;
     public static readonly float Water_Sections = 4;
 }

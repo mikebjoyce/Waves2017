@@ -27,6 +27,6 @@ public class Pillar : MonoBehaviour {
 
     public float GetHeight()
     {
-        return cord.z;
+        return cord.y;
     } 
 }
