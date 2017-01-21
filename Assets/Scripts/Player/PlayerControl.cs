@@ -41,13 +41,14 @@ public class PlayerControl : MonoBehaviour {
 	void OnCollisionEnter(Collision collision){
 		if (collision.gameObject.layer == 8 && !isGrounded) {
 			isGrounded = true;
+			lockMove = false;
 		}
 	}
 
 	void OnCollisionExit(Collision collision){
 		if (collision.gameObject.layer == 8 && isGrounded) {
 			isGrounded = false;
-			lockMove = false;
+			lockMove = true;
 		}
 	}
 
@@ -62,6 +63,7 @@ public class PlayerControl : MonoBehaviour {
 		//Debug.Log ("rotate b4 " + transform.rotation);
 		transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
 		Debug.Log ("lockMove " + lockMove);
+
 		if(!lockMove)
 			body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime, ForceMode.Impulse);
 		//Debug.Log ("force applied " + PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime);
@@ -77,11 +79,11 @@ public class PlayerControl : MonoBehaviour {
 	}*/
 
 	public void Jump(){
-		Debug.Log ("Jump");
+
 		//jumps a certain high always
 		if (isGrounded) {
 			body.AddForce (Vector3.up * PlayerGV.G_PlayerJumpForce, ForceMode.Impulse);
-			lockMove = true;
+			Debug.Log ("Jump");
 		}
 	}
 
