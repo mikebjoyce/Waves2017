@@ -11,25 +11,33 @@ public class WaterManager  {
 
     public WaterManager()
     {
-
+        GV.Water_Flow = GV.GetWaterFlowRate();
     }
 
     public void AddStaticActiveWater(List<Pillar> _staticPillars)
     {
         staticPillars.AddRange(_staticPillars);
         activeWater.AddRange(_staticPillars);
-        SortActiveWaterByHeight();
+        activeWater = SortPillarsByTallestHeight(activeWater);
         //UpdateWater(activeWater[0]);
     }
 
     public void UpdateAllWater()
     {
-        SortActiveWaterByHeight();
+        activeWater = SortPillarsByTallestHeight(activeWater);
         List<Pillar> toUpdate = new List<Pillar>(activeWater); //Since list will be modified internally
         foreach (Pillar _toUpdate in toUpdate)
             UpdateWater(_toUpdate);
         foreach (Pillar _toDestroy in toDestroy)
             DestroyWater(_toDestroy);
+        toDestroy = new List<Pillar>();
+    }
+
+    private bool CanTransfer(float heightDiff, GV.PillarType otherPillarType)
+    {
+        if (heightDiff <= 0)
+            return false;
+        return ((heightDiff > GV.GetWaterFlowRate() && otherPillarType == GV.PillarType.Ground) || (heightDiff >= GV.GetWaterFlowRate() && otherPillarType == GV.PillarType.Water));
     }
 
     private void UpdateWater(Pillar toUpdate)
@@ -37,20 +45,58 @@ public class WaterManager  {
         float actualHeight = toUpdate.GetHeight() - WorldGrid.Instance.groundGrid[(int)toUpdate.pos.x, (int)toUpdate.pos.z].GetHeight();
         //Debug.Log("Updating water at location: " + toUpdate.pos);
         //Get random possible spread directions, with the first being the direction of the flow
-        Vector2 flowDir = new Vector2(Mathf.RoundToInt(toUpdate.flowDir.x), Mathf.RoundToInt(toUpdate.flowDir.y));
+        Vector2 flowDir = toUpdate.GetCurrent();
         List<Vector2> spreadDirections = new List<Vector2>(GV.Water_Spread_Directions.OrderBy(item => Random.Range(0, 4)));
-        if(spreadDirections.Contains(flowDir))
+        List<Pillar> neighborPillars = new List<Pillar>();
+        Pillar flowDirectionPillar = null;
+        foreach(Vector2 offset in spreadDirections)
+        {
+            Vector2 neighborLoc = new Vector2(offset.x + toUpdate.pos.x, offset.y + toUpdate.pos.z);
+            float neighborHeight = WorldGrid.Instance.GetHeightAt(neighborLoc);
+            float heightDiff = toUpdate.GetHeight() - neighborHeight;
+            if (heightDiff > 0)
+            {
+                heightDiff = MathHelper.RoundFloat(heightDiff, 1);
+                Pillar otherPillar = WorldGrid.Instance.GetPillarAt(neighborLoc);
+                if (CanTransfer(heightDiff,otherPillar.pillarType))
+                //if (heightDiff > GV.GetWaterFlowRate())// (1 / GV.Water_Sections))
+                {
+                    neighborPillars.Add(otherPillar);
+                    if (offset == flowDir)
+                        flowDirectionPillar = otherPillar;
+                }
+            }
+        }
+        neighborPillars = SortPillarsByShortestHeight(neighborPillars);
+        if(toUpdate.DebugLogs)
+        {
+            string toOut = "neighbors selected in order: ";
+            foreach (Pillar v2 in neighborPillars)
+            toOut += v2.GetHeight() + ",";
+            Debug.Log(toOut);
+        }
+
+        if (flowDirectionPillar != null)
+        {
+            neighborPillars.Remove(flowDirectionPillar);
+            neighborPillars.Insert(0, flowDirectionPillar);
+        }
+
+        /*if (spreadDirections.Contains(flowDir))
         {
             spreadDirections.Remove(flowDir);
             spreadDirections.Insert(0, flowDir);
-        }
+        }*/
+        
+
         //Trim the list to only lower heights
-        for(int i = spreadDirections.Count - 1; i >= 0; i--)
+        //for(int i = spreadDirections.Count - 1; i >= 0; i--)
+        foreach(Pillar neighborPillar in neighborPillars)
         {
-            Vector2 neighborLoc = new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z);
+            Vector2 neighborLoc = new Vector2(neighborPillar.pos.x, neighborPillar.pos.z);
             float neighborHeight = WorldGrid.Instance.GetHeightAt(neighborLoc);
             float heightDiff = toUpdate.GetHeight() - neighborHeight;
-            if (heightDiff > (1/GV.Water_Sections))
+            if (CanTransfer(heightDiff,neighborPillar.pillarType))// > (1/GV.Water_Sections) || neighborPillar.pillarType == GV.PillarType.Water)
             {
                 //Calculate the flow rate
                 float groundHeight = WorldGrid.Instance.GetHeightAt(new Vector2(toUpdate.pos.x, toUpdate.pos.z),true);
@@ -59,30 +105,34 @@ public class WaterManager  {
                 if (neighborHeight > groundHeight)
                 {
                     float neighborRelativeHeight = neighborHeight - groundHeight;
-                    percentSurfaceDistributing = 1 -(neighborRelativeHeight / waterDepth);
+                    percentSurfaceDistributing = 1 - (neighborRelativeHeight / waterDepth);
                 }
-                float flowRate = waterDepth * percentSurfaceDistributing * GV.Water_Flow_Rate;
-               // Debug.Log(string.Format("Flow Rate {0} = waterDepth{1} * percDistr{2} * GV{3}; For pos{4}", flowRate, waterDepth, percentSurfaceDistributing, GV.Water_Flow_Rate, new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z)));
+                int rounded = Mathf.RoundToInt(waterDepth * percentSurfaceDistributing);
+                rounded = Mathf.Max(1, rounded);
+                //float flowRate = waterDepth * percentSurfaceDistributing * GV.Water_Flow_Rate;
+                float flowRate = rounded * GV.GetWaterFlowRate();
+                //if(toUpdate.DebugLogs) Debug.Log(string.Format("Flow Rate {0} = waterDepth{1} * percDistr{2} * GV{3}; For pos{4}", flowRate, waterDepth, percentSurfaceDistributing, GV.GetWaterFlowRate(), new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z)));
 
                 //Now spread the water
-                Pillar neighborWater = WorldGrid.Instance.waterGrid[(int)neighborLoc.x, (int)neighborLoc.y];
-                if (neighborWater != null)
+                if (neighborPillar.pillarType == GV.PillarType.Water && !staticPillars.Contains(neighborPillar))
                 {//spread water to existing water
-                   // Debug.Log(string.Format("adding water at {0} neighborHeight is {1} and added flowrate is {2}", neighborLoc, flowRate, neighborHeight));
-                    neighborWater.ModHeight(flowRate);
-                    if (toDestroy.Contains(neighborWater))
-                        toDestroy.Remove(neighborWater);
+                    if (toUpdate.DebugLogs) Debug.Log(string.Format("{0} adding water at {1} neighborHeight original is {2} and added flowrate is {3}", toUpdate.pos ,neighborLoc, flowRate, neighborHeight));
+                    neighborPillar.ModHeight(flowRate);
+                    neighborPillar.AddCurrent(new Vector2(toUpdate.pos.x, toUpdate.pos.z), flowRate);
+                    if (toDestroy.Contains(neighborPillar))
+                        toDestroy.Remove(neighborPillar);
                 }
-                else
+                else if(neighborPillar.pillarType == GV.PillarType.Ground)
                 {//do not spread water
                     CreateWater(neighborLoc, flowRate + neighborHeight);
-                    //Debug.Log(string.Format("create water at {0} neighborHeight is {1} and added flowrate is {2}",neighborLoc,flowRate,neighborHeight));
+                    if (toUpdate.DebugLogs) Debug.Log(string.Format("create water at {0} neighborHeight is {1} and added flowrate is {2}",neighborLoc,flowRate,neighborHeight));
                 }
 
                 if (!staticPillars.Contains(toUpdate))
                 {
                     toUpdate.ModHeight(-flowRate);
-                    if (toUpdate.GetHeight() <= 0)
+                    toUpdate.AddCurrent(new Vector2(neighborLoc.x, neighborLoc.y), -flowRate);
+                    if (toUpdate.GetHeight() <= groundHeight)
                     {
                         toDestroy.Add(toUpdate);
                         return;
@@ -101,6 +151,7 @@ public class WaterManager  {
     {
         activeWater.Remove(toDestroy);
         WorldGrid.Instance.waterGrid[(int)toDestroy.pos.x, (int)toDestroy.pos.z] = null;
+        MonoBehaviour.Destroy(toDestroy.gameObject);
     }
 
     private void CreateWater(Vector2 loc, float initialHeight)
@@ -119,27 +170,46 @@ public class WaterManager  {
         return 0;
     }
 
-    private void SortActiveWaterByHeight()
+    private List<Pillar> SortPillarsByTallestHeight(List<Pillar> toSort)
     {
-        if (activeWater.Count <= 1)
-            return;
+        if (toSort.Count <= 1)
+            return toSort;
+        List<Pillar> toRet = new List<Pillar>(toSort);
         
-        for (int index1 = 0; index1 < activeWater.Count - 1; index1++)
+        for (int index1 = 0; index1 < toRet.Count - 1; index1++)
         {
-            for (int index2 = index1 + 1; index2 < activeWater.Count; index2++)
+            for (int index2 = index1 + 1; index2 < toRet.Count; index2++)
             {
-                if(activeWater[index1].GetHeight() < activeWater[index2].GetHeight())
+                if(toRet[index1].GetHeight() < toRet[index2].GetHeight())
                 {
-                    Pillar temp = activeWater[index1];
-                    activeWater[index1] = activeWater[index2];
-                    activeWater[index2] = temp;
+                    Pillar temp = toRet[index1];
+                    toRet[index1] = toRet[index2];
+                    toRet[index2] = temp;
                 }
             }
         }
+        return toRet;
+    }
 
-        //Debug.Log(OutputActiveWaterHeights());
-        //active water is now sorted!
+    private List<Pillar> SortPillarsByShortestHeight(List<Pillar> toSort)
+    {
+        if (toSort.Count <= 1)
+            return toSort;
+        List<Pillar> toRet = new List<Pillar>(toSort);
 
+        for (int index1 = 0; index1 < toRet.Count - 1; index1++)
+        {
+            for (int index2 = index1 + 1; index2 < toRet.Count; index2++)
+            {
+                if (toRet[index1].GetHeight() > toRet[index2].GetHeight())
+                {
+                    Pillar temp = toRet[index1];
+                    toRet[index1] = toRet[index2];
+                    toRet[index2] = temp;
+                }
+            }
+        }
+        return toRet;
     }
 
     private string OutputActiveWaterHeights()
@@ -150,6 +220,14 @@ public class WaterManager  {
             toRet += p.GetHeight() + ",";
         toRet += "}";
         return toRet;
+    }
+
+    public void Debug_DestroyStaticFountain(Pillar toDestroy)
+    {
+        activeWater.Remove(toDestroy);
+        staticPillars.Remove(toDestroy);
+        WorldGrid.Instance.waterGrid[(int)toDestroy.pos.x, (int)toDestroy.pos.z] = null;
+        MonoBehaviour.Destroy(toDestroy.gameObject);
     }
 	
 }

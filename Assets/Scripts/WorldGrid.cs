@@ -59,6 +59,16 @@ public class WorldGrid  {
         }
     }
 
+    public Pillar GetPillarAt(Vector2 atLoc)
+    { //returns the highest one, ground or water
+        if (waterGrid[(int)atLoc.x, (int)atLoc.y]) // if water exists
+        {
+            return waterGrid[(int)atLoc.x, (int)atLoc.y];
+        }
+        else
+            return groundGrid[(int)atLoc.x, (int)atLoc.y];
+    }
+
     public float GetHeightAt(Vector2 atLoc, bool groundOnly = false)
     {
         if (atLoc.x >= GV.World_Size_X || atLoc.x < 0 || atLoc.y >= GV.World_Size_Z || atLoc.y < 0)
@@ -67,9 +77,9 @@ public class WorldGrid  {
         Pillar waterPillar = waterGrid[(int)atLoc.x, (int)atLoc.y];
         if (!groundOnly && waterPillar) // if water exists
         {
-            if (waterManager.staticPillars.Contains(waterPillar))
+            /*if (waterManager.staticPillars.Contains(waterPillar))
                 return 9999;
-            else
+            else*/
                 return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
         }
         else
