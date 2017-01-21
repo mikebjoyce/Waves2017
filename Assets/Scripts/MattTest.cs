@@ -5,4 +5,5 @@ using UnityEngine;
 public class MattTest : MonoBehaviour {
 
     public Transform groundParent;
+    public Transform waterParent;
 }
