@@ -8,16 +8,20 @@ public class PlayerControl : MonoBehaviour {
 	public BoxCollider collBox;
 	public Rigidbody body;
 	public bool isGrounded = false;
-	private Vector2 forward;
+	private Vector2 forward = Vector2.zero;
+	private bool isHolding = false;
+
+	public Vector2 _pos;
+
 
 
 	void Start () {
-		forward = transform.forward;
+		body.constraints = RigidbodyConstraints.FreezeRotation;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
+		_pos = new Vector2 (transform.position.x, transform.position.z);
 	}
 
 
@@ -40,7 +44,8 @@ public class PlayerControl : MonoBehaviour {
 	public void Move(Vector2 direction){
 		//moves with constant speed 
 		if (isGrounded) {
-			body.AddForce (direction * PlayerGV.G_PlayerRunForce * Time.deltaTime, ForceMode.Impulse);
+			RotateBodyTo (direction);
+			body.AddForce (new Vector3(direction.x, 0, direction.y) * PlayerGV.G_PlayerRunForce * Time.deltaTime, ForceMode.Impulse);
 		}
 	}
 
@@ -57,22 +62,22 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	public void Dig(){
-
-
+		if (isHolding)
+			Drop ();
+		else {
+			//do dig stuff
+		}
 	}
 
-	public void Place(){
-
-
+	public void Drop(){
+		//do opposite of dig stuff
 	}
-
 
 	//internal
-	private void RotateBodyTo(float input){
-		input = Mathf.Clamp (input, 0, 360);
-		body.rotation.eulerAngles.Set(0,input,0);
+	private void RotateBodyTo(Vector2 input){
+		transform.rotation = Quaternion.LookRotation(new Vector3(input.x, 0, input.y));
 	}
-		
+
 }
 
 

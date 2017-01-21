@@ -3,15 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour {
-	private GameVariable.controlerType controlType;
+	public GameVariable.controlerType controlType;
 	private string[] keyList = new string[4];
 	public PlayerControl pControl;
 
+
+
 	private Vector2 moveDirection;
 
-	void Initializer(GameVariable.controlerType conTypSet, PlayerControl pConSet){
+	void Initializer(GameVariable.controlerType conTypSet){
 		controlType = conTypSet;
-		pConSet = pControl;
+		setupKeys ();
+	}
+
+	void Initializer(){
+		pControl = GetComponent<PlayerControl> ();
+		setupKeys ();
+	}
+
+	private void setupKeys(){
 		keyList [0] = controlType.ToString () + "_Horizontal";
 		keyList [1] = controlType.ToString () + "_Vertical";
 		keyList [2] = controlType.ToString () + "_Jump";
@@ -20,7 +30,7 @@ public class InputManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Initializer (GameVariable.controlerType.Joy1, GetComponent<PlayerControl> ());
+		Initializer ();
 	}
 	
 	// Update is called once per frame
@@ -28,10 +38,14 @@ public class InputManager : MonoBehaviour {
 		moveDirection = new Vector2 (Input.GetAxis (keyList [0]), Input.GetAxis (keyList [1]));
 		if(!moveDirection.Equals(Vector2.zero))
 			pControl.Move (moveDirection);
-		if (Input.GetKey (keyList [2]))
+		if (Input.GetButtonDown (keyList [2]))
 			pControl.Jump ();
-		if (Input.GetKey (keyList [3]))
+		if (Input.GetButtonDown (keyList [3]))
 			pControl.Dig ();
+	}
 
+	public void changeInputType(GameVariable.controlerType toSet){
+		controlType = toSet;
+		setupKeys ();
 	}
 }
