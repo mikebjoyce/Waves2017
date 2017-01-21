@@ -86,12 +86,18 @@ public class MapGenerator : MonoBehaviour {
 
 	void InstantiatePillar(Vector3 _pillarPos)
 	{
-		GameObject newPillar = (GameObject)Instantiate (Resources.Load ("Prefabs/Pillar"), _pillarPos, Quaternion.identity);
+        if ((_pillarPos.x <= GV.Water_Sea_Width || _pillarPos.x >= GV.World_Size_X - GV.Water_Sea_Width) || (_pillarPos.z <= GV.Water_Sea_Width || _pillarPos.z >= GV.World_Size_Z - GV.Water_Sea_Width))
+        {
+            _pillarPos.y = -10;
+        }
+
+        GameObject newPillar = (GameObject)Instantiate (Resources.Load ("Prefabs/Pillar"), _pillarPos, Quaternion.identity);
         newPillar.transform.SetParent(GameObject.FindObjectOfType<WorldLinks>().groundParent);
         Pillar p = newPillar.GetComponent<Pillar>();
         WorldGrid.Instance.groundGrid [(int)_pillarPos.x,(int)_pillarPos.z] = p;
-        p.Initialize(_pillarPos, GV.PillarType.Ground); 
-        if((_pillarPos.x == 0 || _pillarPos.x == GV.World_Size_X - 1) || (_pillarPos.z == 0 || _pillarPos.z == GV.World_Size_Z - 1))
+        p.Initialize(_pillarPos, GV.PillarType.Ground);
+
+        if ((_pillarPos.x == 0 || _pillarPos.x == GV.World_Size_X - 1) || (_pillarPos.z == 0 || _pillarPos.z == GV.World_Size_Z - 1)) //is edge sea piece
         {
             Vector3 seaPos = _pillarPos;
             seaPos.y = GV.Water_Sea_Level;
