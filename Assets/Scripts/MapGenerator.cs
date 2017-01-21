@@ -13,6 +13,12 @@ public class MapGenerator : MonoBehaviour {
 	public float smoothDecay = .3f;
 	public bool volcano = false;
 	public float volcanoIntensity = .4f;
+	public bool mapCenterImperfect = false;
+	public float mapCenterRange = .2f;
+
+	int xOffset = 0;
+	int zOffset = 0;
+
 
 
 	public void GenerateLand()
@@ -49,13 +55,13 @@ public class MapGenerator : MonoBehaviour {
 	{
 
 		float centerProxFactor = 0f;
-		int xProx = (int) Mathf.Abs (_x - WorldGrid.worldCenterPoint.x);
-		int zProx = (int) Mathf.Abs (_z - WorldGrid.worldCenterPoint.y);
+		int xProx = (int) Mathf.Abs (_x - WorldGrid.worldCenterPoint.x + xOffset);
+		int zProx = (int) Mathf.Abs (_z - WorldGrid.worldCenterPoint.y + zOffset);
 
 		if (xProx >= zProx) 
 		{
 			
-			centerProxFactor = xProx / WorldGrid.worldCenterPoint.x;
+			centerProxFactor = xProx / WorldGrid.worldCenterPoint.x + xOffset;
 		}
 		else
 		{
@@ -78,6 +84,14 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	void Start () {
+		if (mapCenterImperfect) 
+		{
+			int absoluteCenterRangeX = Mathf.RoundToInt (mapCenterRange * (GV.World_Size_X / 2));
+			int absoluteCenterRangeZ = Mathf.RoundToInt (mapCenterRange * (GV.World_Size_Z / 2));
+			int xOffset = Random.Range (-absoluteCenterRangeX, absoluteCenterRangeX);
+			int zOffset = Random.Range (-absoluteCenterRangeZ, absoluteCenterRangeZ);
+		}
+
 		GenerateLand ();
 		
 	}
