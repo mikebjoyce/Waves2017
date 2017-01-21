@@ -13,6 +13,13 @@ public class PlayerControl : MonoBehaviour {
 
 	public Vector2 _pos;
 
+	public void Initialize(){
+		transform.position = new Vector3(WorldGrid.worldCenterPoint.x, WorldGrid.Instance.GetHeightAt(WorldGrid.worldCenterPoint) + 5, WorldGrid.worldCenterPoint.y);
+	}
+
+	public void Initialize(Vector3 loc){
+		transform.position = loc;
+	}
 
 
 	void Start () {
@@ -50,11 +57,13 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	public void Move(){
+		Debug.Log ("Move");
 		forward = transform.forward;
 		Move (forward);
 	}
 
 	public void Jump(){
+		Debug.Log ("Jump");
 		//jumps a certain high always
 		if (isGrounded) {
 			body.AddForce (Vector3.up * PlayerGV.G_PlayerJumpForce, ForceMode.Impulse);

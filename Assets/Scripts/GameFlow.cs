@@ -7,11 +7,19 @@ public class GameFlow : MonoBehaviour {
     float timeAtNextUpdate = 0;
     float timeAtNextSystemCleanup;
 
+	//public PlayerControl[] players = new PlayerControl[4];
+	public PlayerControl p1;
+
     public void Start()
     {
         GameObject.FindObjectOfType<MapGenerator>().GenerateLand();
         WorldGrid.Instance.Initialize();
         timeAtNextSystemCleanup = Time.time + GV.Water_Update_Time_Step*2; //bit of buffer for first cleanup
+		/*foreach (PlayerControl p in players) {
+			
+
+		}*/
+		p1.Initialize ();
     }
 
     public void Update()

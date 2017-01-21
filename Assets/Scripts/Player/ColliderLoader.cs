@@ -3,28 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ColliderLoader : MonoBehaviour {
-	public int rad;
-	public Vector2 center;
+	public int rad = PlayerGV.G_RadiusOfColliLoad;
 	public PlayerControl player;
+	public Vector2 lastPos;
 
 	public Pillar[,] pillars;
 
-	void Initialize(int _rad, PlayerControl _player){
-		rad = _rad;
-		player = _player;
-		pillars = new Pillar[2*rad+1,2*rad+1];
-	}
-
 	// Use this for initialization
 	void Start () {
-		
+		player = GetComponent<PlayerControl>();
+		lastPos = player._pos;
+		pillars = new Pillar[2*rad+1,2*rad+1];
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		DeactivatePillarCol ();
-		UpdatePillarArr ();
-		ActivatePillarCol ();
+		if (lastPos != player._pos) {
+			DeactivatePillarCol ();
+			UpdatePillarArr ();
+			ActivatePillarCol ();
+		}
+		lastPos = player._pos;
 	}
 
 	public void UpdatePillarArr(){
@@ -38,13 +37,15 @@ public class ColliderLoader : MonoBehaviour {
 
 	public void ActivatePillarCol(){
 		foreach (Pillar p in pillars) {
-			p.pillarCollider.enabled = true;
+			if(p != null)
+				p.pillarCollider.enabled = true;
 		}
 	}
 
 	public void DeactivatePillarCol(){
 		foreach (Pillar p in pillars) {
-			p.pillarCollider.enabled = false;
+			if(p != null)
+				p.pillarCollider.enabled = false;
 		}
 	}
 }
