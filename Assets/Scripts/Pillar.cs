@@ -6,7 +6,12 @@ public class Pillar : MonoBehaviour {
 
     public GV.pillarType pillarType;
     public Vector3 cord;
+    public BoxCollider pillarCollider;
 
+    public void SetHeight(float newHeight)
+    {
+        cord.z = newHeight;
+    }
 
     public float GetHeight()
     {
