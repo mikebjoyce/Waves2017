@@ -44,10 +44,11 @@ public class WaterManager  {
         for(int i = spreadDirections.Count - 1; i >= 0; i--)
         {
             float height = WorldGrid.Instance.GetHeightAt(new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z));
-            if (toUpdate.GetHeight() <= height)
+            float heightDiff = toUpdate.GetHeight() - height;
+            if (heightDiff > 0)
             {
-                Debug.Log(string.Format("water height {0} vs {1} removed", toUpdate.GetHeight(), height));
-                spreadDirections.RemoveAt(i);
+                
+
             }
         }
         
