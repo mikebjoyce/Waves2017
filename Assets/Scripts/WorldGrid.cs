@@ -49,6 +49,9 @@ public class WorldGrid  {
                     Debug.Log("Error for: " + t.transform.position + t.name);
                 }
             }
+            List<Pillar> waterPillars = new List<Pillar>();
+            waterPillars.AddRange(GameObject.FindObjectOfType<MattTest>().waterParent.GetComponentsInChildren<Pillar>());
+            waterManager.AddStaticActiveWater(waterPillars);
         }
     }
 
@@ -59,5 +62,7 @@ public class WorldGrid  {
         else
             return groundGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
     }
+
+
 
 }
