@@ -6,8 +6,8 @@ public class GV : MonoBehaviour {
 
     public enum PillarType { Ground, Water}
 
-	public static readonly int World_Size_X = 41;
-	public static readonly int World_Size_Z = 41;
+	public static readonly int World_Size_X = 101;
+	public static readonly int World_Size_Z = 101;
 
     //Water
     public static readonly float Water_Sea_Width = 3;
@@ -17,6 +17,7 @@ public class GV : MonoBehaviour {
     public static readonly List<Vector2> Valid_Directions = new List<Vector2>() { new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 0), new Vector2(-1, 0) }; //randomly selected for even distribution
     public static readonly float Water_Sea_Level = 0;
     public static readonly float Water_Chance_To_Break_From_Current = .2f;
+    public static readonly float Water_Current_Power_Per_Bonus_Mult = .5f;
 
     //system
     public static float System_Pillar_Cleanup_Interval = 12; //perodically cleans up the strange floaters that appear

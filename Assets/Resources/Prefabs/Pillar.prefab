@@ -89,8 +89,8 @@ GameObject:
   - component: {fileID: 4514953874857396}
   - component: {fileID: 33682735421633980}
   - component: {fileID: 23700445380145520}
-  m_Name: Midtop
   m_Layer: 8
+  m_Name: Midtop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -482,4 +482,10 @@ MonoBehaviour:
   pos: {x: 0, y: 0, z: 0}
   pillarCollider: {fileID: 65499117422718166}
   DebugLogs: 0
-  segments: []
+  segments:
+  - {fileID: 1040493381689138}
+  - {fileID: 1323430915387412}
+  - {fileID: 1691715559185652}
+  - {fileID: 1417918184485976}
+  - {fileID: 1671199601462556}
+  - {fileID: 1860131780494792}

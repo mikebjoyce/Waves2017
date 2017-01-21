@@ -56,17 +56,18 @@ public class Pillar : MonoBehaviour {
         invisibleBelow = newInvBel;
     }
 
-    public int FindSegmentBelow(float height)
+    public int FindSegmentBelow(float minHeight)
     {
-        for (int i = 0; i <= 5; i++)
+        return (int)((GetHeight() - minHeight) / 3) + 1;
+        /*for (int i = 0; i <= 5; i++)
         {
-            if (segments[i].transform.position.y > height)
+            if (segments[i].transform.position.y + (transform.localScale.y/2) > minHeight)
                 continue;
             if (i == 0)
                 return i;
             return i - 1;
         }
-        return 5;
+        return 5;*/
     }
 
     public void ModHeight(float modAmt)
@@ -83,16 +84,11 @@ public class Pillar : MonoBehaviour {
     }
 
     private void SkinPillar(GV.PillarType pillarType)
-    {/*
-        Renderer grass = transform.FindChild("Grass").GetComponent<Renderer>();
-        Renderer mid = transform.FindChild("Middle").GetComponent<Renderer>();
-        Renderer bot = transform.FindChild("Bottom").GetComponent<Renderer>();
+    {
+        //ground is already it by default
         if (pillarType == GV.PillarType.Water)
-        { //ground is already it by default
-            top.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
-            mid.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
-            bot.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
-        }*/
+            foreach(Transform t in transform)
+                t.GetComponent<Renderer>().material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
     }
 
     public Vector2 GetCurrent(bool normalized)

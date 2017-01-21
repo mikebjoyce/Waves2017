@@ -9,12 +9,14 @@ public class GameFlow : MonoBehaviour {
 
 	//public PlayerControl[] players = new PlayerControl[4];
 	public PlayerControl p1;
+    public CameraVisible cameraVisible;
 
     public void Start()
     {
         GameObject.FindObjectOfType<MapGenerator>().GenerateLand();
         WorldGrid.Instance.Initialize();
         timeAtNextSystemCleanup = Time.time + GV.Water_Update_Time_Step*2; //bit of buffer for first cleanup
+        cameraVisible.UpdateWorld();
 		/*foreach (PlayerControl p in players) {
 			
 

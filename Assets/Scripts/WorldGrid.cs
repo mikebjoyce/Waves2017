@@ -68,10 +68,11 @@ public class WorldGrid  {
 
             CameraVisible cv = GameObject.FindObjectOfType<CameraVisible>();
 
-            //cv.UpdatePillar();
+            cv.UpdatePillar(atLoc);
             foreach(Vector2 dir in GV.Valid_Directions)
             {
-
+                if(GetPillarAt(atLoc + dir,true))
+                    cv.UpdatePillar(atLoc + dir);
             }
         }
     }

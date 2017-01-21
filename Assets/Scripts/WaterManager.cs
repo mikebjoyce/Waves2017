@@ -102,7 +102,7 @@ public class WaterManager  {
                 rounded = Mathf.Max(1, rounded);
                 //float flowRate = waterDepth * percentSurfaceDistributing * GV.Water_Flow_Rate;
                 float flowRate = rounded * GV.Water_Flow_Rate;// * potentialPowerMultiplier;
-                if(flowDirectionPillar && flowDirectionPillar == neighborPillar)
+                /*if(flowDirectionPillar && flowDirectionPillar == neighborPillar)
                 { //can apply current bonus
                     Vector2 flowDir = toUpdate.GetCurrent(false);
                     float maxTransfer;
@@ -115,12 +115,16 @@ public class WaterManager  {
                         maxTransfer = heightDiff / 2 + GV.Water_Flow_Rate;
                     }
 
-                    int flowBonus = (int)Mathf.Max(flowDir.x, flowDir.y);
+                    float flowBonus = Mathf.Max(flowDir.x, flowDir.y);
+                    flowBonus /= GV.Water_Current_Power_Per_Bonus_Mult;
                     if (flowBonus > 1)
+                    {
+                        //Debug.Log("flow Rate/bonus/total: " + flowRate + "/" + flowBonus + "/" + (flowRate * flowBonus));
                         flowRate *= flowBonus;
+                    }
                     flowRate = Mathf.Min(flowRate, maxTransfer);
-                    Debug.Log("flow bonus: " + flowBonus);
-                }
+                    
+                }*/
                 //if(toUpdate.DebugLogs) Debug.Log(string.Format("Flow Rate {0} = waterDepth{1} * percDistr{2} * GV{3}; For pos{4}", flowRate, waterDepth, percentSurfaceDistributing, GV.GetWaterFlowRate(), new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z)));
 
                 //Now spread the water
