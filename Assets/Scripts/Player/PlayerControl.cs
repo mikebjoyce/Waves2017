@@ -79,7 +79,6 @@ public class PlayerControl : MonoBehaviour {
 	}*/
 
 	public void Jump(){
-
 		//jumps a certain high always
 		if (isGrounded) {
 			body.AddForce (Vector3.up * PlayerGV.G_PlayerJumpForce, ForceMode.Impulse);
@@ -92,11 +91,30 @@ public class PlayerControl : MonoBehaviour {
 			Drop ();
 		else {
 			//do dig stuff
+			int standingHigh = (int) WorldGrid.Instance.GetHeightAt (position, true);
+			Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+			int diggingHight = (int) WorldGrid.Instance.GetHeightAt (position + trueDir, true);
+
+			if (standingHigh + 1 <= diggingHight) {
+				WorldGrid.Instance.ModGround(position + trueDir, -1);
+				isHolding = true;
+			} else {
+				//too low to dig
+			}
 		}
 	}
 
 	public void Drop(){
 		//do opposite of dig stuff
+		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (position, true);
+		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (position + trueDir, true);
+		if (standingHigh + 1 >= diggingHight) {
+			WorldGrid.Instance.ModGround (position + trueDir, 1);
+			isHolding = false;
+		} else {
+			//too high to place
+		}
 	}
 
 	//internal
@@ -105,6 +123,16 @@ public class PlayerControl : MonoBehaviour {
 	}
 		
 
+	private Vector2 strongestDir(Vector2 input){
+		input = input.normalized;
+		if (input == Vector2.zero)
+			return input;
+		if (Mathf.Abs (input.x) > Mathf.Abs (input.y)) {
+			return new Vector2 (input.x/Mathf.Abs(input.x), 0).normalized;
+		} else {
+			return new Vector2 (0, input.y/Mathf.Abs(input.y)).normalized;
+		}
+	}
 }
 
 
