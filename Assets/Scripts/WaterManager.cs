@@ -39,7 +39,7 @@ public class WaterManager  {
         //Debug.Log("Updating water at location: " + toUpdate.pos);
         //Get random possible spread directions, with the first being the direction of the flow
         Vector2 flowDir = toUpdate.GetCurrent();
-        List<Vector2> spreadDirections = new List<Vector2>(GV.Water_Spread_Directions.OrderBy(item => Random.Range(0, 4)));
+        List<Vector2> spreadDirections = new List<Vector2>(GV.Valid_Directions.OrderBy(item => Random.Range(0, 4)));
         List<Pillar> neighborPillars = new List<Pillar>();
         Pillar flowDirectionPillar = null;
         foreach(Vector2 offset in spreadDirections)

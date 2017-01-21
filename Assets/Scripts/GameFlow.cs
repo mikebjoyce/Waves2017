@@ -14,7 +14,8 @@ public class GameFlow : MonoBehaviour {
 
     public void Update()
     {
-        if(Time.time >= timeAtNextUpdate)
+        WorldGrid.Instance.tsunamiManager.UpdateTsunami();
+        if (Time.time >= timeAtNextUpdate)
         {
             WorldGrid.Instance.waterManager.UpdateAllWater();
             timeAtNextUpdate += GV.Water_Update_Time_Step;

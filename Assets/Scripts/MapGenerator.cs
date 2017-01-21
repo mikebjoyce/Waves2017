@@ -136,7 +136,7 @@ public class MapGenerator : MonoBehaviour {
            if(WorldGrid.Instance.GetHeightAt(openList[0]) < GV.Water_Sea_Level)
            {
                 toAddWater.Add(openList[0]);
-                foreach(Vector2 offset in GV.Water_Spread_Directions)
+                foreach(Vector2 offset in GV.Valid_Directions)
                 {
                     if (!openList.Contains(openList[0] + offset) && !closedList.Contains(openList[0] + offset) && !toAddWater.Contains(openList[0] + offset))
                         openList.Add(openList[0] + offset);
