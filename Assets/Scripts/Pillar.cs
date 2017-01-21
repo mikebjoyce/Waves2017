@@ -11,6 +11,8 @@ public class Pillar : MonoBehaviour {
     public BoxCollider pillarCollider;
     Vector2 currentDir; //can be float, but will be int cast on use
     public bool DebugLogs = false;
+    public List<GameObject> segments = new List<GameObject>();
+    private int invisibleBelow;      //0 = grass, 1 = top, ..., 5 = bottom
 
     public void Initialize(Vector3 _pos, GV.PillarType _pillarType)
     {
@@ -18,7 +20,53 @@ public class Pillar : MonoBehaviour {
         pillarType = _pillarType;
         SetHeight(pos.y);
         currentDir = new Vector2(0, 0);
+        foreach (GameObject seg in segments)
+            seg.SetActive(true);
+        invisibleBelow = 5;  //nothing is invisible
         SkinPillar(pillarType);
+    }
+
+    /*
+    public int GetInvisibleBelow()
+    {
+        return invisibleBelow;
+    }
+    */
+
+    public void SetInvisibleBelow(int newInvBel)
+    {
+        if (newInvBel == invisibleBelow)
+        {
+            return;
+        }
+        else if (newInvBel > invisibleBelow)
+        {
+            for (int i = invisibleBelow + 1; i <= newInvBel; i++)
+            {
+                segments[i].SetActive(true);
+            }
+        }
+        else
+        {
+            for (int j = invisibleBelow; j > newInvBel; j--)
+            {
+                segments[j].SetActive(false);
+            }
+        }
+        invisibleBelow = newInvBel;
+    }
+
+    public int FindSegmentBelow(float height)
+    {
+        for (int i = 0; i <= 5; i++)
+        {
+            if (segments[i].transform.position.y > height)
+                continue;
+            if (i == 0)
+                return i;
+            return i - 1;
+        }
+        return 5;
     }
 
     public void ModHeight(float modAmt)
@@ -35,8 +83,8 @@ public class Pillar : MonoBehaviour {
     }
 
     private void SkinPillar(GV.PillarType pillarType)
-    {
-        Renderer top = transform.FindChild("Top").GetComponent<Renderer>();
+    {/*
+        Renderer grass = transform.FindChild("Grass").GetComponent<Renderer>();
         Renderer mid = transform.FindChild("Middle").GetComponent<Renderer>();
         Renderer bot = transform.FindChild("Bottom").GetComponent<Renderer>();
         if (pillarType == GV.PillarType.Water)
@@ -44,7 +92,7 @@ public class Pillar : MonoBehaviour {
             top.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
             mid.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
             bot.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
-        }
+        }*/
     }
 
     public Vector2 GetCurrent()
