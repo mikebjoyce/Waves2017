@@ -43,12 +43,20 @@ public class WaterManager  {
         //Trim the list to only lower heights
         for(int i = spreadDirections.Count - 1; i >= 0; i--)
         {
-            float height = WorldGrid.Instance.GetHeightAt(new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z));
-            float heightDiff = toUpdate.GetHeight() - height;
+            float neighborHeight = WorldGrid.Instance.GetHeightAt(new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z));
+            float heightDiff = toUpdate.GetHeight() - neighborHeight;
             if (heightDiff > 0)
             {
-                
-
+                float groundHeight = WorldGrid.Instance.GetHeightAt(new Vector2(toUpdate.pos.x, toUpdate.pos.z),true);
+                float waterDepth = (toUpdate.GetHeight() - groundHeight);
+                float percentSurfaceDistributing = 1; //100%
+                if (neighborHeight > groundHeight)
+                {
+                    float neighborRelativeHeight = neighborHeight - groundHeight;
+                    percentSurfaceDistributing = 1 -(neighborRelativeHeight / waterDepth);
+                }
+                float flowRate = waterDepth * percentSurfaceDistributing * GV.Water_Flow_Rate;
+                Debug.Log(string.Format("Flow Rate {0} = waterDepth{1} * percDistr{2} * GV{3}; For pos{4}", flowRate, waterDepth, percentSurfaceDistributing, GV.Water_Flow_Rate, new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z)));
             }
         }
         

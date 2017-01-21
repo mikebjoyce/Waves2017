@@ -59,15 +59,12 @@ public class WorldGrid  {
         }
     }
 
-    public float GetHeightAt(Vector2 atLoc)
+    public float GetHeightAt(Vector2 atLoc, bool groundOnly = false)
     {
         if (atLoc.x >= GV.World_Size_X || atLoc.x < 0 || atLoc.y >= GV.World_Size_Z || atLoc.y < 0)
-        {
-            Debug.Log("invalid grid loc: " + atLoc);
             return 9999;
-        }
 
-        if(waterGrid[(int)atLoc.x,(int)atLoc.y]) // if water exists
+        if(!groundOnly && waterGrid[(int)atLoc.x,(int)atLoc.y]) // if water exists
             return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
         else
             return groundGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
