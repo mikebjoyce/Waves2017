@@ -4,9 +4,20 @@ using UnityEngine;
 
 public class GameFlow : MonoBehaviour {
 
-	public void Start()
-    {
-        WorldGrid.Instance.Initialize();
+    float timeAtNextUpdate = 0;
 
+    public void Start()
+    {
+        GameObject.FindObjectOfType<MapGenerator>().GenerateLand();
+        WorldGrid.Instance.Initialize();
+    }
+
+    public void Update()
+    {
+        if(Time.time >= timeAtNextUpdate)
+        {
+            WorldGrid.Instance.waterManager.UpdateAllWater();
+            timeAtNextUpdate += GV.Water_Update_Time_Step;
+        }
     }
 }

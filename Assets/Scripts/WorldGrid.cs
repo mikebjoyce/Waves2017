@@ -27,36 +27,34 @@ public class WorldGrid  {
 
 	static public Vector2 worldCenterPoint = new Vector2((int)(GV.World_Size_X)/2 ,(int) (GV.World_Size_Z)/2);
 
-    public bool isMattTestScene = true;
+    public bool isMattTestScene = false;
 
 	public Pillar[,] groundGrid = new Pillar[GV.World_Size_X, GV.World_Size_Z];
     public Pillar[,] waterGrid  = new Pillar[GV.World_Size_X, GV.World_Size_Z];
 
     public void Initialize() //used for default load in test scene
     {
-        if(isMattTestScene)
+        foreach(Transform t in GameObject.FindObjectOfType<WorldLinks>().groundParent)
         {
-            foreach(Transform t in GameObject.FindObjectOfType<MattTest>().groundParent)
-            {
-                Pillar p = t.GetComponent<Pillar>();
-                Vector3 loc = t.position;
-                loc = new Vector3((int)loc.x, (int)loc.y, (int)loc.z);
-                p.Initialize(loc, GV.PillarType.Ground);
-                groundGrid[(int)loc.x, (int)loc.z] = p;
-            }
-
-            List<Pillar> waterPillars = new List<Pillar>();
-            foreach (Transform t in GameObject.FindObjectOfType<MattTest>().waterParent)
-            {
-                Pillar p = t.GetComponent<Pillar>();
-                Vector3 loc = t.position;
-                loc = new Vector3((int)loc.x, (int)loc.y, (int)loc.z);
-                p.Initialize(loc, GV.PillarType.Water);
-                waterGrid[(int)loc.x, (int)loc.z] = p;
-                waterPillars.Add(p);
-            }
-            waterManager.AddStaticActiveWater(waterPillars);
+            Pillar p = t.GetComponent<Pillar>();
+            Vector3 loc = t.position;
+            loc = new Vector3((int)loc.x, (int)loc.y, (int)loc.z);
+            p.Initialize(loc, GV.PillarType.Ground);
+            groundGrid[(int)loc.x, (int)loc.z] = p;
         }
+
+        List<Pillar> waterPillars = new List<Pillar>();
+        foreach (Transform t in GameObject.FindObjectOfType<WorldLinks>().waterParent)
+        {
+            Pillar p = t.GetComponent<Pillar>();
+            Vector3 loc = t.position;
+            loc = new Vector3((int)loc.x, (int)loc.y, (int)loc.z);
+            p.Initialize(loc, GV.PillarType.Water);
+            waterGrid[(int)loc.x, (int)loc.z] = p;
+            waterPillars.Add(p);
+        }
+        waterManager.AddStaticActiveWater(waterPillars);
+        
     }
 
     public Pillar GetPillarAt(Vector2 atLoc)
