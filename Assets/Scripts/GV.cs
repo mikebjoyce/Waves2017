@@ -5,8 +5,8 @@ using UnityEngine;
 public class GV : MonoBehaviour {
 
     public enum PillarType { Ground, Water}
-	public static readonly int World_Size_X = 50;
-	public static readonly int World_Size_Z = 50;
+	public static readonly int World_Size_X = 101;
+	public static readonly int World_Size_Z = 101;
 
     public static readonly float Water_Sections = 4;
     public static readonly float Water_Flow_Rate = .25f;
