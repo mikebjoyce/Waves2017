@@ -11,4 +11,14 @@ public class MathHelper : MonoBehaviour {
         float result = roundedLarge / power;
         return result; 
     }
+
+    public static Vector2 CastVectorToOffsetDir(Vector2 dir)
+    {
+        Vector2 normalizedDir = dir.normalized;
+        if (Mathf.Abs(normalizedDir.x) > .5f && Mathf.Abs(normalizedDir.x) >= Mathf.Abs(normalizedDir.y))
+            return new Vector2((int)(1 * Mathf.Sign(normalizedDir.x)), 0);
+        if (Mathf.Abs(normalizedDir.y) > .5f && Mathf.Abs(normalizedDir.y) > Mathf.Abs(normalizedDir.x))
+            return new Vector2(0, (int)(1 * Mathf.Sign(normalizedDir.y)));
+        return new Vector2();
+    }
 }

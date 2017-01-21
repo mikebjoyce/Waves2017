@@ -38,7 +38,6 @@ public class WaterManager  {
         //float actualHeight = toUpdate.GetHeight() - WorldGrid.Instance.groundGrid[(int)toUpdate.pos.x, (int)toUpdate.pos.z].GetHeight();
         //Debug.Log("Updating water at location: " + toUpdate.pos);
         //Get random possible spread directions, with the first being the direction of the flow
-        Vector2 flowDir = toUpdate.GetCurrent();
         List<Vector2> spreadDirections = new List<Vector2>(GV.Valid_Directions.OrderBy(item => Random.Range(0, 4)));
         List<Pillar> neighborPillars = new List<Pillar>();
         Pillar flowDirectionPillar = null;
@@ -55,7 +54,7 @@ public class WaterManager  {
                 //if (heightDiff > GV.GetWaterFlowRate())// (1 / GV.Water_Sections))
                 {
                     neighborPillars.Add(otherPillar);
-                    if (offset == flowDir && Random.Range(0f,1f) > GV.Water_Chance_To_Break_From_Current)
+                    if (offset == toUpdate.GetCurrent(true) && Random.Range(0f,1f) > GV.Water_Chance_To_Break_From_Current)
                         flowDirectionPillar = otherPillar;
                 }
             }
@@ -80,7 +79,6 @@ public class WaterManager  {
             spreadDirections.Remove(flowDir);
             spreadDirections.Insert(0, flowDir);
         }*/
-        
 
         //Trim the list to only lower heights
         //for(int i = spreadDirections.Count - 1; i >= 0; i--)
@@ -103,7 +101,26 @@ public class WaterManager  {
                 int rounded = Mathf.RoundToInt(waterDepth * percentSurfaceDistributing);
                 rounded = Mathf.Max(1, rounded);
                 //float flowRate = waterDepth * percentSurfaceDistributing * GV.Water_Flow_Rate;
-                float flowRate = rounded * GV.Water_Flow_Rate;
+                float flowRate = rounded * GV.Water_Flow_Rate;// * potentialPowerMultiplier;
+                if(flowDirectionPillar && flowDirectionPillar == neighborPillar)
+                { //can apply current bonus
+                    Vector2 flowDir = toUpdate.GetCurrent(false);
+                    float maxTransfer;
+                    if((heightDiff / GV.Water_Flow_Rate) % 2 == 0)
+                    {
+                        maxTransfer = heightDiff / 2;
+                    }
+                    else
+                    {
+                        maxTransfer = heightDiff / 2 + GV.Water_Flow_Rate;
+                    }
+
+                    int flowBonus = (int)Mathf.Max(flowDir.x, flowDir.y);
+                    if (flowBonus > 1)
+                        flowRate *= flowBonus;
+                    flowRate = Mathf.Min(flowRate, maxTransfer);
+                    Debug.Log("flow bonus: " + flowBonus);
+                }
                 //if(toUpdate.DebugLogs) Debug.Log(string.Format("Flow Rate {0} = waterDepth{1} * percDistr{2} * GV{3}; For pos{4}", flowRate, waterDepth, percentSurfaceDistributing, GV.GetWaterFlowRate(), new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z)));
 
                 //Now spread the water
