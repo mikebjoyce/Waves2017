@@ -65,6 +65,14 @@ public class WorldGrid  {
             groundGrid[(int)atLoc.x, (int)atLoc.y].ModHeight(amt);
             if (waterGrid[(int)atLoc.x, (int)atLoc.y]) // if water exists
                 waterGrid[(int)atLoc.x, (int)atLoc.y].ModHeight(amt);
+
+            CameraVisible cv = GameObject.FindObjectOfType<CameraVisible>();
+
+            //cv.UpdatePillar();
+            foreach(Vector2 dir in GV.Valid_Directions)
+            {
+
+            }
         }
     }
 
