@@ -9,11 +9,24 @@ public class WaterManager  {
     List<Pillar> activeWater = new List<Pillar>();
     List<Pillar> toDestroy = new List<Pillar>();
 
+    List<Pillar> toUpdate = new List<Pillar>();
+    int currentUpdateIndex = 0;
+
     public WaterManager()
     {
         GV.SetupWaterFlowRate();
     }
 
+    public void PrepWaterUpdate()
+    {
+        activeWater = SortPillarsByTallestHeight(activeWater);
+        List<Pillar> toUpdate = new List<Pillar>(activeWater); //Since list will be modified internally
+    }
+
+    public void UpdateNextPortion()
+    {
+
+    }
 
     public void UpdateAllWater()
     {

@@ -6,12 +6,14 @@ public class GV : MonoBehaviour {
 
     public enum PillarType { Ground, Water}
 
-	public static readonly int World_Size_X = 101;
-	public static readonly int World_Size_Z = 101;
+	public static readonly int World_Size_X = 41;
+	public static readonly int World_Size_Z = 41;
 
     //Water
     public static readonly float Water_Sea_Width = 3;
-    public static readonly float Water_Update_Time_Step = .5f;
+    public static readonly float Water_Update_Time_Step = .20f;
+    public static readonly float Water_Update_Steps_ = .20f;
+
     private static readonly float Water_Sections = 5; //Using 1/this in calculations does not yeild .2f... it just yeilds a nonsensical number that outputs as .2f... use the function below
     public static float Water_Flow_Rate; //not readonly, so careful dont overite it
     public static readonly List<Vector2> Valid_Directions = new List<Vector2>() { new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 0), new Vector2(-1, 0) }; //randomly selected for even distribution
