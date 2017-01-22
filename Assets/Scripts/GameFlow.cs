@@ -7,7 +7,6 @@ public class GameFlow : MonoBehaviour {
     float timeAtNextSystemCleanup;
 
 	//public PlayerControl[] players = new PlayerControl[4];
-	public GameObject p1;
     public CameraVisible cameraVisible;
     MapGenerator mapGen;
     RoundSetup roundSetup;
@@ -23,7 +22,7 @@ public class GameFlow : MonoBehaviour {
 
     public void Start()
     {
-        mapGen = GameObject.FindObjectOfType<MapGenerator>();
+        mapGen = GetComponent<MapGenerator>();
         roundSetup = GetComponent<RoundSetup>();
         mapGen.GenerateLand();
 
@@ -39,7 +38,7 @@ public class GameFlow : MonoBehaviour {
         //Debug.Log (p1.gameObject.isActiveAndEnabled);
         //p1.SetActive(true);
         //p1.GetComponentInChildren<PlayerControl> ().Initialize ();
-        //earthQ.CreateEarthquake (1,1,1,WorldGrid.worldCenterPoint);
+        //earthQ.CreateEarthquake (1,2,3,WorldGrid.worldCenterPoint);
         roundSetup.SetupPlayers(new List<GameVariable.controlerType>() { GameVariable.controlerType.Joy1, GameVariable.controlerType.Joy2, GameVariable.controlerType.KeyLeft });
 		//Debug.Log (p1.isActiveAndEnabled);
     }

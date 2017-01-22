@@ -6,18 +6,18 @@ public class InputManager : MonoBehaviour {
 	public GameVariable.controlerType controlType;
 	private string[] keyList = new string[4];
 	public PlayerControl pControl;
+    bool initialized = false;
 
 
 
 	private Vector2 moveDirection;
 
-	void Initializer(GameVariable.controlerType conTypSet){
-		controlType = conTypSet;
-		setupKeys ();
-	}
 
-	public void Initializer(){
-		pControl = GetComponent<PlayerControl> ();
+	public void Initialize(GameVariable.controlerType conTypSet)
+    {
+        initialized = true;
+        controlType = conTypSet;
+        pControl = GetComponent<PlayerControl> ();
 		setupKeys ();
 	}
 
@@ -35,7 +35,7 @@ public class InputManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	 void Update () {
-		moveDirection = new Vector2 (Input.GetAxis (keyList [0]), Input.GetAxis (keyList [1]));
+            moveDirection = new Vector2(Input.GetAxis(keyList[0]), Input.GetAxis(keyList[1]));
 		if(!moveDirection.Equals(Vector2.zero))
 			pControl.Move (new Vector3(moveDirection.x, moveDirection.y, 0));
 		if (Input.GetButtonDown (keyList [2]))

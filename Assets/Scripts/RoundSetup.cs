@@ -19,7 +19,7 @@ public class RoundSetup : MonoBehaviour {
             float yCord = WorldGrid.Instance.GetHeightAt(new Vector2(xcord, zcord)) + 1;
             pcs.Initialize(new Vector3(xcord, yCord, zcord));
             go.GetComponentInChildren<InputManager>().controlType = cntrlType;
-            go.GetComponentInChildren<InputManager>().Initializer();
+            go.GetComponentInChildren<InputManager>().Initialize(cntrlType);
         }
         SetupCameras(players);
     }
