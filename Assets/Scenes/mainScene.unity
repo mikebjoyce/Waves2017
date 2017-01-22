@@ -383,7 +383,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraVisible: {fileID: 2129472747}
   earthQ: {fileID: 45912020}
-  god: {fileID: 0}
+  god: {fileID: 2129472750}
 --- !u!4 &2129472745
 Transform:
   m_ObjectHideFlags: 0
@@ -466,5 +466,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 123866dd2309c4446a0d43173746c0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOn: 0
   EQ: {fileID: 45912020}
   holdingBook: 0

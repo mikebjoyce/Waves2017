@@ -43,6 +43,7 @@ public class GameFlow : MonoBehaviour {
             roundSetup.SetupPlayers(new List<GameVariable.controlerType>() { GameVariable.controlerType.KeyLeft });//, GameVariable.controlerType.Joy1, GameVariable.controlerType.Joy2, GameVariable.controlerType.KeyRight });
         else
             roundSetup.SetupPlayers(GameVariable.activePlayerCntrls);
+		god.isOn = true;
 		//Debug.Log (p1.isActiveAndEnabled);
     }
 

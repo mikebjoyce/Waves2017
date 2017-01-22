@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GodsWhim : MonoBehaviour {
+	public bool isOn = false;
+
 	GameFlow owner;
 	public Earthquakes EQ;
 	public bool holdingBook = false;
@@ -35,37 +37,39 @@ public class GodsWhim : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		intensityTsunami += intensityIncPerSec * Time.deltaTime;
-		intensityEQ += intensityIncPerSec * Time.deltaTime;
-		if (GV.theOneBook != null && GV.theOneBook.isHeld)
-			tempIntensity += book_intensityIncPerSec * Time.deltaTime;
-		else
-			tempIntensity -= book_intensityIncPerSec * Time.deltaTime;
-		if (tempIntensity < 0)
-			tempIntensity = 0;
+		if(isOn){
+			intensityTsunami += intensityIncPerSec * Time.deltaTime;
+			intensityEQ += intensityIncPerSec * Time.deltaTime;
+			if (GV.theOneBook != null && GV.theOneBook.isHeld)
+				tempIntensity += book_intensityIncPerSec * Time.deltaTime;
+			else
+				tempIntensity -= book_intensityIncPerSec * Time.deltaTime;
+			if (tempIntensity < 0)
+				tempIntensity = 0;
 
-		float curIntensityEQ = realIntensityEQ ();
-		float curIntensityTsu = realIntensityTsu ();
+			float curIntensityEQ = realIntensityEQ ();
+			float curIntensityTsu = realIntensityTsu ();
 
 
-		if (Random.Range ((int)0, 100) <= (int)(probablityTsunami * Time.deltaTime / 15)){
-			Vector2[] tsuDir = directionToMapEdge ();
-			int riseIterations = (int) Random.Range ((int)GV.GOD_RiseIteration[0]*curIntensityTsu, (int) GV.GOD_RiseIteration[1]*curIntensityTsu);
-			int steps = (int) Random.Range ((int)GV.GOD_StepsInMax [0], GV.GOD_StepsInMax [1]);
-			int tempCur = (int)Mathf.Floor (curIntensityTsu / GV.GOD_flowRatePerPercentAngre);
-			int current = (tempCur != 0) ? tempCur : 1;
-			int repeats = (curIntensityTsu < 0.33) ? (int) Mathf.Ceil(Random.Range(GV.GOD_repeats[0],GV.GOD_repeats[1]) * curIntensityTsu) : 0;
-			bool repB = (repeats != 0) ? true: false;
-			WorldGrid.Instance.tsunamiManager.CreateLineTsunami (tsuDir[0],tsuDir[1],riseIterations,steps,current,repB,repeats);
-			Debug.Log("Make Tsunami!");
-		}
-		if (Random.Range ((int)0, 100) <= (int)(probabilityEarthQuake * Time.deltaTime / 15)){
-			Debug.Log("Make earthwuake!");
-			Vector2 location = new Vector2 ((int)Random.Range (0, GV.World_Size_X), (int)Random.Range (0, GV.World_Size_Z));
-			int wavelength = (int) (Random.Range(2, 5) * curIntensityEQ);
-			int crestLimit = (int) (Random.Range (1, 2) * curIntensityEQ);
-			int cycles = (int) (Random.Range (1, 5) * curIntensityEQ);
-			EQ.CreateEarthquake (wavelength, crestLimit, cycles, fillEqLoc ());
+			if (Random.Range ((int)0, 100) <= (int)(probablityTsunami * Time.deltaTime / 15)){
+				Vector2[] tsuDir = directionToMapEdge ();
+				int riseIterations = (int) Random.Range ((int)GV.GOD_RiseIteration[0]*curIntensityTsu, (int) GV.GOD_RiseIteration[1]*curIntensityTsu);
+				int steps = (int) Random.Range ((int)GV.GOD_StepsInMax [0], GV.GOD_StepsInMax [1]);
+				int tempCur = (int)Mathf.Floor (curIntensityTsu / GV.GOD_flowRatePerPercentAngre);
+				int current = (tempCur != 0) ? tempCur : 1;
+				int repeats = (curIntensityTsu < 0.33) ? (int) Mathf.Ceil(Random.Range(GV.GOD_repeats[0],GV.GOD_repeats[1]) * curIntensityTsu) : 0;
+				bool repB = (repeats != 0) ? true: false;
+				WorldGrid.Instance.tsunamiManager.CreateLineTsunami (tsuDir[0],tsuDir[1],riseIterations,steps,current,repB,repeats);
+				Debug.Log("Make Tsunami!");
+			}
+			if (Random.Range ((int)0, 100) <= (int)(probabilityEarthQuake * Time.deltaTime / 15)){
+				Debug.Log("Make earthwuake!");
+				Vector2 location = new Vector2 ((int)Random.Range (0, GV.World_Size_X), (int)Random.Range (0, GV.World_Size_Z));
+				int wavelength = (int) (Random.Range(2, 5) * curIntensityEQ);
+				int crestLimit = (int) (Random.Range (1, 2) * curIntensityEQ);
+				int cycles = (int) (Random.Range (1, 5) * curIntensityEQ);
+				EQ.CreateEarthquake (wavelength, crestLimit, cycles, fillEqLoc ());
+			}
 		}
 	}
 		
