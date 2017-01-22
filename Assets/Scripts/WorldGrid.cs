@@ -20,7 +20,7 @@ public class WorldGrid  {
         }
     }
     #endregion
-
+    
     private WorldGrid() { waterManager = new WaterManager(); tsunamiManager = new Tsunami(); }
 
     public WaterManager waterManager;
@@ -94,7 +94,7 @@ public class WorldGrid  {
 		if (!InBounds(atLoc))
 			return null;
 
-        if (!groundOnly && waterGrid[(int)atLoc.x, (int)atLoc.y]) // if water exists
+        if (!groundOnly && waterGrid[(int)atLoc.x, (int)atLoc.y] && waterGrid[(int)atLoc.x, (int)atLoc.y].isActive) // if water exists
         {
             return waterGrid[(int)atLoc.x, (int)atLoc.y];
         }
@@ -137,12 +137,9 @@ public class WorldGrid  {
             return 9999;
 
         Pillar waterPillar = waterGrid[(int)atLoc.x, (int)atLoc.y];
-        if (!groundOnly && waterPillar) // if water exists
+        if (!groundOnly && waterPillar && waterPillar.isActive) // if water exists
         {
-            /*if (waterManager.staticPillars.Contains(waterPillar))
-                return 9999;
-            else*/
-                return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
+            return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
         }
         else
             return groundGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();

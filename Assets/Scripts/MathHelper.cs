@@ -21,4 +21,9 @@ public class MathHelper : MonoBehaviour {
             return new Vector2(0, (int)(1 * Mathf.Sign(normalizedDir.y)));
         return new Vector2();
     }
+
+    public static Vector2 V3toV2xz(Vector3 v3, bool intCast = false)
+    {
+        return new Vector2(v3.x, v3.z);
+    }
 }

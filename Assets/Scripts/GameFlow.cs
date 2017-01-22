@@ -29,7 +29,7 @@ public class GameFlow : MonoBehaviour {
     { //called after map loads
         mapGen.OceanFiller();
         WorldGrid.Instance.Initialize();
-        timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval * 2; //bit of buffer for first cleanup
+        timeAtNextSystemCleanup = Time.time + 12; //bit of buffer for first cleanup
         cameraVisible.UpdateWorld();
 		//Debug.Log (p1.gameObject.isActiveAndEnabled);
         p1.SetActive(true);
