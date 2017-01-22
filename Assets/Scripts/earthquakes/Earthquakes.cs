@@ -83,13 +83,17 @@ public class Earthquakes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		bool toRem = false;
+		WaveHash objToRem = null;
 		if (lastUpdateTime + GV.Earthquake_Tick_Length < Time.time && isActive) {
 			if (currentEQs.Count != 0) {
 				foreach (WaveHash earthQ in currentEQs) {
-					if (!earthQ.RunLoop ())
-						currentEQs.Remove (earthQ);
+					toRem = !earthQ.RunLoop ();
+					objToRem = earthQ;
 					lastUpdateTime = Time.time;
 				}
+				if(toRem && objToRem != null)
+					currentEQs.Remove (objToRem);
 			} else {
 				isActive = false;
 			}

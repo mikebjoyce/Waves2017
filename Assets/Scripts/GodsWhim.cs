@@ -30,13 +30,14 @@ public class GodsWhim : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		owner = GetComponent<GameFlow> ();
+		//EQ = GetComponent<Earthquakes> ();
 	}
 
 	// Update is called once per frame
 	void Update () {
 		intensityTsunami += intensityIncPerSec * Time.deltaTime;
 		intensityEQ += intensityIncPerSec * Time.deltaTime;
-		if (GV.theOneBook.isHeld)
+		if (GV.theOneBook != null && GV.theOneBook.isHeld)
 			tempIntensity += book_intensityIncPerSec * Time.deltaTime;
 		else
 			tempIntensity -= book_intensityIncPerSec * Time.deltaTime;
@@ -47,7 +48,7 @@ public class GodsWhim : MonoBehaviour {
 		float curIntensityTsu = realIntensityTsu ();
 
 
-		if (Random.Range ((int)0, 100) <= (int)(probablityTsunami * Time.deltaTime / 60)){
+		if (Random.Range ((int)0, 100) <= (int)(probablityTsunami * Time.deltaTime / 15)){
 			Vector2[] tsuDir = directionToMapEdge ();
 			int riseIterations = (int) Random.Range ((int)GV.GOD_RiseIteration[0]*curIntensityTsu, (int) GV.GOD_RiseIteration[1]*curIntensityTsu);
 			int steps = (int) Random.Range ((int)GV.GOD_StepsInMax [0], GV.GOD_StepsInMax [1]);
@@ -58,12 +59,18 @@ public class GodsWhim : MonoBehaviour {
 			WorldGrid.Instance.tsunamiManager.CreateLineTsunami (tsuDir[0],tsuDir[1],riseIterations,steps,current,repB,repeats);
 			Debug.Log("Make Tsunami!");
 		}
-		if (Random.Range ((int)0, 100) <= (int)(probabilityEarthQuake * Time.deltaTime / 60)){
+		if (Random.Range ((int)0, 100) <= (int)(probabilityEarthQuake * Time.deltaTime / 15)){
 			Debug.Log("Make earthwuake!");
 			Vector2 location = new Vector2 ((int)Random.Range (0, GV.World_Size_X), (int)Random.Range (0, GV.World_Size_Z));
-
+			int wavelength = (int) (Random.Range(2, 5) * curIntensityEQ);
+			int crestLimit = (int) (Random.Range (1, 2) * curIntensityEQ);
+			int cycles = (int) (Random.Range (1, 5) * curIntensityEQ);
+			EQ.CreateEarthquake (wavelength, crestLimit, cycles, fillEqLoc ());
 		}
-
+	}
+		
+	private Vector2 fillEqLoc(){
+			return new Vector2((int)Random.Range (0, GV.World_Size_X), (int)Random.Range (0, GV.World_Size_Z));
 	}
 
 	private Vector2[] directionToMapEdge(){

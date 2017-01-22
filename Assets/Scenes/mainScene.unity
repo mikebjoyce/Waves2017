@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641252, b: 0.574817, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.5748171, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -121,6 +121,7 @@ MonoBehaviour:
   refresher: {fileID: 2129472747}
   isActive: 0
   currentEarthquake: {fileID: 0}
+  currentEQs: []
 --- !u!4 &45912021
 Transform:
   m_ObjectHideFlags: 0
@@ -348,6 +349,7 @@ GameObject:
   - component: {fileID: 2129472747}
   - component: {fileID: 2129472748}
   - component: {fileID: 2129472749}
+  - component: {fileID: 2129472750}
   m_Layer: 0
   m_Name: MainScripts
   m_TagString: Untagged
@@ -453,3 +455,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b56d3c2dc3a4154880d5423b8feae2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2129472750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2129472742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 123866dd2309c4446a0d43173746c0d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EQ: {fileID: 45912020}
+  holdingBook: 0
