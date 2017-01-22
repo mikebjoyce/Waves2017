@@ -25,8 +25,24 @@ public class JoinGame : MonoBehaviour {
 	
 	void Update ()
     {
-		
-	}
+        if (Input.GetButtonDown("KeyLeft_Jump"))
+            AddToList(GV.InputType.KeyboardLeft);
+        if (Input.GetButtonDown("KeyRight_Dig"))
+            AddToList(GV.InputType.KeyboardRight);
+        if (Input.GetButtonDown("Joy1_Jump"))
+            AddToList(GV.InputType.Xbox1);
+        if (Input.GetButtonDown("Joy2_Jump"))
+            AddToList(GV.InputType.Xbox2);
+
+        if (Input.GetButtonDown("KeyLeft_Ctrl"))
+            RemoveFromList(GV.InputType.KeyboardLeft);
+        if (Input.GetButtonDown("KeyRight_Jump"))
+            RemoveFromList(GV.InputType.KeyboardRight);
+        if (Input.GetButtonDown("Joy1_Dig"))
+            RemoveFromList(GV.InputType.Xbox1);
+        if (Input.GetButtonDown("Joy2_Dig"))
+            RemoveFromList(GV.InputType.Xbox2);
+    }
 
     public void AddToList(GV.InputType inputType)
     {
