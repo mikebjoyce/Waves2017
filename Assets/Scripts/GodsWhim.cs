@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GodsWhim : MonoBehaviour {
+	List<Earthquakes> EarthQuakes = new List<Earthquakes> ();
+
 	public bool isOn = false;
 
 	GameFlow owner;
@@ -25,6 +27,7 @@ public class GodsWhim : MonoBehaviour {
 	}
 
 	public float realIntensityEQ(){
+		float temp = intensityEQ * tempIntensity;
 		return intensityEQ * tempIntensity;
 	}
 
@@ -51,23 +54,24 @@ public class GodsWhim : MonoBehaviour {
 			float curIntensityTsu = realIntensityTsu ();
 
 
-			if (Random.Range ((int)0, 100) <= (int)(probablityTsunami * Time.deltaTime / 15)){
+			if (Random.Range ((int)0, 100) <= (int)(probablityTsunami * Time.deltaTime / 180)){
 				Vector2[] tsuDir = directionToMapEdge ();
-				int riseIterations = (int) Random.Range ((int)GV.GOD_RiseIteration[0]*curIntensityTsu, (int) GV.GOD_RiseIteration[1]*curIntensityTsu);
-				int steps = (int) Random.Range ((int)GV.GOD_StepsInMax [0], GV.GOD_StepsInMax [1]);
-				int tempCur = (int)Mathf.Floor (curIntensityTsu / GV.GOD_flowRatePerPercentAngre);
-				int current = (tempCur != 0) ? tempCur : 1;
+				int riseIterations = (int) Mathf.Clamp( Random.Range ((int)GV.GOD_RiseIteration[0]*curIntensityTsu, (int) GV.GOD_RiseIteration[1]*curIntensityTsu),(int)GV.GOD_RiseIteration[0],(int) GV.GOD_RiseIteration[1]);
+				int steps = (int) Mathf.Clamp(Random.Range ((int)GV.GOD_StepsInMax [0], GV.GOD_StepsInMax [1]),(int)GV.GOD_StepsInMax [0],(int)GV.GOD_StepsInMax [1]);
+				int tempCur = (int)Mathf.Clamp (Mathf.Floor (curIntensityTsu / GV.GOD_flowRatePerPercentAngre), 1, 3);
+				tempCur = (tempCur != 0) ? tempCur : 1;
 				int repeats = (curIntensityTsu < 0.33) ? (int) Mathf.Ceil(Random.Range(GV.GOD_repeats[0],GV.GOD_repeats[1]) * curIntensityTsu) : 0;
+				repeats = (int) Mathf.Clamp(repeats,GV.GOD_repeats[0], GV.GOD_repeats[1]);
 				bool repB = (repeats != 0) ? true: false;
-				WorldGrid.Instance.tsunamiManager.CreateLineTsunami (tsuDir[0],tsuDir[1],riseIterations,steps,current,repB,repeats);
+				WorldGrid.Instance.tsunamiManager.CreateLineTsunami (tsuDir[0],tsuDir[1],riseIterations,steps,tempCur,repB,repeats);
 				Debug.Log("Make Tsunami!");
 			}
-			if (Random.Range ((int)0, 100) <= (int)(probabilityEarthQuake * Time.deltaTime / 15)){
+			if (Random.Range ((int)0, 100) <= (int)(probabilityEarthQuake * Time.deltaTime / 20)){
 				Debug.Log("Make earthwuake!");
 				Vector2 location = new Vector2 ((int)Random.Range (0, GV.World_Size_X), (int)Random.Range (0, GV.World_Size_Z));
-				int wavelength = (int) (Random.Range(2, 5) * curIntensityEQ);
-				int crestLimit = (int) (Random.Range (1, 2) * curIntensityEQ);
-				int cycles = (int) (Random.Range (1, 5) * curIntensityEQ);
+				int wavelength = (int) Mathf.Clamp((Random.Range(2, 5) * curIntensityEQ),2,5);
+				int crestLimit = (int) Mathf.Clamp((Random.Range (1, 3) * curIntensityEQ),1,3);
+				int cycles = Mathf.Clamp((int) (Random.Range (1, 5) * curIntensityEQ),1,5);
 				EQ.CreateEarthquake (wavelength, crestLimit, cycles, fillEqLoc ());
 			}
 		}

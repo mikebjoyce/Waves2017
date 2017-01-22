@@ -15,8 +15,8 @@ public class GV : MonoBehaviour {
         None
     };
 
-    public static readonly int World_Size_X = 100;
-	public static readonly int World_Size_Z = 100;
+    public static readonly int World_Size_X = 60;
+	public static readonly int World_Size_Z = 60;
 
 
     public static WorldLinks worldLinks;
@@ -44,7 +44,7 @@ public class GV : MonoBehaviour {
 	//GOD GV
 	public static readonly Vector2 GOD_RiseIteration = new Vector2(10,20);
 	public static readonly Vector2 GOD_StepsInMax = new Vector2(2,10);
-	public static readonly float GOD_flowRatePerPercentAngre = .33f; //range is 0 -> 1
+	public static readonly float GOD_flowRatePerPercentAngre = .50f; //range is 0 -> 1
 	public static readonly Vector2 GOD_repeats = new Vector2(1,10);
 
 
@@ -54,7 +54,7 @@ public class GV : MonoBehaviour {
     public static float MapGen_Ideal_Time_Per_cycle = .50f; //in seconds
 
     //EarthQuakes
-    public static float Earthquake_Tick_Length = 0.1f;
+    public static float Earthquake_Tick_Length = 0.5f;
 
     //system
     public static float System_Pillar_Cleanup_Interval = 40; //perodically cleans up the strange floaters that appear
