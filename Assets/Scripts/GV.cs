@@ -6,8 +6,8 @@ public class GV : MonoBehaviour {
 
     public enum PillarType { Ground, Water}
 
-	public static readonly int World_Size_X = 121; //as long as X is equal to or more
-	public static readonly int World_Size_Z = 121;
+	public static readonly int World_Size_X = 50; //as long as X is equal to or more
+	public static readonly int World_Size_Z = 50;
 
     public static WorldLinks worldLinks;
     public static GameFlow gameFlow;
@@ -36,7 +36,7 @@ public class GV : MonoBehaviour {
     public static float MapGen_Ideal_Time_Per_cycle = .50f; //in seconds
 
     //EarthQuakes
-    public static float Earthquake_Tick_Length = .2f;
+    public static float Earthquake_Tick_Length = 0.6f;
 
     //system
     public static float System_Pillar_Cleanup_Interval = 40; //perodically cleans up the strange floaters that appear
