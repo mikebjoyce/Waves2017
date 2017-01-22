@@ -4,38 +4,72 @@ using UnityEngine;
 
 public class GameFlow : MonoBehaviour {
 
-    float timeAtNextUpdate = 0;
     float timeAtNextSystemCleanup;
 
 	//public PlayerControl[] players = new PlayerControl[4];
-	public PlayerControl p1;
+	public GameObject p1;
     public CameraVisible cameraVisible;
+    MapGenerator mapGen;
+    bool worldIsLoaded = false;
+    int renderOrLoad = 0; //every 4 optimizes some stuff
+
+	public Earthquakes earthQ;
+
+    public void Awake()
+    {
+        GV.gameFlow = this;
+    }
 
     public void Start()
     {
-        GameObject.FindObjectOfType<MapGenerator>().GenerateLand();
-        WorldGrid.Instance.Initialize();
-        timeAtNextSystemCleanup = Time.time + GV.Water_Update_Time_Step*2; //bit of buffer for first cleanup
-        cameraVisible.UpdateWorld();
-		/*foreach (PlayerControl p in players) {
-			
-
-		}*/
-		p1.Initialize ();
+        mapGen = GameObject.FindObjectOfType<MapGenerator>();
+        mapGen.GenerateLand();
+        //next step goes into update
     }
+
+    public void FinishLoad()
+    { //called after map loads
+        mapGen.OceanFiller();
+        WorldGrid.Instance.Initialize();
+        timeAtNextSystemCleanup = Time.time + 12; //bit of buffer for first cleanup
+        cameraVisible.UpdateWorld();
+		//Debug.Log (p1.gameObject.isActiveAndEnabled);
+        p1.SetActive(true);
+		p1.GetComponentInChildren<PlayerControl> ().Initialize ();
+		earthQ.CreateEarthquake (6,3,1,WorldGrid.worldCenterPoint);
+
+		//Debug.Log (p1.isActiveAndEnabled);
+    }
+
 
     public void Update()
     {
-        WorldGrid.Instance.tsunamiManager.UpdateTsunami();
-        if (Time.time >= timeAtNextUpdate)
+        if (!worldIsLoaded)
         {
-            WorldGrid.Instance.waterManager.UpdateAllWater();
-            timeAtNextUpdate += GV.Water_Update_Time_Step;
+            if(renderOrLoad < 3)
+            {
+                
+                if (mapGen.tilesLoadedTwoUpdateAgo.Count > 0)
+                    cameraVisible.UpdatePartial(mapGen.tilesLoadedTwoUpdateAgo);
+            }
+            else
+            {
+                worldIsLoaded = mapGen.LoadTiles();
+                if (worldIsLoaded)
+                    FinishLoad();
+            }
+            renderOrLoad++;
+            renderOrLoad %= 4;
         }
-        if(Time.time >= timeAtNextSystemCleanup)
+        else
         {
-            WorldGrid.Instance.PreformSnapCleanup();
-            timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval;
+            WorldGrid.Instance.tsunamiManager.UpdateTsunami();
+            WorldGrid.Instance.waterManager.UpdateWaterManager();
+            if (Time.time >= timeAtNextSystemCleanup)
+            {
+                WorldGrid.Instance.PreformSnapCleanup();
+                timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval;
+            }
         }
     }
 }

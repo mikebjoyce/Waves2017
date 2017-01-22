@@ -25,8 +25,8 @@ InputManager:
     m_Name: KeyRight_Horizontal
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: '[4]'
-    positiveButton: '[6]'
+    negativeButton: left
+    positiveButton: right
     altNegativeButton: 
     altPositiveButton: 
     gravity: 3
@@ -57,8 +57,8 @@ InputManager:
     m_Name: KeyRight_Vertical
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: '[5]'
-    positiveButton: '[8]'
+    negativeButton: down
+    positiveButton: up
     altNegativeButton: 
     altPositiveButton: 
     gravity: 3
@@ -90,7 +90,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: '[0]'
+    positiveButton: right ctrl
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -122,7 +122,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: '[9]'
+    positiveButton: right shift
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -177,7 +177,7 @@ InputManager:
     dead: 0.19
     sensitivity: 1
     snap: 0
-    invert: 1
+    invert: 0
     type: 2
     axis: 1
     joyNum: 1
@@ -193,7 +193,7 @@ InputManager:
     dead: 0.19
     sensitivity: 1
     snap: 0
-    invert: 1
+    invert: 0
     type: 2
     axis: 1
     joyNum: 2

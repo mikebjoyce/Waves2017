@@ -10,10 +10,14 @@ public class PlayerGV {
 	}
 
 
-	public static readonly float G_PlayerJumpForce = 10;
-	public static readonly float G_PlayerRunForce = 30;
+	public static readonly float G_PlayerJumpForce = 7;
+	public static readonly float G_PlayerRunForce = 12;
 	public static readonly int G_RadiusOfColliLoad = 2;
-	public static readonly float G_RotateSpeed = 2f;
-	public static readonly float G_PlayerRotateSpeed = 180f;
+	public static readonly float G_RotateSpeed = 5f;
+	public static readonly float G_PlayerRotateSpeed = 90f;
+	public static readonly float G_NonGroundedMoveModifier = 0.25f;
+	public static readonly float G_MaxSpeed = 8f;
+	public static readonly float G_WaterForcePerCurrent = 5;
+
 
 }

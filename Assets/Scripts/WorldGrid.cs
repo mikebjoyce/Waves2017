@@ -20,7 +20,7 @@ public class WorldGrid  {
         }
     }
     #endregion
-
+    
     private WorldGrid() { waterManager = new WaterManager(); tsunamiManager = new Tsunami(); }
 
     public WaterManager waterManager;
@@ -35,7 +35,7 @@ public class WorldGrid  {
 
     public void Initialize() //used for default load in test scene
     {
-        foreach(Transform t in GameObject.FindObjectOfType<WorldLinks>().groundParent)
+        foreach(Transform t in GV.worldLinks.groundParent)
         {
             Pillar p = t.GetComponent<Pillar>();
             Vector3 loc = t.position;
@@ -66,15 +66,27 @@ public class WorldGrid  {
             if (waterGrid[(int)atLoc.x, (int)atLoc.y]) // if water exists
                 waterGrid[(int)atLoc.x, (int)atLoc.y].ModHeight(amt);
 
-            CameraVisible cv = GameObject.FindObjectOfType<CameraVisible>();
+            CameraVisible cv = GV.gameFlow.cameraVisible;
 
-            cv.UpdatePillar(atLoc);
+            cv.UpdateLocation(atLoc);
             foreach(Vector2 dir in GV.Valid_Directions)
             {
                 if(GetPillarAt(atLoc + dir,true))
-                    cv.UpdatePillar(atLoc + dir);
+                    cv.UpdateLocation(atLoc + dir);
             }
         }
+    }
+
+    public List<Pillar> GetAllNeighbors(Vector2 atLoc)
+    {
+        List<Pillar> toRet = new List<Pillar>();
+        foreach (Vector2 dir in GV.Valid_Directions)
+        {
+            Pillar p = GetPillarAt(atLoc + dir);
+            if (p)
+                toRet.Add(p);
+        }
+        return toRet;
     }
 
     public Pillar GetPillarAt(Vector2 atLoc, bool groundOnly = false)
@@ -82,7 +94,7 @@ public class WorldGrid  {
 		if (!InBounds(atLoc))
 			return null;
 
-        if (!groundOnly && waterGrid[(int)atLoc.x, (int)atLoc.y]) // if water exists
+        if (!groundOnly && waterGrid[(int)atLoc.x, (int)atLoc.y] && waterGrid[(int)atLoc.x, (int)atLoc.y].isActive) // if water exists
         {
             return waterGrid[(int)atLoc.x, (int)atLoc.y];
         }
@@ -114,7 +126,7 @@ public class WorldGrid  {
         toClean.SetHeight(toClean.pos.y);
     }
 
-    private bool InBounds(Vector2 atLoc)
+    public bool InBounds(Vector2 atLoc)
     {
         return !(atLoc.x >= GV.World_Size_X || atLoc.x < 0 || atLoc.y >= GV.World_Size_Z || atLoc.y < 0) ;
     }
@@ -125,12 +137,9 @@ public class WorldGrid  {
             return 9999;
 
         Pillar waterPillar = waterGrid[(int)atLoc.x, (int)atLoc.y];
-        if (!groundOnly && waterPillar) // if water exists
+        if (!groundOnly && waterPillar && waterPillar.isActive) // if water exists
         {
-            /*if (waterManager.staticPillars.Contains(waterPillar))
-                return 9999;
-            else*/
-                return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
+            return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
         }
         else
             return groundGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();

@@ -18,20 +18,37 @@ public class GV : MonoBehaviour {
     public static readonly int World_Size_X = 41;
 	public static readonly int World_Size_Z = 41;
 
+    public static WorldLinks worldLinks;
+    public static GameFlow gameFlow;
+
     //Water
     public static readonly float Water_Sea_Width = 3;
-    public static readonly float Water_Update_Time_Step = .50f;
-    public static readonly float Water_Update_Steps_ = .20f;
+    public static readonly float Water_Time_Spent_Updating = 333f; //In milliseconds 
+    public static readonly float Water_Time_Between_Updates = .5f; //In milliseconds 
+    
 
     private static readonly float Water_Sections = 5; //Using 1/this in calculations does not yeild .2f... it just yeilds a nonsensical number that outputs as .2f... use the function below
     public static float Water_Flow_Rate; //not readonly, so careful dont overite it
     public static readonly List<Vector2> Valid_Directions = new List<Vector2>() { new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, 0), new Vector2(-1, 0) }; //randomly selected for even distribution
+    public static readonly Vector2 Water_Render_Direction = new Vector2(0, 1);
     public static readonly float Water_Sea_Level = 0;
     public static readonly float Water_Chance_To_Break_From_Current = .2f;
     public static readonly float Water_Current_Power_Per_Bonus_Mult = .5f;
+    public static readonly float Water_Value_Where_Runs_Renderer_Optz = 20;
+
+    //Tsunami
+    public static readonly float Tsunami_Update_Step = .5f;
+
+    //Map Generator
+    public static int MapGen_Tiles_Load_Per_Cycle = 25;
+    public static int MapGen_Tiles_Load_Bonus = 8; //increase by that many per cycle as long as cycle time is under dt below
+    public static float MapGen_Ideal_Time_Per_cycle = .50f; //in seconds
+
+    //EarthQuakes
+    public static float Earthquake_Tick_Length = .2f;
 
     //system
-    public static float System_Pillar_Cleanup_Interval = 12; //perodically cleans up the strange floaters that appear
+    public static float System_Pillar_Cleanup_Interval = 40; //perodically cleans up the strange floaters that appear
 
     public static void SetupWaterFlowRate()
     {

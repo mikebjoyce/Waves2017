@@ -19,8 +19,16 @@ public class MapGenerator : MonoBehaviour {
 	int xOffset = 0;
 	int zOffset = 0;
 
+    public List<Vector3> tilesToLoad;
+    public List<Vector3> tilesLoadedOneUpdateAgo; //for graphics loading
+    public List<Vector3> tilesLoadedTwoUpdateAgo;
+    public int tileLoadingIndex = 0;
+   // public float loadWaitCycle = false;
+
 	public void GenerateLand()
 	{
+        tilesToLoad = new List<Vector3>();
+        tileLoadingIndex = 0;
         if (mapCenterImperfect)
         {
             int absoluteCenterRangeX = Mathf.RoundToInt(mapCenterRange * (GV.World_Size_X / 2));
@@ -32,7 +40,8 @@ public class MapGenerator : MonoBehaviour {
 
         if (detailScale != 0)
 	    {	
-		    float seed = (float)Network.time * 10; 
+		    //float seed = (float)Network.time * 10;  //real
+			int seed = (int)Network.time * 10; //flatworld
 		    for (int x = 0; x < GV.World_Size_X; x++) 
 		    {
 		    	for (int z = 0; z < GV.World_Size_Z; z++)
@@ -50,14 +59,15 @@ public class MapGenerator : MonoBehaviour {
 		    			int y = Mathf.RoundToInt((Mathf.PerlinNoise((x + seed ) / (detailScale ), (z + seed) / (detailScale)) * heightScale * heightScaleDecayFactor) + terrainAltitudeConstant - (sqrtProxFactor * centerProxBiasConstant));
 		    				
 		    			Vector3 pillarPos = new Vector3 (x, y, z);
-		    			InstantiatePillar (pillarPos);
+                        tilesToLoad.Add(pillarPos);
+		    			//InstantiatePillar (pillarPos);
 		    	}
 		    }
 	    }
 	    else
 	    	Debug.Log("detailScale cannot be 0!");
 
-        OceanFiller();
+        
 	}
 
 	public float CalculatePillarCenterProxFactor(int _x, int _z) //uses pillar's proximity to map center to calculate altitude bias factor (makes the map slope downwards from center out)
@@ -94,7 +104,7 @@ public class MapGenerator : MonoBehaviour {
         }
 
         GameObject newPillar = (GameObject)Instantiate (Resources.Load ("Prefabs/Pillar"), _pillarPos, Quaternion.identity);
-        newPillar.transform.SetParent(GameObject.FindObjectOfType<WorldLinks>().groundParent);
+        newPillar.transform.SetParent(GV.worldLinks.groundParent);
         Pillar p = newPillar.GetComponent<Pillar>();
         WorldGrid.Instance.groundGrid [(int)_pillarPos.x,(int)_pillarPos.z] = p;
         p.Initialize(_pillarPos, GV.PillarType.Ground);
@@ -113,7 +123,7 @@ public class MapGenerator : MonoBehaviour {
 
     }
 
-    private void OceanFiller()
+    public void OceanFiller()
     {
         List<Vector2> openList = new List<Vector2>();
         List<Vector2> closedList = new List<Vector2>();
@@ -151,4 +161,22 @@ public class MapGenerator : MonoBehaviour {
             WorldGrid.Instance.waterManager.CreateWater(addLoc, GV.Water_Sea_Level, false);
     }
 
+    public bool LoadTiles()
+    {
+        float startTime = Time.time;
+        tilesLoadedTwoUpdateAgo = new List<Vector3>(tilesLoadedOneUpdateAgo);
+        tilesLoadedOneUpdateAgo = new List<Vector3>();
+        for (int i = 0; tileLoadingIndex < tilesToLoad.Count && i < GV.MapGen_Tiles_Load_Per_Cycle; i++, tileLoadingIndex++)
+        {
+            tilesLoadedOneUpdateAgo.Add(tilesToLoad[tileLoadingIndex]);
+            InstantiatePillar(tilesToLoad[tileLoadingIndex]);
+        }
+        float endTime = Time.time - startTime;
+        if (endTime < GV.MapGen_Ideal_Time_Per_cycle)
+            GV.MapGen_Tiles_Load_Per_Cycle += GV.MapGen_Tiles_Load_Bonus;
+        else if(GV.MapGen_Tiles_Load_Per_Cycle > 20)
+            GV.MapGen_Tiles_Load_Per_Cycle -= GV.MapGen_Tiles_Load_Bonus;
+
+        return tileLoadingIndex >= tilesToLoad.Count;
+    }
 }

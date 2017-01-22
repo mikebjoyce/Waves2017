@@ -13,6 +13,24 @@ public class Pillar : MonoBehaviour {
     public bool DebugLogs = false;
     public List<GameObject> segments = new List<GameObject>();
     private int invisibleBelow;      //0 = grass, 1 = top, ..., 5 = bottom
+    public bool isActive = true;
+    public bool isStaticPillar = false;
+    public bool isDisturbed = false;
+    public Vector2 xypos { get { return new Vector2(pos.x, pos.z); }}
+
+    public void Update()
+    {
+        if (DebugLogs)
+        {
+            Debug.Log("currently in openbook: " + WorldGrid.Instance.waterManager.toUpdate.ContainsKey(xypos));
+            Debug.Log("pos: " + pos + " xypos: " + xypos);
+            string allInBook = "";
+            foreach (KeyValuePair<Vector2, Pillar> kv in WorldGrid.Instance.waterManager.toUpdate)
+                allInBook += kv.Key + ",";
+            Debug.Log(allInBook);
+        }
+
+    }
 
     public void Initialize(Vector3 _pos, GV.PillarType _pillarType)
     {
@@ -26,6 +44,14 @@ public class Pillar : MonoBehaviour {
         SkinPillar(pillarType);
     }
 
+    public void SetIsActive(bool _isActive)
+    {
+        isActive = _isActive;
+        gameObject.SetActive(_isActive);
+        if (!_isActive)
+            isDisturbed = false;
+    }
+
     /*
     public int GetInvisibleBelow()
     {
@@ -33,12 +59,33 @@ public class Pillar : MonoBehaviour {
     }
     */
 
+    public void Disturb(bool _disturb)
+    {
+        if (isDisturbed != _disturb && pillarType == GV.PillarType.Water)
+        {
+            isDisturbed = _disturb;
+            if (DebugLogs) Debug.Log("and changed disturb state: " + isDisturbed + " loc: " + MathHelper.V3toV2xz(pos));
+            WorldGrid.Instance.waterManager.WasDisturbed(this, isDisturbed);
+        }
+    }
+
     public void SetInvisibleBelow(int newInvBel)
     {
         if (newInvBel == invisibleBelow)
         {
             return;
         }
+        else
+        {
+            for(int i = 0; i < segments.Count; i++)
+            {
+                if (i <= newInvBel)
+                    segments[i].SetActive(true);
+                else
+                    segments[i].SetActive(false);
+            }
+
+        }/*
         else if (newInvBel > invisibleBelow)
         {
             for (int i = invisibleBelow + 1; i <= newInvBel; i++)
@@ -52,7 +99,7 @@ public class Pillar : MonoBehaviour {
             {
                 segments[j].SetActive(false);
             }
-        }
+        }*/
         invisibleBelow = newInvBel;
     }
 
@@ -72,23 +119,51 @@ public class Pillar : MonoBehaviour {
 
     public void ModHeight(float modAmt)
     {
+        if (DebugLogs) Debug.Log("modHeight called");
+        if (isActive)
+        {
+            if (DebugLogs) Debug.Log("pillar is active");
+            Disturb(true);
+            if (modAmt < 0)
+                DisturbAllNeighbors();
+        }
         SetHeight(pos.y + modAmt);
     }
 
     public void SetHeight(float newHeight)
     {
         Vector3 newPos = transform.position;
-        newPos.y = newHeight;
+        pos.y = newPos.y = newHeight;
         transform.position = newPos;
-        pos.y = newHeight;
+        
+        if (pillarType == GV.PillarType.Water && pos.y <= WorldGrid.Instance.groundGrid[(int)newPos.x, (int)newPos.z].pos.y)
+        {
+            SetIsActive(false);
+            WorldGrid.Instance.waterManager.toUpdate.Remove(xypos);
+        }
     }
 
     private void SkinPillar(GV.PillarType pillarType)
     {
         //ground is already it by default
         if (pillarType == GV.PillarType.Water)
-            foreach(Transform t in transform)
-                t.GetComponent<Renderer>().material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
+            foreach (GameObject segment in segments)
+            {
+                Renderer r = segment.GetComponent<Renderer>();
+                if (r)
+                {
+                    r.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
+                    r.receiveShadows = false;
+                    r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+            }
+    }
+
+    public void DisturbAllNeighbors()
+    {
+        List<Pillar> neighs = WorldGrid.Instance.GetAllNeighbors(new Vector2(pos.x, pos.z));
+        foreach (Pillar p in neighs)
+            p.Disturb(true);
     }
 
     public Vector2 GetCurrent(bool normalized)
@@ -106,6 +181,11 @@ public class Pillar : MonoBehaviour {
     public void AddCurrent(Vector2 fromLoc, float strength)
     {
         currentDir += new Vector2(pos.x - fromLoc.x, pos.z - fromLoc.y) * strength;
+    }
+
+    public void SetCurrent(Vector2 newCur)
+    {
+        currentDir = newCur;
     }
 
     public float GetHeight()

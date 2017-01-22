@@ -6,12 +6,18 @@ public class PlayerControl : MonoBehaviour {
 
 	public Camera playerCam;
 
+	//digLocator
+	public GameObject digLoc;
+	public MeshRenderer digMesh;
+
 	//Vars
-	public BoxCollider collBox;
 	public Rigidbody body;
+
 	public bool isGrounded = false;
+
 	private Vector3 forward;
 	private bool isHolding = false;
+	private bool lockMove = false;
 
 	public Vector2 position;
 
@@ -22,6 +28,9 @@ public class PlayerControl : MonoBehaviour {
 
 	public void Initialize(Vector3 loc){
 		transform.position = loc;
+		visibleDropPillar (true);
+		digMesh = digLoc.GetComponent<MeshRenderer> ();
+		moveDigIndic ();
 	}
 
 
@@ -33,36 +42,63 @@ public class PlayerControl : MonoBehaviour {
 	void Update () {
 		position = new Vector2 (transform.position.x, transform.position.z);
 		forward = transform.forward;
+
+		moveDigIndic ();
+
+		ChangeDigLocColor ();
+
+		ApplyCurrentForce ();
 	}
 
 
-	//isGrounded Check
-	void OnCollisionEnter(Collision collision){
+
+
+
+	void OnTriggerEnter(Collider other){
+		if (other.gameObject.layer == 8) {
+			isGrounded = true;
+			lockMove = false;
+		}
+	} 
+
+	/*
+	void OnCollisionStay(Collider collision){
 		if (collision.gameObject.layer == 8 && !isGrounded) {
 			isGrounded = true;
+			lockMove = false;
 		}
-	}
+	} */
 
-	void OnCollisionExit(Collision collision){
-		if (collision.gameObject.layer == 8 && isGrounded) {
+	void OnTriggerExit(Collider other){
+		if (other.gameObject.layer == 8) {
 			isGrounded = false;
+			lockMove = true;
 		}
-
 	}
 
 
 	//player Movement and Actions
 	public void Move(Vector3 input){
 		//moves with constant speed 
-		Debug.Log("Input " + input.ToString());
-		float xAxis = (input.x != 0) ? input.x/Mathf.Abs(input.x): 0;
-		Debug.Log ("yAxis " + xAxis);
-		Debug.Log ("rotate b4 " + transform.rotation);
-		transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
-		body.AddForce (input.y * forward * Time.deltaTime, ForceMode.Impulse);
-		Debug.Log ("force applied " + input.y * forward * Time.deltaTime);
+		//Debug.Log("Input " + input.ToString());
+		if (!isMaxSpeed()) {
+			float xAxis = (input.x != 0) ? input.x / Mathf.Abs (input.x) : 0;
+			//Debug.Log ("yAxis " + xAxis);
+			//Debug.Log ("rotate b4 " + transform.rotation);
+			transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
 
-		//body.AddForce (moveDir * PlayerGV.G_PlayerRunForce, ForceMode.Impulse);
+			if (!lockMove) {
+				body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime, ForceMode.Impulse);
+			} else {
+				body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime * PlayerGV.G_NonGroundedMoveModifier, ForceMode.Impulse);
+			}
+			//Debug.Log ("force applied " + PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime);
+			//Debug.Log ("forward " + forward + " Time.DeltaTime" + Time.deltaTime);
+
+			//body.AddForce (moveDir * PlayerGV.G_PlayerRunForce, ForceMode.Impulse);
+		} else {
+			//Debug.Log ("Hit Max Speed");
+		}
 	}
 
 	/*
@@ -72,7 +108,6 @@ public class PlayerControl : MonoBehaviour {
 	}*/
 
 	public void Jump(){
-		Debug.Log ("Jump");
 		//jumps a certain high always
 		if (isGrounded) {
 			body.AddForce (Vector3.up * PlayerGV.G_PlayerJumpForce, ForceMode.Impulse);
@@ -83,12 +118,37 @@ public class PlayerControl : MonoBehaviour {
 		if (isHolding)
 			Drop ();
 		else {
+
 			//do dig stuff
+			Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+			if (canDig()) {
+
+				WorldGrid.Instance.ModGround(roundV2(position) + trueDir, -1);
+				isHolding = true;
+			} else {
+				//too low to dig
+
+			}
 		}
 	}
 
+
+
 	public void Drop(){
+
 		//do opposite of dig stuff
+		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+		if (canDrop()) {
+
+			WorldGrid.Instance.ModGround (roundV2 (position) + trueDir, 1);
+			isHolding = false;
+			//Debug.Log("B4 "+ transform.position);
+			//transform.position.Set (roundV2 (position).x, transform.position.y, roundV2 (position).y);
+			//Debug.Log("A4 "+transform.position);
+		} else {
+
+			//too high to place
+		}
 	}
 
 	//internal
@@ -97,7 +157,78 @@ public class PlayerControl : MonoBehaviour {
 	}
 		
 
+	private Vector2 strongestDir(Vector2 input){
+		input = input.normalized;
+		if (input == Vector2.zero)
+			return input;
+		if (Mathf.Abs (input.x) > Mathf.Abs (input.y)) {
+			return new Vector2 (input.x/Mathf.Abs(input.x), 0).normalized;
+		} else {
+			return new Vector2 (0, input.y/Mathf.Abs(input.y)).normalized;
+		}
+	}
+
+	private Vector2 roundV2(Vector2 input){
+		int x = (input.x - (int) input.x > 0.5) ? (int) input.x + 1 : (int) input.x;
+		int y = (input.y - (int) input.y > 0.5) ? (int) input.y + 1 : (int) input.y;
+		return new Vector2(x,y);
+	}
+
+	private Vector3 DigLoc(){
+		Vector2 digPos = roundV2 (position) + strongestDir (new Vector2(forward.x,forward.z));
+		int hight = (int) WorldGrid.Instance.GetHeightAt (digPos, true);
+		return new Vector3 (digPos.x, hight, digPos.y);
+	}
+		
+	private void moveDigIndic(){
+		Vector2 digPos = roundV2 (position) + strongestDir (new Vector2(forward.x,forward.z));
+		digLoc.transform.position = new Vector3 (digPos.x, WorldGrid.Instance.GetHeightAt (digPos), digPos.y);
+	}
+
+	private void visibleDropPillar(bool input){
+		digLoc.SetActive (input);
+	}
+		
+	private bool canDig(){
+		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
+		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
+
+		return standingHigh + 2 >= diggingHight && standingHigh - 1 <= diggingHight;
+	}
+
+	private bool canDrop(){
+		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
+		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
+
+		return standingHigh + 1 >= diggingHight;
+	}
+
+	private bool isMaxSpeed(){
+		return new Vector2 (body.velocity.x, body.velocity.z).magnitude >= PlayerGV.G_MaxSpeed;
+	}
+
+	private void ChangeDigLocColor(){
+		if (isHolding) {
+			if (canDrop ())
+				digMesh.material.color = Color.blue;
+			else
+				digMesh.material.color = Color.red;
+		} else {
+			if (canDig ())
+				digMesh.material.color = Color.green;
+			else
+				digMesh.material.color = Color.red;
+		}
+
+	}
+
+	private void ApplyCurrentForce(){
+		Pillar underUs = WorldGrid.Instance.GetPillarAt (roundV2(position));
+		if (underUs.pillarType == GV.PillarType.Water && transform.position.y < underUs.GetHeight()){
+			body.AddForce(underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime, ForceMode.Impulse);
+			Debug.Log ("Force added to body from current " + underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime);
+		}
+	}
 }
-
-
-
