@@ -26,7 +26,7 @@ public class GV : MonoBehaviour {
     //Water
     public static readonly float Water_Sea_Width = 3;
     public static readonly float Water_Time_Spent_Updating = 333f; //In milliseconds, max time
-    public static readonly float Water_Time_Between_Updates = 0; //In milliseconds 
+    public static readonly float Water_Time_Between_Updates = 0f; //In milliseconds 
  
 
     private static readonly float Water_Sections = 5; //Using 1/this in calculations does not yeild .2f... it just yeilds a nonsensical number that outputs as .2f... use the function below
@@ -42,10 +42,10 @@ public class GV : MonoBehaviour {
     public static readonly float Tsunami_Update_Step = .5f;
 
 	//GOD GV
-	public static readonly Vector2 GOD_RiseIteration = new Vector2(10,20);
-	public static readonly Vector2 GOD_StepsInMax = new Vector2(2,10);
+	public static readonly Vector2 GOD_RiseIteration = new Vector2(3,10);
+	public static readonly Vector2 GOD_StepsInMax = new Vector2(1,6);
 	public static readonly float GOD_flowRatePerPercentAngre = .50f; //range is 0 -> 1
-	public static readonly Vector2 GOD_repeats = new Vector2(1,10);
+	public static readonly Vector2 GOD_repeats = new Vector2(1,3);
 
 
     //Map Generator
@@ -54,7 +54,7 @@ public class GV : MonoBehaviour {
     public static float MapGen_Ideal_Time_Per_cycle = .50f; //in seconds
 
     //EarthQuakes
-    public static float Earthquake_Tick_Length = 0.5f;
+    public static float Earthquake_Tick_Length = 0.3f;
 
     //system
     public static float System_Pillar_Cleanup_Interval = 40; //perodically cleans up the strange floaters that appear

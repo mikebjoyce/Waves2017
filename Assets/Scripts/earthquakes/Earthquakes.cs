@@ -57,7 +57,8 @@ public class Earthquakes : MonoBehaviour
 
     public void CreateEarthquake(int _wavelength, int _crestLimit, int numOfWaveCycles, Vector2 _quakePos)
     {
-        Debug.Log(string.Format("{0},{1},{2},{3}", _wavelength, _crestLimit, numOfWaveCycles, _quakePos));
+
+      //  Debug.Log(string.Format("{0},{1},{2},{3}", _wavelength, _crestLimit, numOfWaveCycles, _quakePos));
 
         currentEarthquake = gameObject.AddComponent<WaveHash>();
 		currentEarthquake.InitializeArr (_wavelength, _crestLimit, numOfWaveCycles);
@@ -99,8 +100,8 @@ public class Earthquakes : MonoBehaviour
 			} else {
 				isActive = false;
 			}
-		}
-
+            refresher.UpdateWorld();
+        }
     }
 }
 
