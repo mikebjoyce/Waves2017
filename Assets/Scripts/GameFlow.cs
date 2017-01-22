@@ -13,6 +13,8 @@ public class GameFlow : MonoBehaviour {
     bool worldIsLoaded = false;
     int renderOrLoad = 0; //every 4 optimizes some stuff
 
+	public Earthquakes earthQ;
+
     public void Awake()
     {
         GV.gameFlow = this;
@@ -34,6 +36,7 @@ public class GameFlow : MonoBehaviour {
 		//Debug.Log (p1.gameObject.isActiveAndEnabled);
         p1.SetActive(true);
 		p1.GetComponentInChildren<PlayerControl> ().Initialize ();
+		earthQ.CreateEarthquake (6,3,1,WorldGrid.worldCenterPoint);
 
 		//Debug.Log (p1.isActiveAndEnabled);
     }

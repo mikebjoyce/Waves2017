@@ -57,7 +57,6 @@ public class Earthquakes : MonoBehaviour
 
     public void CreateEarthquake(int _wavelength, int _crestLimit, int numOfWaveCycles, Vector2 _quakePos)
     {
-		
         //int waveCyclesRemaining = numOfWaveCycles;
 		int waveRange = retTotalWaveDistance(_crestLimit, _wavelength);
 
@@ -70,7 +69,6 @@ public class Earthquakes : MonoBehaviour
 		currentEarthquake.InitializeArr (_wavelength, _crestLimit, numOfWaveCycles);
 		currentEarthquake.PopulateWaveArray ();
 		isActive = true;
-
 		//currentEarthquake.waveArray
     }
 
@@ -131,9 +129,9 @@ public class Earthquakes : MonoBehaviour
 			if (currentCircle > currentEarthquake.lowestBound () && currentCircle < currentEarthquake.totalWaveDistance) {
 				foreach (Vector2 v in arrayOfCircles[currentCircle]) {
 					if (WorldGrid.Instance.InBounds (v)) {
-						Debug.Log ("Pillar " + WorldGrid.Instance.GetPillarAt (v, true).ToString ());
-						Debug.Log ("Vector 2 current pillar loc " + v.ToString());
-						Debug.Log ("currentEarthquake.waveArray [r, currentEarthquake.counter] " + currentEarthquake.waveArray [r, currentEarthquake.counter]);
+						//Debug.Log ("Pillar " + WorldGrid.Instance.GetPillarAt (v, true).ToString ());
+						//Debug.Log ("Vector 2 current pillar loc " + v.ToString());
+						//Debug.Log ("currentEarthquake.waveArray [r, currentEarthquake.counter] " + currentEarthquake.waveArray [r, currentEarthquake.counter]);
 						WorldGrid.Instance.GetPillarAt (v, true).ModHeight (modifyWaveRet (currentEarthquake.waveArray [r, currentEarthquake.counter], r + (int)howManyCycles * (currentEarthquake.wavelength + 1)));
 					}
 				}
@@ -146,8 +144,7 @@ public class Earthquakes : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-		CreateEarthquake(6, 3, 3, WorldGrid.worldCenterPoint);
-		isActive = true;
+		
     }
 
     // Update is called once per frame
