@@ -43,8 +43,8 @@ public class MapGenerator : MonoBehaviour {
 
         if (detailScale != 0)
 	    {	
-		    //float seed = (float)Network.time * 10;  //real
-			int seed = (int)Network.time * 10; //flatworld
+		    float seed = (float)Network.time * 10;  //real
+			//float seed = (int)Network.time * 10; //flatworld
 		    for (int x = 0; x < GV.World_Size_X; x++) 
 		    {
 		    	for (int z = 0; z < GV.World_Size_Z; z++)
