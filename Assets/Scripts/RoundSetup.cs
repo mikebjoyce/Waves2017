@@ -15,7 +15,7 @@ public class RoundSetup : MonoBehaviour {
             PlayerControl pcs = go.GetComponentInChildren<PlayerControl>();
             float xcord = Random.Range(0.3f, .7f) * GV.World_Size_X;
             float zcord = Random.Range(0.3f, .7f) * GV.World_Size_Z;
-            float yCord = WorldGrid.Instance.GetHeightAt(new Vector2(xcord, zcord)) + 1;
+            float yCord = WorldGrid.Instance.GetHeightAt(new Vector2(xcord, zcord)) + 3;
             pcs.Initialize(new Vector3(xcord, yCord, zcord));
             go.GetComponentInChildren<InputManager>().controlType = cntrlType;
             go.GetComponentInChildren<InputManager>().Initialize(cntrlType);
