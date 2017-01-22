@@ -154,7 +154,10 @@ public class PlayerControl : MonoBehaviour {
 		}
 	}
 
-
+    public void PanCam(float amt)
+    {
+        Debug.Log("panCam presed");
+    }
 
 	public void Drop(){
 
