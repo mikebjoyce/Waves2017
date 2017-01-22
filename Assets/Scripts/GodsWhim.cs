@@ -14,7 +14,7 @@ public class GodsWhim : MonoBehaviour {
 	float probablityTsunami = 5; // probability of Tsunami over 1 minute
 	float intensityTsunami = 0.1f; //range 0 -> 1
 
-	float probabilityEarthQuake = 5; //probability of EQ over 1 minute
+	float probabilityEarthQuake = 10; //probability of EQ over 1 minute
 	float intensityEQ = 0.1f; //range 0 - > 1
 
 	float intensityIncPerSec = 2f;
