@@ -111,7 +111,7 @@ public class WaveHash : MonoBehaviour {
 		int waveRange = 0;
 		while (_crestLimit > 0)
 		{
-			waveRange += _crestLimit * _wavelength;
+			waveRange += 2 * _crestLimit * _wavelength;
 			_crestLimit--;
 		}
 		return waveRange;
