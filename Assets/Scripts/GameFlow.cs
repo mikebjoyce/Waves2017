@@ -8,8 +8,10 @@ public class GameFlow : MonoBehaviour {
 
 	//public PlayerControl[] players = new PlayerControl[4];
     public CameraVisible cameraVisible;
+    public GameObject cinematicCamera;
     MapGenerator mapGen;
     RoundSetup roundSetup;
+    
     bool worldIsLoaded = false;
     int renderOrLoad = 0; //every 4 optimizes some stuff
 
@@ -39,6 +41,7 @@ public class GameFlow : MonoBehaviour {
         //Debug.Log (p1.gameObject.isActiveAndEnabled);
         //p1.SetActive(true);
         //p1.GetComponentInChildren<PlayerControl> ().Initialize ();
+        Destroy(cinematicCamera);
         if (GameVariable.activePlayerCntrls == null)
             roundSetup.SetupPlayers(new List<GameVariable.controlerType>() { GameVariable.controlerType.KeyLeft });//, GameVariable.controlerType.Joy1, GameVariable.controlerType.Joy2, GameVariable.controlerType.KeyRight });
         else

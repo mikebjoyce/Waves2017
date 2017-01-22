@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour {
 
 	public Camera playerCam;
+    CameraManager camManager;
 
 	//digLocator
 	public GameObject digLoc;
@@ -31,7 +32,8 @@ public class PlayerControl : MonoBehaviour {
 	}*/
 
 	public void Initialize(Vector3 loc){
-		transform.position = loc;
+        camManager = playerCam.transform.parent.GetComponent<CameraManager>();
+        transform.position = loc;
 		visibleDropPillar (true);
 		digMesh = digLoc.GetComponent<MeshRenderer> ();
 		moveDigIndic ();
@@ -156,7 +158,7 @@ public class PlayerControl : MonoBehaviour {
 
     public void PanCam(float amt)
     {
-        Debug.Log("panCam presed");
+        camManager.Pan(amt);
     }
 
 	public void Drop(){
