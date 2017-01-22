@@ -11,10 +11,10 @@ public class GodsWhim : MonoBehaviour {
 	public Earthquakes EQ;
 	public bool holdingBook = false;
 
-	float probablityTsunami = 5; // probability of Tsunami over 1 minute
+	float probablityTsunami = 3; // probability of Tsunami over 1 minute
 	float intensityTsunami = 0.1f; //range 0 -> 1
 
-	float probabilityEarthQuake = 15; //probability of EQ over 1 minute
+	float probabilityEarthQuake = 25; //probability of EQ over 1 minute
 	float intensityEQ = 0.1f; //range 0 - > 1
 
 	float intensityIncPerSec = 2f;
@@ -53,7 +53,7 @@ public class GodsWhim : MonoBehaviour {
 			float curIntensityTsu = realIntensityTsu ();
 
 
-			if (Random.Range ((int)0, 100) <= (int)(probablityTsunami * Time.deltaTime)){
+			if (Random.Range (0, 100) <= (probablityTsunami * Time.deltaTime)){
 				Vector2[] tsuDir = directionToMapEdge ();
 				int riseIterations = (int) Mathf.Clamp( Random.Range ((int)GV.GOD_RiseIteration[0]*curIntensityTsu, (int) GV.GOD_RiseIteration[1]*curIntensityTsu),(int)GV.GOD_RiseIteration[0],(int) GV.GOD_RiseIteration[1]);
 				int steps = (int) Mathf.Clamp(Random.Range ((int)GV.GOD_StepsInMax [0], GV.GOD_StepsInMax [1]),(int)GV.GOD_StepsInMax [0],(int)GV.GOD_StepsInMax [1]);
@@ -65,7 +65,7 @@ public class GodsWhim : MonoBehaviour {
 				WorldGrid.Instance.tsunamiManager.CreateLineTsunami (tsuDir[0],tsuDir[1],riseIterations,steps,tempCur,repB,repeats);
 				//Debug.Log("Make Tsunami!");
 			}
-			if (Random.Range ((int)0, 100) <= (int)(probabilityEarthQuake * Time.deltaTime)){
+			if (Random.Range (0, 100) <= (probabilityEarthQuake * Time.deltaTime)){
 				//Debug.Log("Make earthwuake!");
 				Vector2 location = new Vector2 ((int)Random.Range ((int) GV.World_Size_X / 4, (int) GV.World_Size_X - (int) GV.World_Size_X / 4), (int)Random.Range (GV.World_Size_X / 4, (int) GV.World_Size_Z - (int) GV.World_Size_X / 4));
 				int wavelength = (int) Mathf.Clamp((Random.Range(2, 5) * curIntensityEQ),2,5);
