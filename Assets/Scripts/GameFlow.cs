@@ -76,6 +76,7 @@ public class GameFlow : MonoBehaviour {
             WorldGrid.Instance.waterManager.UpdateWaterManager();
             if (Time.time >= timeAtNextSystemCleanup)
             {
+                cameraVisible.UpdateWorld();
                 WorldGrid.Instance.PreformSnapCleanup();
                 timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval;
             }

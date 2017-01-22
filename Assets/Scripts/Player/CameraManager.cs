@@ -39,7 +39,6 @@ public class CameraManager : MonoBehaviour {
     {
         panValue += f * Time.deltaTime;
         panValue = Mathf.Clamp(panValue, 0, maxPanValue);
-        Debug.Log("pan value: " + panValue);
     }
 		
 }
