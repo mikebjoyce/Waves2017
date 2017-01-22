@@ -11,10 +11,10 @@ public class GodsWhim : MonoBehaviour {
 	public Earthquakes EQ;
 	public bool holdingBook = false;
 
-	float probablityTsunami = 3; // probability of Tsunami over 1 minute
+	float probablityTsunami = 100; // probability of Tsunami over 1 minute
 	float intensityTsunami = 0.1f; //range 0 -> 1
 
-	float probabilityEarthQuake = 15; //probability of EQ over 1 minute
+	float probabilityEarthQuake = 100; //probability of EQ over 1 minute
 	float intensityEQ = 0.1f; //range 0 - > 1
 
 	float intensityIncPerSec = 2f;
