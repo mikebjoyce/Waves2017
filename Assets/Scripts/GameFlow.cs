@@ -26,7 +26,9 @@ public class GameFlow : MonoBehaviour {
         WorldGrid.Instance.Initialize();
         timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval * 2; //bit of buffer for first cleanup
         cameraVisible.UpdateWorld();
+		//Debug.Log (p1.gameObject.isActiveAndEnabled);
         p1.gameObject.SetActive(true);
+		//Debug.Log (p1.isActiveAndEnabled);
         p1.Initialize();
     }
 

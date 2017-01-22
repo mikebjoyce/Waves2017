@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour {
 
 	public Camera playerCam;
+	public GameObject digLoc;
 
 	//Vars
 	public Collider collBox;
@@ -95,10 +96,11 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	public void Dig(){
-		Debug.Log ("in Dig");
+		
 		if (isHolding)
 			Drop ();
 		else {
+			Debug.Log ("in Dig");
 			//do dig stuff
 			int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
 			Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
@@ -148,8 +150,8 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	private Vector2 roundV2(Vector2 input){
-		float x = (input.x - (int) input.x > 0.5) ? (int) input.x + 1 : (int) input.x;
-		float y = (input.y - (int) input.y > 0.5) ? (int) input.y + 1 : (int) input.y;
+		int x = (input.x - (int) input.x > 0.5) ? (int) input.x + 1 : (int) input.x;
+		int y = (input.y - (int) input.y > 0.5) ? (int) input.y + 1 : (int) input.y;
 		return new Vector2(x,y);
 	}
 }
