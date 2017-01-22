@@ -14,6 +14,8 @@ public class PlayerControl : MonoBehaviour {
 	public Rigidbody body;
 
 	public bool isGrounded = false;
+    public Book book;
+    public Transform holdingSpot;  //-38 degrees in x
 
 	private Vector3 forward;
 	private bool isHolding = false;
@@ -23,10 +25,10 @@ public class PlayerControl : MonoBehaviour {
 
 	public Vector2 position;
 
-	public void Initialize(){
+	/*public void Initialize(){
 		forward = transform.forward;
 		transform.position = new Vector3(WorldGrid.worldCenterPoint.x, WorldGrid.Instance.GetHeightAt(WorldGrid.worldCenterPoint) + 5, WorldGrid.worldCenterPoint.y);
-	}
+	}*/
 
 	public void Initialize(Vector3 loc){
 		transform.position = loc;
@@ -50,12 +52,8 @@ public class PlayerControl : MonoBehaviour {
 		ChangeDigLocColor ();
 
 		ApplyCurrentForce ();
-
         
 	}
-
-
-
 
 
 	void OnTriggerEnter(Collider other){
@@ -63,7 +61,7 @@ public class PlayerControl : MonoBehaviour {
 			isGrounded = true;
 			lockMove = false;
 		}
-	} 
+    } 
 
 	/*
 	void OnCollisionStay(Collider collision){
@@ -78,7 +76,7 @@ public class PlayerControl : MonoBehaviour {
 			isGrounded = false;
 			lockMove = true;
 		}
-	}
+    }
 
 
 	//player Movement and Actions
@@ -117,6 +115,26 @@ public class PlayerControl : MonoBehaviour {
 			body.AddForce (Vector3.up * PlayerGV.G_PlayerJumpForce, ForceMode.Impulse);
 		}
 	}
+
+    public void ActionButton()
+    {
+        if (!book && Vector3.Distance(GV.theOneBook.transform.position,transform.position) < 2)
+        {
+            book = GV.theOneBook;
+            book.isHeld = true;            
+            book.transform.SetParent(holdingSpot);
+            //picks up book
+        }
+        else if (book)
+        { //drop book
+            book.SetHeld(false);
+            book.transform.SetParent(null);
+            book = null;
+            //will drop book
+        }
+        else
+            Dig();
+    }
 
 	public void Dig(){
 		if (isHolding)

@@ -22,6 +22,17 @@ public class RoundSetup : MonoBehaviour {
             players.Add(pcs);
         }
         SetupCameras(players);
+        DropBook();
+    }
+
+    private void DropBook()
+    {
+        float x = Random.Range(0.4f, .6f) * GV.World_Size_X;
+        float z = Random.Range(0.5f, .6f) * GV.World_Size_Z;
+        float y = WorldGrid.Instance.GetHeightAt(new Vector2(x, z)) + 1;
+        GameObject go = Instantiate(Resources.Load("Prefabs/Book")) as GameObject;
+        go.transform.position = new Vector3(x, y, z);
+        GV.theOneBook = go.GetComponent<Book>();
     }
 
     public void SetupCameras(List<PlayerControl> _players)

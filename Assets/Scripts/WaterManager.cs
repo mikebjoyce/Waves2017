@@ -58,28 +58,33 @@ public class WaterManager  {
 
     public void UpdateWaterManager()
     {
-        var watch = System.Diagnostics.Stopwatch.StartNew();
-        for (int i = 0; i < GV.World_Size_X; i++)
-            for (int ii = 0; ii < GV.World_Size_Z; ii++)
-            {
-                Vector2 v2 = new Vector2(i, ii);
-                if (toUpdate.ContainsKey(v2))
+        if (timeAtNextUpdate < Time.time)
+        {
+            timeAtNextUpdate = Time.time + GV.Water_Time_Between_Updates;
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            for (int i = 0; i < GV.World_Size_X; i++)
+                for (int ii = 0; ii < GV.World_Size_Z; ii++)
                 {
-                    if (toUpdate[v2].isDisturbed)
+                    Vector2 v2 = new Vector2(i, ii);
+                    if (toUpdate.ContainsKey(v2))
                     {
-                        UpdateWater(toUpdate[v2]);
+                        if (toUpdate[v2].isDisturbed)
+                        {
+                            UpdateWater(toUpdate[v2]);
+                        }
+                        else
+                        {
+                            toUpdate.Remove(v2);
+                        }
                     }
-                    else
+                    if (watch.ElapsedMilliseconds > GV.Water_Time_Spent_Updating)
                     {
-                        toUpdate.Remove(v2);
+                        timeExit++;
+                        return;
                     }
                 }
-                if (watch.ElapsedMilliseconds > GV.Water_Time_Spent_Updating)
-                {
-                    timeExit++;
-                    return;
-                }
-            }
+
+        }
         //Debug.Log(watch.Elapsed.Milliseconds);
         //Debug.Log("2: " + watch.Elapsed.Milliseconds);
     }

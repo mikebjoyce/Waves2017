@@ -21,11 +21,12 @@ public class GV : MonoBehaviour {
 
     public static WorldLinks worldLinks;
     public static GameFlow gameFlow;
+    public static Book theOneBook;
 
     //Water
     public static readonly float Water_Sea_Width = 3;
-    public static readonly float Water_Time_Spent_Updating = 333f; //In milliseconds 
-    public static readonly float Water_Time_Between_Updates = .5f; //In milliseconds 
+    public static readonly float Water_Time_Spent_Updating = 333f; //In milliseconds, max time
+    public static readonly float Water_Time_Between_Updates = .25f; //In milliseconds 
     
 
     private static readonly float Water_Sections = 5; //Using 1/this in calculations does not yeild .2f... it just yeilds a nonsensical number that outputs as .2f... use the function below

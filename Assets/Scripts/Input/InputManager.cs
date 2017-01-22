@@ -41,7 +41,7 @@ public class InputManager : MonoBehaviour {
 		if (Input.GetButtonDown (keyList [2]))
 			pControl.Jump ();
 		if (Input.GetButtonDown (keyList [3]))
-			pControl.Dig ();
+			pControl.ActionButton();
 	}
 
 	public void changeInputType(GameVariable.controlerType toSet){
