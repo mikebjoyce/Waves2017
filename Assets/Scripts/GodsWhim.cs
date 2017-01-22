@@ -71,7 +71,7 @@ public class GodsWhim : MonoBehaviour {
 				int wavelength = (int) Mathf.Clamp((Random.Range(2, 5) * curIntensityEQ),2,5);
 				int crestLimit = (int) Mathf.Clamp((Random.Range (1, 3) * curIntensityEQ),1,3);
 				int cycles = Mathf.Clamp((int) (Random.Range (1, 5) * curIntensityEQ),1,5);
-				EQ.CreateEarthquake (6, 1, 1, fillEqLoc ());
+				EQ.CreateEarthquake (6, 2, 1, fillEqLoc ());
 			}
 		}
 	}

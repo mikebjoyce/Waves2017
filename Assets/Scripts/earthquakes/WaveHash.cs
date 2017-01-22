@@ -191,7 +191,7 @@ public class WaveHash : MonoBehaviour {
 									Debug.Log ("wave Arr ret > 5. Raw = " + waveArray [c, counter] +" Ret = " + tempWaveRet + " iteration " + iteration +"  Curr Circle " + currentCircle + " Time " + Time.time);
 								}
 								Pillar tempP = WorldGrid.Instance.GetPillarAt (v, true);
-								tempP.ModHeight (tempWaveRet);
+								tempP.ModHeight (tempWaveRet*GV.Water_Flow_Rate);
 								//Debug.Log ("toModBy " + tempWaveRet);
 							}
 						}
@@ -209,7 +209,7 @@ public class WaveHash : MonoBehaviour {
 							//Debug.Log ("currentEarthquake.waveArray [r, currentEarthquake.counter] " + currentEarthquake.waveArray [r, currentEarthquake.counter]);
 							int tempWaveRet = modifyWaveRet (waveArray [r, counter], r + (int)howManyCycles * (wavelength + 1));
 							Pillar tempP =	WorldGrid.Instance.GetPillarAt (v, true);
-							tempP.ModHeight (tempWaveRet);
+							tempP.ModHeight (tempWaveRet * GV.Water_Flow_Rate);
 							//Debug.Log ("toModBy " +tempWaveRet);
 						}
 					}
