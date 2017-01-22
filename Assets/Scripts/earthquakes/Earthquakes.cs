@@ -120,7 +120,8 @@ public class Earthquakes : MonoBehaviour
 				int currentCircle = c + (currentEarthquake.wavelength + 1) * i;
 				if (currentCircle > currentEarthquake.lowestBound() && currentCircle < currentEarthquake.totalWaveDistance) {
 					foreach (Vector2 v in arrayOfCircles[currentCircle]) {
-						WorldGrid.Instance.GetPillarAt (v, true).ModHeight (modifyWaveRet (currentEarthquake.waveArray [c, currentEarthquake.counter], c + (int) (currentEarthquake.wavelength + 1) * i));
+						if(WorldGrid.Instance.InBounds(v))
+							WorldGrid.Instance.GetPillarAt (v, true).ModHeight (modifyWaveRet (currentEarthquake.waveArray [c, currentEarthquake.counter], c + (int) (currentEarthquake.wavelength + 1) * i));
 					}
 				}
 			}
@@ -129,7 +130,12 @@ public class Earthquakes : MonoBehaviour
 			int currentCircle = r + (int) howManyCycles * (currentEarthquake.wavelength + 1);
 			if (currentCircle > currentEarthquake.lowestBound () && currentCircle < currentEarthquake.totalWaveDistance) {
 				foreach (Vector2 v in arrayOfCircles[currentCircle]) {
-					WorldGrid.Instance.GetPillarAt (v, true).ModHeight (modifyWaveRet (currentEarthquake.waveArray [r - 1, currentEarthquake.counter], r + (int) howManyCycles * (currentEarthquake.wavelength + 1)));
+					if (WorldGrid.Instance.InBounds (v)) {
+						Debug.Log ("Pillar " + WorldGrid.Instance.GetPillarAt (v, true).ToString ());
+						Debug.Log ("Vector 2 current pillar loc " + v.ToString());
+						Debug.Log ("currentEarthquake.waveArray [r, currentEarthquake.counter] " + currentEarthquake.waveArray [r, currentEarthquake.counter]);
+						WorldGrid.Instance.GetPillarAt (v, true).ModHeight (modifyWaveRet (currentEarthquake.waveArray [r, currentEarthquake.counter], r + (int)howManyCycles * (currentEarthquake.wavelength + 1)));
+					}
 				}
 			}
 		}
@@ -140,17 +146,20 @@ public class Earthquakes : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        CreateEarthquake(6, 3, 3, (Vector2.zero));
+		CreateEarthquake(6, 3, 3, WorldGrid.worldCenterPoint);
+		isActive = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-		if (lastUpdateTime + GV.Earthquake_Tick_Length < Time.time) {
+		if (lastUpdateTime + GV.Earthquake_Tick_Length < Time.time && isActive) {
 			//update
 			//update last
 			RunLoop();
 			lastUpdateTime = Time.time;
+			Debug.Log ("current Earthquake Iteration " + currentEarthquake.iteration);
+			//Debug.Log ();
 		}
     }
 }

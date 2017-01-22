@@ -126,7 +126,7 @@ public class WorldGrid  {
         toClean.SetHeight(toClean.pos.y);
     }
 
-    private bool InBounds(Vector2 atLoc)
+    public bool InBounds(Vector2 atLoc)
     {
         return !(atLoc.x >= GV.World_Size_X || atLoc.x < 0 || atLoc.y >= GV.World_Size_Z || atLoc.y < 0) ;
     }
