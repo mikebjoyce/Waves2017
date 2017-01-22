@@ -9,7 +9,6 @@ public class RoundSetup : MonoBehaviour {
     public void SetupPlayers(List<GameVariable.controlerType> cntrlTypes)
     {
         players = new List<PlayerControl>();
-        int currentPid = 0;
         foreach(GameVariable.controlerType cntrlType in cntrlTypes)
         {
             GameObject go = Instantiate(Resources.Load("Prefabs/PlayerHolder")) as GameObject;
@@ -20,6 +19,7 @@ public class RoundSetup : MonoBehaviour {
             pcs.Initialize(new Vector3(xcord, yCord, zcord));
             go.GetComponentInChildren<InputManager>().controlType = cntrlType;
             go.GetComponentInChildren<InputManager>().Initialize(cntrlType);
+            players.Add(pcs);
         }
         SetupCameras(players);
     }
@@ -44,30 +44,23 @@ public class RoundSetup : MonoBehaviour {
 
     private void Setup2Player(List<PlayerControl> _players)
     {
-        for(int i = 0; i < 2; i++)
-        {
-            Rect playerViewRect = (i == 0) ? new Rect(0, 0, .5f, 1) : new Rect(.5f, .5f, .5f, 1);
-            _players[i].gameObject.GetComponentInChildren<Camera>().rect = playerViewRect;
-        }
+        _players[0].playerCam.rect = new Rect(0, 0f, .5f, 1f);
+        _players[1].playerCam.rect = new Rect(.5f, 0f,  .5f, 1f);
     }
 
     private void Setup3Player(List<PlayerControl> _players)
     {
-        for (int i = 0; i < 2; i++)
-        {
-            Rect playerViewRect = (i == 0) ? new Rect(0, 0, .5f, .5f) : new Rect(.5f, .5f, .5f, .5f);
-            _players[i].gameObject.GetComponentInChildren<Camera>().rect = playerViewRect;
-        }
-        Rect playerViewRect2 = new Rect(0, .5f, 1f, .5f);
-        _players[2].gameObject.GetComponentInChildren<Camera>().rect = playerViewRect2;
+        _players[0].playerCam.rect = new Rect(0f,  .5f, .5f, .5f);
+        _players[1].playerCam.rect = new Rect(.5f, .5f,.5f, .5f);
+        _players[2].playerCam.rect = new Rect(0f,  0f, 1f, .5f);
     }
 
     private void Setup4Player(List<PlayerControl> _players)
     {
-        _players[0].gameObject.GetComponentInChildren<Camera>().rect = new Rect(0, 0f, .5f, .5f);
-        _players[1].gameObject.GetComponentInChildren<Camera>().rect = new Rect(0, .5f, .5f, .5f);
-        _players[2].gameObject.GetComponentInChildren<Camera>().rect = new Rect(.5f, 0f, .5f, .5f);
-        _players[3].gameObject.GetComponentInChildren<Camera>().rect = new Rect(.5f, .5f, .5f, .5f);
+        _players[0].playerCam.rect = new Rect(0, 0f, .5f, .5f);
+        _players[1].playerCam.rect = new Rect(0, .5f, .5f, .5f);
+        _players[2].playerCam.rect = new Rect(.5f, 0f, .5f, .5f);
+        _players[3].playerCam.rect = new Rect(.5f, .5f, .5f, .5f);
     }
 
 

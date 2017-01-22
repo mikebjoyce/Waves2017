@@ -38,9 +38,15 @@ public class GameFlow : MonoBehaviour {
         //Debug.Log (p1.gameObject.isActiveAndEnabled);
         //p1.SetActive(true);
         //p1.GetComponentInChildren<PlayerControl> ().Initialize ();
+
         //earthQ.CreateEarthquake (6,3,3,WorldGrid.worldCenterPoint);
-		earthQ.CreateEarthquake(6,3,1,WorldGrid.worldCenterPoint);
+	earthQ.CreateEarthquake(6,3,1,WorldGrid.worldCenterPoint);
         roundSetup.SetupPlayers(new List<GameVariable.controlerType>() { GameVariable.controlerType.Joy1, GameVariable.controlerType.Joy2, GameVariable.controlerType.KeyLeft });
+        //earthQ.CreateEarthquake (1,2,3,WorldGrid.worldCenterPoint);
+        if (GameVariable.activePlayerCntrls == null)
+            roundSetup.SetupPlayers(new List<GameVariable.controlerType>() { GameVariable.controlerType.KeyLeft });//, GameVariable.controlerType.Joy1, GameVariable.controlerType.Joy2, GameVariable.controlerType.KeyRight });
+        else
+            roundSetup.SetupPlayers(GameVariable.activePlayerCntrls);
 		//Debug.Log (p1.isActiveAndEnabled);
     }
 
