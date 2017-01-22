@@ -61,65 +61,8 @@ public class WaveHash : MonoBehaviour {
 		totalWaveDistance = retTotalWaveDistance (crestlimit, wavelength);
 	}
 
-	/*
-	public void PopulateWaveArray()
-	{
-		//Debug.Log ("----------------------------------");
-		//printDubArr (waveArray);
-		//Debug.Log ("----------------------------------");
-		Debug.Log ("WAVELENGTH = " + wavelength);
-		for (int x = 0; x < wavelength - 1; x++) {
-			if (x != wavelength - 1) {
-				waveArray [x, 0] = initializer (wavelength) [x];
-				Debug.Log ("----------------------------------");
-				printDubArr (waveArray);
-				Debug.Log ("----------------------------------");
-			}
-			for (int y = 0; y < wavelength - 1; y++) {
-				Debug.Log("x" + x + " y" + y);
-				//Debug.Log("x" + x + " y" + y);
-				//printDubArr (waveArray);
-				//Debug.Log("x" + x + " y" + y);
-				if (y == 0) {
-					//waveArray [x, y] = waveArray [wavelength - 2, y - 1] - waveArray [x, y - 1];
-					if (x == 0) {
-						
-						//Debug.Log ("["+(wavelength - 1)+"," + wavelength +"] - [" + x +"," +wavelength+"]");
-						//waveArray [x, y] = waveArray [wavelength, wavelength-1] - waveArray [x, wavelength-1];
-					} else {
-						//waveArray[x,y] = waveArray[x - 1, wavelength-1] - waveArray[x, wavelength-1];
-					}
-					//Debug.Log ("[" + (wavelength) + "]["+(y - 1)+") - ["+(x)+"]["+(y - 1)+"]");
-				} else {
-					if (x == 0) {
-						//waveArray [x, y] = waveArray [wavelength, y - 1] - waveArray [x, y - 1];
-					} else {
-						//waveArray[x,y] = waveArray[x - 1, y - 1] - waveArray[x, y - 1];
-					}
-
-					//waveArray [x, y] = waveArray [x , y] - waveArray [x - 1, y];
-
-					//Debug.Log ("[" + (x - 1) + "]["+(y - 1)+") - ["+(x - 1)+"]["+(y)+"]");
-				}
-				//printDubArr (waveArray);
-			}
-			/*Debug.Log ("----------------------------------");
-			printDubArr (waveArray);
-			Debug.Log ("----------------------------------");
-		}
-		if (debugger) {
-			Debug.Log ("Times PopulateWaveArray has been Called" + pCount);
-			printDubArr (waveArray);
-			pCount++;
-		}
-		Debug.Log ("----------------------------------");
-	}*/
-
-
-
 	public void PopulateWaveArray()
     {
-		Debug.Log ("wave length " + wavelength);
         for (int y = 0; y < wavelength; y++)
         {
             waveArray[0, y] = initializer(wavelength)[y]; 
@@ -151,7 +94,6 @@ public class WaveHash : MonoBehaviour {
 
 			}
 		}
-		//printDubArr (waveArray);
     } 
 		
 
