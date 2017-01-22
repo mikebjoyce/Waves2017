@@ -52,13 +52,7 @@ public class PlayerControl : MonoBehaviour {
 
 
 
-	private void ApplyCurrentForce(){
-		Pillar underUs = WorldGrid.Instance.GetPillarAt (roundV2(position));
-		if (underUs.pillarType == GV.PillarType.Water){
-			body.AddForce(underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime, ForceMode.Impulse);
-			Debug.Log ("Force added to body from current " + underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime);
-		}
-	}
+
 
 	void OnTriggerEnter(Collider other){
 		if (other.gameObject.layer == 8) {
@@ -228,5 +222,13 @@ public class PlayerControl : MonoBehaviour {
 				digMesh.material.color = Color.red;
 		}
 
+	}
+
+	private void ApplyCurrentForce(){
+		Pillar underUs = WorldGrid.Instance.GetPillarAt (roundV2(position));
+		if (underUs.pillarType == GV.PillarType.Water && transform.position.y < underUs.GetHeight()){
+			body.AddForce(underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime, ForceMode.Impulse);
+			Debug.Log ("Force added to body from current " + underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime);
+		}
 	}
 }
