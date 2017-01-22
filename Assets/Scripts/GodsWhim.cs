@@ -10,15 +10,21 @@ public class GodsWhim : MonoBehaviour {
 	float probablityTsunami = 100f; // probability of Tsunami over 1 minute
 	float intensityTsunami = 0.1f; //range 0 -> 1
 
-
 	float probabilityEarthQuake = 100f; //probability of EQ over 1 minute
 	float intensityEQ = 0.1f; //range 0 - > 1
 
 	float intensityIncPerSec = 2f;
 
-
 	float tempIntensity = 0f;
 	float book_intensityIncPerSec = 20f;
+
+	public float realIntensityTsu(){
+		return intensityTsunami * tempIntensity;
+	}
+
+	public float realIntensityEQ(){
+		return intensityEQ * tempIntensity;
+	}
 
 
 	// Use this for initialization
@@ -30,17 +36,24 @@ public class GodsWhim : MonoBehaviour {
 	void Update () {
 		intensityTsunami += intensityIncPerSec * Time.deltaTime;
 		intensityEQ += intensityIncPerSec * Time.deltaTime;
-		//if (GV.)
-		//	tempIntensity += book_intensityIncPerSec * Time.deltaTime;
+		if (GV.theOneBook.isHeld)
+			tempIntensity += book_intensityIncPerSec * Time.deltaTime;
+		else
+			tempIntensity -= book_intensityIncPerSec * Time.deltaTime;
+		if (tempIntensity < 0)
+			tempIntensity = 0;
+
+		float curIntensityEQ = realIntensityEQ ();
+		float curIntensityTsu = realIntensityTsu ();
 
 
 		if (Random.Range ((int)0, 100) <= (int)(probablityTsunami * Time.deltaTime / 60)){
 			Vector2[] tsuDir = directionToMapEdge ();
-			int riseIterations = (int) Random.Range ((int)GV.GOD_RiseIteration[0]*intensityTsunami, (int) GV.GOD_RiseIteration[1]*intensityTsunami);
+			int riseIterations = (int) Random.Range ((int)GV.GOD_RiseIteration[0]*curIntensityTsu, (int) GV.GOD_RiseIteration[1]*curIntensityTsu);
 			int steps = (int) Random.Range ((int)GV.GOD_StepsInMax [0], GV.GOD_StepsInMax [1]);
-			int tempCur = (int)Mathf.Floor (intensityTsunami / GV.GOD_flowRatePerPercentAngre);
+			int tempCur = (int)Mathf.Floor (curIntensityTsu / GV.GOD_flowRatePerPercentAngre);
 			int current = (tempCur != 0) ? tempCur : 1;
-			int repeats = (intensityTsunami < 0.33) ? (int) Mathf.Ceil(Random.Range(GV.GOD_repeats[0],GV.GOD_repeats[1]) * intensityTsunami) : 0;
+			int repeats = (curIntensityTsu < 0.33) ? (int) Mathf.Ceil(Random.Range(GV.GOD_repeats[0],GV.GOD_repeats[1]) * curIntensityTsu) : 0;
 			bool repB = (repeats != 0) ? true: false;
 			WorldGrid.Instance.tsunamiManager.CreateLineTsunami (tsuDir[0],tsuDir[1],riseIterations,steps,current,repB,repeats);
 			Debug.Log("Make Tsunami!");
