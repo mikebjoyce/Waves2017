@@ -77,6 +77,18 @@ public class WorldGrid  {
         }
     }
 
+    public List<Pillar> GetAllNeighbors(Vector2 atLoc)
+    {
+        List<Pillar> toRet = new List<Pillar>();
+        foreach (Vector2 dir in GV.Valid_Directions)
+        {
+            Pillar p = GetPillarAt(atLoc + dir);
+            if (p)
+                toRet.Add(p);
+        }
+        return toRet;
+    }
+
     public Pillar GetPillarAt(Vector2 atLoc, bool groundOnly = false)
     { //returns the highest one, ground or water
 		if (!InBounds(atLoc))

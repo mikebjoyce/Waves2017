@@ -9,31 +9,50 @@ public class GameFlow : MonoBehaviour {
 	//public PlayerControl[] players = new PlayerControl[4];
 	public PlayerControl p1;
     public CameraVisible cameraVisible;
+    MapGenerator mapGen;
+    bool worldIsLoaded = false;
+    float renderCooldown = 1; //gives time for map to be drawn
 
     public void Start()
     {
-        MapGenerator mapGen = GameObject.FindObjectOfType<MapGenerator>();
+        mapGen = GameObject.FindObjectOfType<MapGenerator>();
         mapGen.GenerateLand();
-        while(!mapGen.LoadTiles()){}
+        //next step goes into update
+    }
+
+    public void FinishLoad()
+    { //called after map loads
         mapGen.OceanFiller();
         WorldGrid.Instance.Initialize();
         timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval * 2; //bit of buffer for first cleanup
         cameraVisible.UpdateWorld();
-		/*foreach (PlayerControl p in players) {
-			
-
-		}*/
-		p1.Initialize ();
+        p1.gameObject.SetActive(true);
+        p1.Initialize();
     }
+
 
     public void Update()
     {
-        WorldGrid.Instance.tsunamiManager.UpdateTsunami();
-        WorldGrid.Instance.waterManager.UpdateWaterManager();
-        if(Time.time >= timeAtNextSystemCleanup)
+        if (!worldIsLoaded)
         {
-            WorldGrid.Instance.PreformSnapCleanup();
-            timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval;
+            renderCooldown -= Time.deltaTime;
+            if (renderCooldown <= 0)
+            {
+                renderCooldown = 1;
+                worldIsLoaded = mapGen.LoadTiles();
+                if (worldIsLoaded)
+                    FinishLoad();
+            }
+        }
+        else
+        {
+            WorldGrid.Instance.tsunamiManager.UpdateTsunami();
+            WorldGrid.Instance.waterManager.UpdateWaterManager();
+            if (Time.time >= timeAtNextSystemCleanup)
+            {
+                WorldGrid.Instance.PreformSnapCleanup();
+                timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval;
+            }
         }
     }
 }

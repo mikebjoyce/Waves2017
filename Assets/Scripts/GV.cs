@@ -25,7 +25,9 @@ public class GV : MonoBehaviour {
     public static readonly float Tsunami_Update_Step = .5f;
 
     //Map Generator
-    public static readonly float MapGen_Time_spent_Creating = 1f;
+    public static int MapGen_Tiles_Load_Per_Cycle = 25;
+    public static int MapGen_Tiles_Load_Bonus = 8; //increase by that many per cycle as long as cycle time is under dt below
+    public static float MapGen_Ideal_Time_Per_cycle = .50f; //in seconds
 
     //system
     public static float System_Pillar_Cleanup_Interval = 20; //perodically cleans up the strange floaters that appear

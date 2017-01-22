@@ -12,6 +12,8 @@ public class WaterManager  {
     List<Pillar> toDestroy = new List<Pillar>();
 
     List<Pillar> toUpdate = new List<Pillar>();
+    List<Pillar> toAddToUpdate = new List<Pillar>();
+    List<Pillar> toRemoveFromUpdate = new List<Pillar>();
     int currentUpdateIndex = 0;
 
     public WaterManager()
@@ -19,10 +21,22 @@ public class WaterManager  {
         GV.SetupWaterFlowRate();
     }
 
+    public void WasDisturbed(Pillar disturbed, bool setDisturbed)
+    {
+        //if(setDisturbed && !toAddToUpdate.Contains(disturbed))
+
+        toUpdate.Add(disturbed);
+    }
+
     public void PrepWaterUpdate()
     {
         activeWater = SortPillarsByTallestHeight(activeWater);
-        toUpdate = new List<Pillar>(activeWater); //Since list will be modified internally
+        foreach (Pillar toRemove in toRemoveFromUpdate)
+            toUpdate.Remove(toRemove);
+        toUpdate.AddRange(toAddToUpdate);
+        toRemoveFromUpdate = new List<Pillar>();
+        toAddToUpdate = new List<Pillar>();
+        //var peopleToAdd = secondList.Where(p1 => initialList.Any(p2 => p1.Value == p2.Value)).ToList();
         currentUpdateIndex = 0;
     }
 
@@ -45,7 +59,7 @@ public class WaterManager  {
     }
     
 
-    public void UpdateAllWater()
+   /* public void UpdateAllWater()
     {
         activeWater = SortPillarsByTallestHeight(activeWater);
         List<Pillar> toUpdate = new List<Pillar>(activeWater); //Since list will be modified internally
@@ -54,7 +68,7 @@ public class WaterManager  {
         foreach (Pillar _toDestroy in toDestroy)
             DestroyWater(_toDestroy);
         toDestroy = new List<Pillar>();
-    }
+    }*/
 
     private bool CanTransfer(float heightDiff, GV.PillarType otherPillarType)
     {
@@ -102,6 +116,12 @@ public class WaterManager  {
         {
             neighborPillars.Remove(flowDirectionPillar);
             neighborPillars.Insert(0, flowDirectionPillar);
+        }
+
+        if(neighborPillars.Count == 0)
+        {
+            toUpdate.wasDisturbed = false;
+            return;
         }
 
         /*if (spreadDirections.Contains(flowDir))

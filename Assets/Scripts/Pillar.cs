@@ -13,6 +13,7 @@ public class Pillar : MonoBehaviour {
     public bool DebugLogs = false;
     public List<GameObject> segments = new List<GameObject>();
     private int invisibleBelow;      //0 = grass, 1 = top, ..., 5 = bottom
+    public bool wasDisturbed { set { WorldGrid.Instance.waterManager.WasDisturbed(this,value); } }
 
     public void Initialize(Vector3 _pos, GV.PillarType _pillarType)
     {
@@ -72,6 +73,9 @@ public class Pillar : MonoBehaviour {
 
     public void ModHeight(float modAmt)
     {
+        wasDisturbed = true;
+        if (modAmt < 0)
+            DisturbAllNeighbors();
         SetHeight(pos.y + modAmt);
     }
 
@@ -89,6 +93,14 @@ public class Pillar : MonoBehaviour {
         if (pillarType == GV.PillarType.Water)
             foreach(Transform t in transform)
                 t.GetComponent<Renderer>().material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
+    }
+
+    private void DisturbAllNeighbors()
+    {
+        List<Pillar> neighs = WorldGrid.Instance.GetAllNeighbors(new Vector2(pos.x, pos.z));
+        foreach (Pillar p in neighs)
+            if (p.pillarType == GV.PillarType.Water)
+                p.wasDisturbed = true;
     }
 
     public Vector2 GetCurrent(bool normalized)

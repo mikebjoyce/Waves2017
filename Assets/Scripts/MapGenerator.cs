@@ -160,12 +160,15 @@ public class MapGenerator : MonoBehaviour {
 
     public bool LoadTiles()
     {
-        float timeToExit = Time.time + GV.MapGen_Time_spent_Creating;
-        while(timeToExit > Time.time && tileLoadingIndex < tilesToLoad.Count)
-        {
+        float startTime = Time.time;
+        for(int i = 0; tileLoadingIndex < tilesToLoad.Count && i < GV.MapGen_Tiles_Load_Per_Cycle; i++, tileLoadingIndex++)
             InstantiatePillar(tilesToLoad[tileLoadingIndex]);
-            tileLoadingIndex++;
-        }
+        float endTime = Time.time - startTime;
+        if (endTime < GV.MapGen_Ideal_Time_Per_cycle)
+            GV.MapGen_Tiles_Load_Per_Cycle += GV.MapGen_Tiles_Load_Bonus;
+        else if(GV.MapGen_Tiles_Load_Per_Cycle > 20)
+            GV.MapGen_Tiles_Load_Per_Cycle -= GV.MapGen_Tiles_Load_Bonus;
+
         return tileLoadingIndex >= tilesToLoad.Count;
     }
 }
