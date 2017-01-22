@@ -16,7 +16,7 @@ public class InputManager : MonoBehaviour {
 		setupKeys ();
 	}
 
-	void Initializer(){
+	public void Initializer(){
 		pControl = GetComponent<PlayerControl> ();
 		setupKeys ();
 	}
@@ -29,9 +29,9 @@ public class InputManager : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
+	/*void Start () {
 		Initializer ();
-	}
+	}*/
 	
 	// Update is called once per frame
 	 void Update () {
