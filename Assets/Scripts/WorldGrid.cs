@@ -139,6 +139,8 @@ public class WorldGrid  {
         Pillar waterPillar = waterGrid[(int)atLoc.x, (int)atLoc.y];
         if (!groundOnly && waterPillar && waterPillar.isActive) // if water exists
         {
+            if (waterPillar.isStaticPillar)
+                return 999;
             return waterGrid[(int)atLoc.x, (int)atLoc.y].GetHeight();
         }
         else
