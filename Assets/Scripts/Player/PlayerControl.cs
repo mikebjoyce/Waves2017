@@ -7,7 +7,7 @@ public class PlayerControl : MonoBehaviour {
 	public Camera playerCam;
 
 	//Vars
-	public BoxCollider collBox;
+	public Collider collBox;
 	public Rigidbody body;
 	public bool isGrounded = false;
 	private Vector3 forward;
@@ -38,7 +38,15 @@ public class PlayerControl : MonoBehaviour {
 
 
 	//isGrounded Check
+
 	void OnCollisionEnter(Collision collision){
+		if (collision.gameObject.layer == 8 && !isGrounded) {
+			isGrounded = true;
+			lockMove = false;
+		}
+	} 
+
+	void OnCollision(Collider collision){
 		if (collision.gameObject.layer == 8 && !isGrounded) {
 			isGrounded = true;
 			lockMove = false;
@@ -87,16 +95,17 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	public void Dig(){
+		Debug.Log ("in Dig");
 		if (isHolding)
 			Drop ();
 		else {
 			//do dig stuff
-			int standingHigh = (int) WorldGrid.Instance.GetHeightAt (position, true);
+			int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
 			Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-			int diggingHight = (int) WorldGrid.Instance.GetHeightAt (position + trueDir, true);
+			int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
 
 			if (standingHigh + 1 <= diggingHight) {
-				WorldGrid.Instance.ModGround(position + trueDir, -1);
+				WorldGrid.Instance.ModGround(roundV2(position) + trueDir, -1);
 				isHolding = true;
 			} else {
 				//too low to dig
@@ -105,13 +114,17 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	public void Drop(){
+		Debug.Log ("in Drop");
 		//do opposite of dig stuff
-		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (position, true);
+		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
 		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (position + trueDir, true);
+		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
 		if (standingHigh + 1 >= diggingHight) {
-			WorldGrid.Instance.ModGround (position + trueDir, 1);
+			WorldGrid.Instance.ModGround (roundV2 (position) + trueDir, 1);
 			isHolding = false;
+			Debug.Log("B4 "+ transform.position);
+			transform.position.Set (roundV2 (position).x, transform.position.y, roundV2 (position).y);
+			Debug.Log("A4 "+transform.position);
 		} else {
 			//too high to place
 		}
@@ -132,6 +145,12 @@ public class PlayerControl : MonoBehaviour {
 		} else {
 			return new Vector2 (0, input.y/Mathf.Abs(input.y)).normalized;
 		}
+	}
+
+	private Vector2 roundV2(Vector2 input){
+		float x = (input.x - (int) input.x > 0.5) ? (int) input.x + 1 : (int) input.x;
+		float y = (input.y - (int) input.y > 0.5) ? (int) input.y + 1 : (int) input.y;
+		return new Vector2(x,y);
 	}
 }
 
