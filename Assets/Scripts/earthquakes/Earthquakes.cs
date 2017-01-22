@@ -155,7 +155,7 @@ public class Earthquakes : MonoBehaviour
 			//update last
 			RunLoop();
 			lastUpdateTime = Time.time;
-			Debug.Log ("current Earthquake Iteration " + currentEarthquake.iteration);
+			//Debug.Log ("current Earthquake Iteration " + currentEarthquake.iteration);
 			//Debug.Log ();
 		}
     }

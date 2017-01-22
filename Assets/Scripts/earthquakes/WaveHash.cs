@@ -24,10 +24,10 @@ public class WaveHash : MonoBehaviour {
         int[] initializerCircles = new int[_waveLength];
         initializerCircles[0] = 1; //0 == 1
         initializerCircles[1] = -1;
-        initializerCircles[2] = -3;
+        initializerCircles[2] = -2;
         initializerCircles[3] = -2;
         initializerCircles[4] = 0;
-        initializerCircles[5] = 3;
+        initializerCircles[5] = 2;
 
         return (initializerCircles);
     } 
