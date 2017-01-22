@@ -54,7 +54,7 @@ public class GV : MonoBehaviour {
     public static float MapGen_Ideal_Time_Per_cycle = .50f; //in seconds
 
     //EarthQuakes
-    public static float Earthquake_Tick_Length = 0.5f;
+    public static float Earthquake_Tick_Length = 0.3f;
 
     //system
     public static float System_Pillar_Cleanup_Interval = 40; //perodically cleans up the strange floaters that appear
