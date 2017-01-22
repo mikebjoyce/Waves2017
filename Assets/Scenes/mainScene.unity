@@ -381,6 +381,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraVisible: {fileID: 2129472747}
   earthQ: {fileID: 45912020}
+  god: {fileID: 0}
 --- !u!4 &2129472745
 Transform:
   m_ObjectHideFlags: 0
@@ -427,17 +428,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dca27a93fe5cdb4181c4def964230a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heightScale: 8
+  heightScale: 4
   detailScale: 6
-  terrainAltitudeConstant: 5
-  centerProxBiasConstant: 3
+  terrainAltitudeConstant: 0
+  centerProxBiasConstant: 4
   heightScaleDecay: 1
-  heightDecayControl: 3
+  heightDecayControl: 4
   smoothDecay: 0.3
   volcano: 0
   volcanoIntensity: 0.4
-  mapCenterImperfect: 0
-  mapCenterRange: 0.2
+  mapCenterImperfect: 1
+  mapCenterRange: 0.4
   tilesToLoad: []
   tilesLoadedOneUpdateAgo: []
   tilesLoadedTwoUpdateAgo: []
