@@ -17,6 +17,7 @@ public class PlayerGV {
 	public static readonly float G_PlayerRotateSpeed = 90f;
 	public static readonly float G_NonGroundedMoveModifier = 0.25f;
 	public static readonly float G_MaxSpeed = 8f;
+	public static readonly float G_WaterForcePerCurrent = 5;
 
 
 }

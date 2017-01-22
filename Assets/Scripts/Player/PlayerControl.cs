@@ -44,17 +44,19 @@ public class PlayerControl : MonoBehaviour {
 		forward = transform.forward;
 
 		moveDigIndic ();
-		if (isHolding) {
-			if (canDrop ())
-				digMesh.material.color = Color.blue;
-			else
-				digMesh.material.color = Color.red;
-				return;
-		} else {
-			if (canDig ())
-				digMesh.material.color = Color.green;
-			else
-				digMesh.material.color = Color.red;
+
+		ChangeDigLocColor ();
+
+		ApplyCurrentForce ();
+	}
+
+
+
+	private void ApplyCurrentForce(){
+		Pillar underUs = WorldGrid.Instance.GetPillarAt (roundV2(position));
+		if (underUs.pillarType == GV.PillarType.Water){
+			body.AddForce(underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime, ForceMode.Impulse);
+			Debug.Log ("Force added to body from current " + underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime);
 		}
 	}
 
@@ -101,7 +103,7 @@ public class PlayerControl : MonoBehaviour {
 
 			//body.AddForce (moveDir * PlayerGV.G_PlayerRunForce, ForceMode.Impulse);
 		} else {
-			Debug.Log ("Hit Max Speed");
+			//Debug.Log ("Hit Max Speed");
 		}
 	}
 
@@ -213,4 +215,18 @@ public class PlayerControl : MonoBehaviour {
 		return new Vector2 (body.velocity.x, body.velocity.z).magnitude >= PlayerGV.G_MaxSpeed;
 	}
 
+	private void ChangeDigLocColor(){
+		if (isHolding) {
+			if (canDrop ())
+				digMesh.material.color = Color.blue;
+			else
+				digMesh.material.color = Color.red;
+		} else {
+			if (canDig ())
+				digMesh.material.color = Color.green;
+			else
+				digMesh.material.color = Color.red;
+		}
+
+	}
 }
