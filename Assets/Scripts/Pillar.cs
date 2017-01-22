@@ -13,7 +13,7 @@ public class Pillar : MonoBehaviour {
     public bool DebugLogs = false;
     public List<GameObject> segments = new List<GameObject>();
     private int invisibleBelow;      //0 = grass, 1 = top, ..., 5 = bottom
-    public bool wasDisturbed { set { WorldGrid.Instance.waterManager.WasDisturbed(this,value); } }
+    public bool wasDisturbed { set { if(pillarType == GV.PillarType.Water) WorldGrid.Instance.waterManager.WasDisturbed(this,value); } }
 
     public void Initialize(Vector3 _pos, GV.PillarType _pillarType)
     {
