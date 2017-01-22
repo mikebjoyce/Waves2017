@@ -11,7 +11,12 @@ public class GameFlow : MonoBehaviour {
     public CameraVisible cameraVisible;
     MapGenerator mapGen;
     bool worldIsLoaded = false;
-    float renderCooldown = 1; //gives time for map to be drawn
+    int renderOrLoad = 0; //every 4 optimizes some stuff
+
+    public void Awake()
+    {
+        GV.gameFlow = this;
+    }
 
     public void Start()
     {
@@ -38,14 +43,20 @@ public class GameFlow : MonoBehaviour {
     {
         if (!worldIsLoaded)
         {
-            renderCooldown -= Time.deltaTime;
-            if (renderCooldown <= 0)
+            if(renderOrLoad < 3)
             {
-                renderCooldown = 1;
+                
+                if (mapGen.tilesLoadedTwoUpdateAgo.Count > 0)
+                    cameraVisible.UpdatePartial(mapGen.tilesLoadedTwoUpdateAgo);
+            }
+            else
+            {
                 worldIsLoaded = mapGen.LoadTiles();
                 if (worldIsLoaded)
                     FinishLoad();
             }
+            renderOrLoad++;
+            renderOrLoad %= 4;
         }
         else
         {

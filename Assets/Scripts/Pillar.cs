@@ -40,6 +40,17 @@ public class Pillar : MonoBehaviour {
         {
             return;
         }
+        else
+        {
+            for(int i = 0; i < segments.Count; i++)
+            {
+                if (i <= newInvBel)
+                    segments[i].SetActive(true);
+                else
+                    segments[i].SetActive(false);
+            }
+
+        }/*
         else if (newInvBel > invisibleBelow)
         {
             for (int i = invisibleBelow + 1; i <= newInvBel; i++)
@@ -53,7 +64,7 @@ public class Pillar : MonoBehaviour {
             {
                 segments[j].SetActive(false);
             }
-        }
+        }*/
         invisibleBelow = newInvBel;
     }
 
@@ -91,11 +102,19 @@ public class Pillar : MonoBehaviour {
     {
         //ground is already it by default
         if (pillarType == GV.PillarType.Water)
-            foreach(Transform t in transform)
-                t.GetComponent<Renderer>().material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
+            foreach (GameObject segment in segments)
+            {
+                Renderer r = segment.GetComponent<Renderer>();
+                if (r)
+                {
+                    r.material = Resources.Load("Materials/WaterMat", typeof(Material)) as Material;
+                    r.receiveShadows = false;
+                    r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                }
+            }
     }
 
-    private void DisturbAllNeighbors()
+    public void DisturbAllNeighbors()
     {
         List<Pillar> neighs = WorldGrid.Instance.GetAllNeighbors(new Vector2(pos.x, pos.z));
         foreach (Pillar p in neighs)

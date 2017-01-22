@@ -6,4 +6,9 @@ public class WorldLinks : MonoBehaviour {
 
     public Transform groundParent;
     public Transform waterParent;
+
+    public void Awake()
+    {
+        GV.worldLinks = this;
+    }
 }

@@ -23,17 +23,21 @@ public class WaterManager  {
 
     public void WasDisturbed(Pillar disturbed, bool setDisturbed)
     {
-        //if(setDisturbed && !toAddToUpdate.Contains(disturbed))
-
-        toUpdate.Add(disturbed);
+        if (setDisturbed && !toAddToUpdate.Contains(disturbed))
+            toAddToUpdate.Add(disturbed);
+        else if (!setDisturbed && !toRemoveFromUpdate.Contains(disturbed))
+            toRemoveFromUpdate.Add(disturbed);
     }
 
     public void PrepWaterUpdate()
     {
-        activeWater = SortPillarsByTallestHeight(activeWater);
+        //activeWater = SortPillarsByTallestHeight(activeWater);
         foreach (Pillar toRemove in toRemoveFromUpdate)
-            toUpdate.Remove(toRemove);
-        toUpdate.AddRange(toAddToUpdate);
+            if(toRemove != null)
+                toUpdate.Remove(toRemove);
+        foreach (Pillar toAdd in toAddToUpdate)
+            if (toAdd != null)
+                toUpdate.Add(toAdd);
         toRemoveFromUpdate = new List<Pillar>();
         toAddToUpdate = new List<Pillar>();
         //var peopleToAdd = secondList.Where(p1 => initialList.Any(p2 => p1.Value == p2.Value)).ToList();
@@ -216,7 +220,8 @@ public class WaterManager  {
 
     private void DestroyWater(Pillar toDestroy)
     {
-        activeWater.Remove(toDestroy);
+        //activeWater.Remove(toDestroy);
+        toDestroy.DisturbAllNeighbors();
         WorldGrid.Instance.waterGrid[(int)toDestroy.pos.x, (int)toDestroy.pos.z] = null;
         MonoBehaviour.Destroy(toDestroy.gameObject);
     }
@@ -224,10 +229,10 @@ public class WaterManager  {
     public void CreateWater(Vector2 loc, float initialHeight, bool staticWater = false)
     {
         GameObject go = MonoBehaviour.Instantiate(Resources.Load("Prefabs/Pillar"), new Vector3((int)loc.x, initialHeight, (int)loc.y), Quaternion.identity) as GameObject;
-        go.transform.SetParent(GameObject.FindObjectOfType<WorldLinks>().waterParent);
+        go.transform.SetParent(GV.worldLinks.waterParent);
         Pillar newWater = go.GetComponent<Pillar>();
         newWater.Initialize(new Vector3(loc.x, initialHeight, loc.y), GV.PillarType.Water);
-        activeWater.Add(newWater);
+        //activeWater.Add(newWater);
         if (staticWater)
             staticPillars.Add(newWater);
         WorldGrid.Instance.waterGrid[(int)loc.x, (int)loc.y] = newWater;
@@ -280,19 +285,9 @@ public class WaterManager  {
         return toRet;
     }
 
-    private string OutputActiveWaterHeights()
-    {
-        string toRet = "Water Heights sorted {";
-
-        foreach (Pillar p in activeWater)
-            toRet += p.GetHeight() + ",";
-        toRet += "}";
-        return toRet;
-    }
-
     public void Debug_DestroyStaticFountain(Pillar toDestroy)
     {
-        activeWater.Remove(toDestroy);
+        //activeWater.Remove(toDestroy);
         staticPillars.Remove(toDestroy);
         WorldGrid.Instance.waterGrid[(int)toDestroy.pos.x, (int)toDestroy.pos.z] = null;
         MonoBehaviour.Destroy(toDestroy.gameObject);

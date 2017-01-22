@@ -9,6 +9,9 @@ public class GV : MonoBehaviour {
 	public static readonly int World_Size_X = 41;
 	public static readonly int World_Size_Z = 41;
 
+    public static WorldLinks worldLinks;
+    public static GameFlow gameFlow;
+
     //Water
     public static readonly float Water_Sea_Width = 3;
     public static readonly float Water_Update_Time_Step = .20f;

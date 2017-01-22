@@ -20,6 +20,8 @@ public class MapGenerator : MonoBehaviour {
 	int zOffset = 0;
 
     public List<Vector3> tilesToLoad;
+    public List<Vector3> tilesLoadedOneUpdateAgo; //for graphics loading
+    public List<Vector3> tilesLoadedTwoUpdateAgo;
     public int tileLoadingIndex = 0;
    // public float loadWaitCycle = false;
 
@@ -101,7 +103,7 @@ public class MapGenerator : MonoBehaviour {
         }
 
         GameObject newPillar = (GameObject)Instantiate (Resources.Load ("Prefabs/Pillar"), _pillarPos, Quaternion.identity);
-        newPillar.transform.SetParent(GameObject.FindObjectOfType<WorldLinks>().groundParent);
+        newPillar.transform.SetParent(GV.worldLinks.groundParent);
         Pillar p = newPillar.GetComponent<Pillar>();
         WorldGrid.Instance.groundGrid [(int)_pillarPos.x,(int)_pillarPos.z] = p;
         p.Initialize(_pillarPos, GV.PillarType.Ground);
@@ -161,8 +163,13 @@ public class MapGenerator : MonoBehaviour {
     public bool LoadTiles()
     {
         float startTime = Time.time;
-        for(int i = 0; tileLoadingIndex < tilesToLoad.Count && i < GV.MapGen_Tiles_Load_Per_Cycle; i++, tileLoadingIndex++)
+        tilesLoadedTwoUpdateAgo = new List<Vector3>(tilesLoadedOneUpdateAgo);
+        tilesLoadedOneUpdateAgo = new List<Vector3>();
+        for (int i = 0; tileLoadingIndex < tilesToLoad.Count && i < GV.MapGen_Tiles_Load_Per_Cycle; i++, tileLoadingIndex++)
+        {
+            tilesLoadedOneUpdateAgo.Add(tilesToLoad[tileLoadingIndex]);
             InstantiatePillar(tilesToLoad[tileLoadingIndex]);
+        }
         float endTime = Time.time - startTime;
         if (endTime < GV.MapGen_Ideal_Time_Per_cycle)
             GV.MapGen_Tiles_Load_Per_Cycle += GV.MapGen_Tiles_Load_Bonus;

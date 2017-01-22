@@ -35,7 +35,7 @@ public class WorldGrid  {
 
     public void Initialize() //used for default load in test scene
     {
-        foreach(Transform t in GameObject.FindObjectOfType<WorldLinks>().groundParent)
+        foreach(Transform t in GV.worldLinks.groundParent)
         {
             Pillar p = t.GetComponent<Pillar>();
             Vector3 loc = t.position;
@@ -66,13 +66,13 @@ public class WorldGrid  {
             if (waterGrid[(int)atLoc.x, (int)atLoc.y]) // if water exists
                 waterGrid[(int)atLoc.x, (int)atLoc.y].ModHeight(amt);
 
-            CameraVisible cv = GameObject.FindObjectOfType<CameraVisible>();
+            CameraVisible cv = GV.gameFlow.cameraVisible;
 
-            cv.UpdatePillar(atLoc);
+            cv.UpdateLocation(atLoc);
             foreach(Vector2 dir in GV.Valid_Directions)
             {
                 if(GetPillarAt(atLoc + dir,true))
-                    cv.UpdatePillar(atLoc + dir);
+                    cv.UpdateLocation(atLoc + dir);
             }
         }
     }
