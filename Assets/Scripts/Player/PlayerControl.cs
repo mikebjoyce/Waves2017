@@ -11,9 +11,10 @@ public class PlayerControl : MonoBehaviour {
 	public MeshRenderer digMesh;
 
 	//Vars
-	public Collider collBox;
 	public Rigidbody body;
+
 	public bool isGrounded = false;
+
 	private Vector3 forward;
 	private bool isHolding = false;
 	private bool lockMove = false;
@@ -57,11 +58,8 @@ public class PlayerControl : MonoBehaviour {
 		}
 	}
 
-
-	//isGrounded Check
-
-	void OnCollisionEnter(Collision collision){
-		if (collision.gameObject.layer == 8 && !isGrounded) {
+	void OnTriggerEnter(Collider other){
+		if (other.gameObject.layer == 8) {
 			isGrounded = true;
 			lockMove = false;
 		}
@@ -75,8 +73,8 @@ public class PlayerControl : MonoBehaviour {
 		}
 	} */
 
-	void OnCollisionExit(Collision collision){
-		if (collision.gameObject.layer == 8 && isGrounded) {
+	void OnTriggerExit(Collider other){
+		if (other.gameObject.layer == 8) {
 			isGrounded = false;
 			lockMove = true;
 		}
@@ -87,17 +85,24 @@ public class PlayerControl : MonoBehaviour {
 	public void Move(Vector3 input){
 		//moves with constant speed 
 		//Debug.Log("Input " + input.ToString());
-		float xAxis = (input.x != 0) ? input.x/Mathf.Abs(input.x): 0;
-		//Debug.Log ("yAxis " + xAxis);
-		//Debug.Log ("rotate b4 " + transform.rotation);
-		transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
+		if (!isMaxSpeed()) {
+			float xAxis = (input.x != 0) ? input.x / Mathf.Abs (input.x) : 0;
+			//Debug.Log ("yAxis " + xAxis);
+			//Debug.Log ("rotate b4 " + transform.rotation);
+			transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
 
-		if(!lockMove)
-			body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime, ForceMode.Impulse);
-		//Debug.Log ("force applied " + PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime);
-		//Debug.Log ("forward " + forward + " Time.DeltaTime" + Time.deltaTime);
+			if (!lockMove) {
+				body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime, ForceMode.Impulse);
+			} else {
+				body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime * PlayerGV.G_NonGroundedMoveModifier, ForceMode.Impulse);
+			}
+			//Debug.Log ("force applied " + PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime);
+			//Debug.Log ("forward " + forward + " Time.DeltaTime" + Time.deltaTime);
 
-		//body.AddForce (moveDir * PlayerGV.G_PlayerRunForce, ForceMode.Impulse);
+			//body.AddForce (moveDir * PlayerGV.G_PlayerRunForce, ForceMode.Impulse);
+		} else {
+			Debug.Log ("Hit Max Speed");
+		}
 	}
 
 	/*
@@ -203,7 +208,9 @@ public class PlayerControl : MonoBehaviour {
 
 		return standingHigh + 1 >= diggingHight;
 	}
+
+	private bool isMaxSpeed(){
+		return new Vector2 (body.velocity.x, body.velocity.z).magnitude >= PlayerGV.G_MaxSpeed;
+	}
+
 }
-
-
-
