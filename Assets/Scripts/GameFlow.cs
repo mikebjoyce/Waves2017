@@ -7,7 +7,7 @@ public class GameFlow : MonoBehaviour {
     float timeAtNextSystemCleanup;
 
 	//public PlayerControl[] players = new PlayerControl[4];
-	public PlayerControl p1;
+	public GameObject p1;
     public CameraVisible cameraVisible;
     MapGenerator mapGen;
     bool worldIsLoaded = false;
@@ -27,9 +27,10 @@ public class GameFlow : MonoBehaviour {
         timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval * 2; //bit of buffer for first cleanup
         cameraVisible.UpdateWorld();
 		//Debug.Log (p1.gameObject.isActiveAndEnabled);
-        p1.gameObject.SetActive(true);
+        p1.SetActive(true);
+		p1.GetComponentInChildren<PlayerControl> ().Initialize ();
+
 		//Debug.Log (p1.isActiveAndEnabled);
-        p1.Initialize();
     }
 
 

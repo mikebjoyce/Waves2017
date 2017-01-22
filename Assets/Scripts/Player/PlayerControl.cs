@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour {
 
 	public Camera playerCam;
+
+	//digLocator
 	public GameObject digLoc;
 
 	//Vars
@@ -24,6 +26,8 @@ public class PlayerControl : MonoBehaviour {
 
 	public void Initialize(Vector3 loc){
 		transform.position = loc;
+		visibleDropPillar (true);
+		moveDigIndic ();
 	}
 
 
@@ -33,8 +37,11 @@ public class PlayerControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
 		position = new Vector2 (transform.position.x, transform.position.z);
 		forward = transform.forward;
+
+		moveDigIndic ();
 	}
 
 
@@ -64,14 +71,12 @@ public class PlayerControl : MonoBehaviour {
 
 	//player Movement and Actions
 	public void Move(Vector3 input){
-		Debug.Log ("Input " + input.ToString ());
 		//moves with constant speed 
 		//Debug.Log("Input " + input.ToString());
 		float xAxis = (input.x != 0) ? input.x/Mathf.Abs(input.x): 0;
 		//Debug.Log ("yAxis " + xAxis);
 		//Debug.Log ("rotate b4 " + transform.rotation);
 		transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
-		Debug.Log ("lockMove " + lockMove);
 
 		if(!lockMove)
 			body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime, ForceMode.Impulse);
@@ -91,7 +96,6 @@ public class PlayerControl : MonoBehaviour {
 		//jumps a certain high always
 		if (isGrounded) {
 			body.AddForce (Vector3.up * PlayerGV.G_PlayerJumpForce, ForceMode.Impulse);
-			Debug.Log ("Jump");
 		}
 	}
 
@@ -100,20 +104,24 @@ public class PlayerControl : MonoBehaviour {
 		if (isHolding)
 			Drop ();
 		else {
-			Debug.Log ("in Dig");
+			Debug.Log ("in dig");
 			//do dig stuff
 			int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
 			Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
 			int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
 
 			if (standingHigh + 1 <= diggingHight) {
+				Debug.Log ("Can Dig");
 				WorldGrid.Instance.ModGround(roundV2(position) + trueDir, -1);
 				isHolding = true;
 			} else {
 				//too low to dig
+				Debug.Log ("Cannot Dig");
 			}
 		}
 	}
+
+
 
 	public void Drop(){
 		Debug.Log ("in Drop");
@@ -122,12 +130,14 @@ public class PlayerControl : MonoBehaviour {
 		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
 		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
 		if (standingHigh + 1 >= diggingHight) {
+			Debug.Log ("Can Drop");
 			WorldGrid.Instance.ModGround (roundV2 (position) + trueDir, 1);
 			isHolding = false;
 			Debug.Log("B4 "+ transform.position);
 			transform.position.Set (roundV2 (position).x, transform.position.y, roundV2 (position).y);
 			Debug.Log("A4 "+transform.position);
 		} else {
+			Debug.Log ("Cannot Drop");
 			//too high to place
 		}
 	}
@@ -153,6 +163,29 @@ public class PlayerControl : MonoBehaviour {
 		int x = (input.x - (int) input.x > 0.5) ? (int) input.x + 1 : (int) input.x;
 		int y = (input.y - (int) input.y > 0.5) ? (int) input.y + 1 : (int) input.y;
 		return new Vector2(x,y);
+	}
+
+	private Vector3 DigLoc(){
+		Vector2 digPos = roundV2 (position) + strongestDir (new Vector2(forward.x,forward.z));
+		int hight = (int) WorldGrid.Instance.GetHeightAt (digPos, true);
+		return new Vector3 (digPos.x, hight, digPos.y);
+	}
+		
+	private void moveDigIndic(){
+		Vector2 digPos = roundV2 (position) + strongestDir (new Vector2(forward.x,forward.z));
+		digLoc.transform.position = new Vector3 (digPos.x, WorldGrid.Instance.GetHeightAt (digPos), digPos.y);
+	}
+
+	private void visibleDropPillar(bool input){
+		digLoc.SetActive (input);
+	}
+		
+	private bool canDig(){
+		return true;
+	}
+
+	private bool canDrop(){
+		return true;
 	}
 }
 
