@@ -58,7 +58,7 @@ public class WaterManager  {
 
     public void UpdateWaterManager()
     {
-        //var watch = System.Diagnostics.Stopwatch.StartNew();
+        var watch = System.Diagnostics.Stopwatch.StartNew();
         for (int i = 0; i < GV.World_Size_X; i++)
             for (int ii = 0; ii < GV.World_Size_Z; ii++)
             {
@@ -73,6 +73,11 @@ public class WaterManager  {
                     {
                         toUpdate.Remove(v2);
                     }
+                }
+                if (watch.ElapsedMilliseconds > GV.Water_Time_Spent_Updating)
+                {
+                    timeExit++;
+                    return;
                 }
             }
         //Debug.Log(watch.Elapsed.Milliseconds);
@@ -409,5 +414,9 @@ public class WaterManager  {
         return toRet;
     }
     
+    private void DrainRandomTile()
+    {
+
+    }
 	
 }

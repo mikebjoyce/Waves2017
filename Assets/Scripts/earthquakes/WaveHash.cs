@@ -30,21 +30,23 @@ public class WaveHash : MonoBehaviour {
 		//wavelength = _waveLength;
         //waveArray = new int[_waveLength + 1, _waveLength];
         int[] initializerCircles = new int[_waveLength];
+
+
 		initializerCircles[0] = 1; 
 		initializerCircles[1] = -1;
 		initializerCircles [2] = -3;
 		initializerCircles[3] = -2;
 		initializerCircles[4] = 0;
 		initializerCircles[5] = 3;
-        
 
-		/*
-initializerCircles[0] = -1; //0 == 1
-        initializerCircles[1] = 1;
-        initializerCircles[2] = 2;
-        initializerCircles[3] = 1;
-        initializerCircles[4] = -1;
-        initializerCircles[5] = -2;
+
+/*
+        initializerCircles[0] = 1; //0 == 1
+        initializerCircles[1] = -1;
+        initializerCircles[2] = -2;
+        initializerCircles[3] = -2;
+        initializerCircles[4] = 0;
+        initializerCircles[5] = 2;
 */
 
         return (initializerCircles);

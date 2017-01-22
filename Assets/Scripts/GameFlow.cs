@@ -7,9 +7,9 @@ public class GameFlow : MonoBehaviour {
     float timeAtNextSystemCleanup;
 
 	//public PlayerControl[] players = new PlayerControl[4];
-	public GameObject p1;
     public CameraVisible cameraVisible;
     MapGenerator mapGen;
+    RoundSetup roundSetup;
     bool worldIsLoaded = false;
     int renderOrLoad = 0; //every 4 optimizes some stuff
 
@@ -22,8 +22,10 @@ public class GameFlow : MonoBehaviour {
 
     public void Start()
     {
-        mapGen = GameObject.FindObjectOfType<MapGenerator>();
+        mapGen = GetComponent<MapGenerator>();
+        roundSetup = GetComponent<RoundSetup>();
         mapGen.GenerateLand();
+
         //next step goes into update
     }
 
@@ -33,11 +35,11 @@ public class GameFlow : MonoBehaviour {
         WorldGrid.Instance.Initialize();
         timeAtNextSystemCleanup = Time.time + 12; //bit of buffer for first cleanup
         cameraVisible.UpdateWorld();
-		//Debug.Log (p1.gameObject.isActiveAndEnabled);
-        p1.SetActive(true);
-		p1.GetComponentInChildren<PlayerControl> ().Initialize ();
-		earthQ.CreateEarthquake (6,3,1,WorldGrid.worldCenterPoint);
-
+        //Debug.Log (p1.gameObject.isActiveAndEnabled);
+        //p1.SetActive(true);
+        //p1.GetComponentInChildren<PlayerControl> ().Initialize ();
+        //earthQ.CreateEarthquake (1,2,3,WorldGrid.worldCenterPoint);
+        roundSetup.SetupPlayers(new List<GameVariable.controlerType>() { GameVariable.controlerType.Joy1, GameVariable.controlerType.Joy2, GameVariable.controlerType.KeyLeft });
 		//Debug.Log (p1.isActiveAndEnabled);
     }
 

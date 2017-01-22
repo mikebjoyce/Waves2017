@@ -6,8 +6,18 @@ public class GV : MonoBehaviour {
 
     public enum PillarType { Ground, Water}
 
-	public static readonly int World_Size_X = 50; //as long as X is equal to or more
-	public static readonly int World_Size_Z = 50;
+    public enum InputType
+    {
+        KeyboardLeft,
+        KeyboardRight,
+        Xbox1,
+        Xbox2,
+        None
+    };
+
+    public static readonly int World_Size_X = 41;
+	public static readonly int World_Size_Z = 41;
+
 
     public static WorldLinks worldLinks;
     public static GameFlow gameFlow;

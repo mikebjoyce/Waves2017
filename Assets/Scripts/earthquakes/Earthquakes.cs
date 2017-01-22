@@ -87,7 +87,6 @@ public class Earthquakes : MonoBehaviour
 			isActive = currentEarthquake.RunLoop();
 		//	Debug.Log (" " + currentEarthquake.iteration);
 			lastUpdateTime = Time.time;
-			//Debug.Log ();
 			refresher.UpdateWorld();
 		}
     }
