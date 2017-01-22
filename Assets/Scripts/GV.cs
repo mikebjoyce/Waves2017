@@ -6,8 +6,8 @@ public class GV : MonoBehaviour {
 
     public enum PillarType { Ground, Water}
 
-	public static readonly int World_Size_X = 31; //as long as X is equal to or more
-	public static readonly int World_Size_Z = 31;
+	public static readonly int World_Size_X = 121; //as long as X is equal to or more
+	public static readonly int World_Size_Z = 121;
 
     public static WorldLinks worldLinks;
     public static GameFlow gameFlow;

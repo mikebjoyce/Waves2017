@@ -47,6 +47,7 @@ public class WaterManager  {
             // if (disturbedAtLoc == new Vector2(15, 30))
             //     Debug.Log("DISTRUBED DELTED");
             toUpdate.Remove(disturbedPillar.xypos);
+            //Debug.Log("2");
         }
     }
 
@@ -190,6 +191,7 @@ public class WaterManager  {
     {
         if (!pillarToUpdate.isActive)
         {
+            Debug.Log("3");
             toUpdate.Remove(pillarToUpdate.xypos);
             return;
         }
@@ -322,6 +324,7 @@ public class WaterManager  {
                     if (hiddenWaterP)
                     {
                         if (pillarToUpdate.DebugLogs) Debug.Log("15");
+                        hiddenWaterP.SetIsActive(true);
                         hiddenWaterP.Disturb(true);
                         hiddenWaterP.ModHeight(flowRate);
                         hiddenWaterP.AddCurrent(new Vector2(pillarToUpdate.pos.x, pillarToUpdate.pos.z), flowRate);

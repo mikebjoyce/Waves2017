@@ -14,10 +14,23 @@ public class Pillar : MonoBehaviour {
     public List<GameObject> segments = new List<GameObject>();
     private int invisibleBelow;      //0 = grass, 1 = top, ..., 5 = bottom
     public bool isActive = true;
-    public bool toDeactivate = false;
     public bool isStaticPillar = false;
     public bool isDisturbed = false;
     public Vector2 xypos { get { return new Vector2(pos.x, pos.z); }}
+
+    public void Update()
+    {
+        if (DebugLogs)
+        {
+            Debug.Log("currently in openbook: " + WorldGrid.Instance.waterManager.toUpdate.ContainsKey(xypos));
+            Debug.Log("pos: " + pos + " xypos: " + xypos);
+            string allInBook = "";
+            foreach (KeyValuePair<Vector2, Pillar> kv in WorldGrid.Instance.waterManager.toUpdate)
+                allInBook += kv.Key + ",";
+            Debug.Log(allInBook);
+        }
+
+    }
 
     public void Initialize(Vector3 _pos, GV.PillarType _pillarType)
     {
@@ -35,6 +48,8 @@ public class Pillar : MonoBehaviour {
     {
         isActive = _isActive;
         gameObject.SetActive(_isActive);
+        if (!_isActive)
+            isDisturbed = false;
     }
 
     /*
@@ -46,18 +61,11 @@ public class Pillar : MonoBehaviour {
 
     public void Disturb(bool _disturb)
     {
-
         if (isDisturbed != _disturb && pillarType == GV.PillarType.Water)
         {
             isDisturbed = _disturb;
             if (DebugLogs) Debug.Log("and changed disturb state: " + isDisturbed + " loc: " + MathHelper.V3toV2xz(pos));
             WorldGrid.Instance.waterManager.WasDisturbed(this, isDisturbed);
-        }
-        
-        if (_disturb && !gameObject.activeInHierarchy)
-        {
-            if (DebugLogs) Debug.Log("disturb woke us up");
-            SetIsActive(true);
         }
     }
 
