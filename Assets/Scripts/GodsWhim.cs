@@ -68,7 +68,7 @@ public class GodsWhim : MonoBehaviour {
 			}
 			if (Random.Range ((int)0, 100) <= (int)(probabilityEarthQuake * Time.deltaTime / 20)){
 				Debug.Log("Make earthwuake!");
-				Vector2 location = new Vector2 ((int)Random.Range (0, GV.World_Size_X), (int)Random.Range (0, GV.World_Size_Z));
+				Vector2 location = new Vector2 ((int)Random.Range ((int) GV.World_Size_X / 4, (int) GV.World_Size_X - (int) GV.World_Size_X / 4), (int)Random.Range (GV.World_Size_X / 4, (int) GV.World_Size_Z - (int) GV.World_Size_X / 4));
 				int wavelength = (int) Mathf.Clamp((Random.Range(2, 5) * curIntensityEQ),2,5);
 				int crestLimit = (int) Mathf.Clamp((Random.Range (1, 3) * curIntensityEQ),1,3);
 				int cycles = Mathf.Clamp((int) (Random.Range (1, 5) * curIntensityEQ),1,5);
