@@ -7,6 +7,7 @@ public class Earthquakes : MonoBehaviour
 	public CameraVisible refresher;
 	public bool isActive = false;
 	public WaveHash currentEarthquake;
+	public List<WaveHash> currentEQs = new List<WaveHash>();
 
 	private float lastUpdateTime = 0;
 	//GV.Earthquake_Tick_Length;
@@ -69,6 +70,7 @@ public class Earthquakes : MonoBehaviour
 		currentEarthquake.PopulateWaveArray ();
 		isActive = true;
 		//currentEarthquake.waveArray
+		currentEQs.Add(currentEarthquake);
     }
 
 		
@@ -82,13 +84,17 @@ public class Earthquakes : MonoBehaviour
     void Update()
     {
 		if (lastUpdateTime + GV.Earthquake_Tick_Length < Time.time && isActive) {
-			//update
-			//update last
-			isActive = currentEarthquake.RunLoop();
-		//	Debug.Log (" " + currentEarthquake.iteration);
-			lastUpdateTime = Time.time;
-			//refresher.UpdateWorld();
+			if (currentEQs.Count != 0) {
+				foreach (WaveHash earthQ in currentEQs) {
+					if (!earthQ.RunLoop ())
+						currentEQs.Remove (earthQ);
+					lastUpdateTime = Time.time;
+				}
+			} else {
+				isActive = false;
+			}
 		}
+
     }
 }
 
