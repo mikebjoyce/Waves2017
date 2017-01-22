@@ -19,10 +19,13 @@ public class MapGenerator : MonoBehaviour {
 	int xOffset = 0;
 	int zOffset = 0;
 
+    [HideInInspector]
     public List<Vector3> tilesToLoad;
+    [HideInInspector]
     public List<Vector3> tilesLoadedOneUpdateAgo; //for graphics loading
+    [HideInInspector]
     public List<Vector3> tilesLoadedTwoUpdateAgo;
-    public int tileLoadingIndex = 0;
+    int tileLoadingIndex = 0;
    // public float loadWaitCycle = false;
 
 	public void GenerateLand()

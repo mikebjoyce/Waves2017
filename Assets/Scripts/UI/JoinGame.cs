@@ -150,4 +150,33 @@ public class JoinGame : MonoBehaviour {
                 break;
         }
     }
+
+    public void StartGame()
+    {
+        List<GameVariable.controlerType> cntrlList = new List<GameVariable.controlerType>();
+        foreach(PlayerSlot ipt in slots)
+        {
+            if (ipt.GetInputType() != GV.InputType.None)
+                cntrlList.Add(ConvertEnum(ipt.GetInputType()));
+        }
+        GameVariable.activePlayerCntrls = new List<GameVariable.controlerType>(cntrlList);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("mainScene");
+    }
+
+    public GameVariable.controlerType ConvertEnum(GV.InputType ipt)
+    {
+        switch(ipt)
+        {
+            case GV.InputType.KeyboardLeft:
+                return GameVariable.controlerType.KeyLeft;
+            case GV.InputType.KeyboardRight:
+                return GameVariable.controlerType.KeyRight;
+            case GV.InputType.Xbox1:
+                return GameVariable.controlerType.Joy1;
+            case GV.InputType.Xbox2:
+                return GameVariable.controlerType.Joy2;
+            default:
+                return GameVariable.controlerType.KeyLeft;
+        }
+    }
 }

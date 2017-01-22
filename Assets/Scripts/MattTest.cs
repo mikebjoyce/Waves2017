@@ -10,7 +10,7 @@ public class MattTest : MonoBehaviour {
         {
             Vector2 _from = new Vector2(GV.World_Size_X - 1, GV.World_Size_Z - 1);
             Vector2 _to = new Vector2(0, GV.World_Size_Z - 1);
-            WorldGrid.Instance.tsunamiManager.CreateLineTsunami(_from, _to,3,3,3,false,0);
+            WorldGrid.Instance.tsunamiManager.CreateLineTsunami(_from, _to,3,5,3,false,0);
         }
         
     }

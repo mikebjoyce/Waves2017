@@ -18,6 +18,8 @@ public class PlayerControl : MonoBehaviour {
 	private Vector3 forward;
 	private bool isHolding = false;
 	private bool lockMove = false;
+    private float air = GameVariable.maxBreath;
+
 
 	public Vector2 position;
 
@@ -48,6 +50,8 @@ public class PlayerControl : MonoBehaviour {
 		ChangeDigLocColor ();
 
 		ApplyCurrentForce ();
+
+        
 	}
 
 
@@ -226,9 +230,14 @@ public class PlayerControl : MonoBehaviour {
 
 	private void ApplyCurrentForce(){
 		Pillar underUs = WorldGrid.Instance.GetPillarAt (roundV2(position));
-		if (underUs.pillarType == GV.PillarType.Water && transform.position.y < underUs.GetHeight()){
+		if (underUs && underUs.pillarType == GV.PillarType.Water && transform.position.y < underUs.GetHeight()){
+            air -= Time.deltaTime;
 			body.AddForce(underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime, ForceMode.Impulse);
-			Debug.Log ("Force added to body from current " + underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime);
+			//Debug.Log ("Force added to body from current " + underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime);
 		}
+        else
+        {
+            air += Time.deltaTime * GameVariable.breathRegenRate;
+        }
 	}
 }
