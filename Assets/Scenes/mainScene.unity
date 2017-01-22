@@ -529,7 +529,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heightScale: 4
   detailScale: 6
-  terrainAltitudeConstant: 2
+  terrainAltitudeConstant: 1
   centerProxBiasConstant: 4
   heightScaleDecay: 1
   heightDecayControl: 4
