@@ -6,8 +6,12 @@ public class GameVariable {
 	public int numberOfPlayers; //should be set before Start() is run
 	public controlerType[] playerControlType;
 	public int localColliderRadius = 1;
+    public static List<controlerType> activePlayerCntrls;
 
-	public GameVariable(){
+    public static readonly float maxBreath = 3;
+    public static readonly float breathRegenRate = 1;
+
+    public GameVariable(){
 
 	}
 
