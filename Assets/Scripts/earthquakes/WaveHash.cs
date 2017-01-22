@@ -25,30 +25,35 @@ public class WaveHash : MonoBehaviour {
 	public bool isDone {get {return iteration - totalWaveDistance > totalPossibleIterations;}}
 
     public int[,] waveArray; 
-    public int[] initializer(int _waveLength)
+    public int[] initializer(int _waveLength, int _crestlimit)
     {
-		//wavelength = _waveLength;
-        //waveArray = new int[_waveLength + 1, _waveLength];
+        
+        
+        int runningTally = 0;
+        int amp = (_crestlimit * 2) +1;
         int[] initializerCircles = new int[_waveLength];
+        
+        
+        for (int i = 0; i < _waveLength - 1; i++)
+        {
+            if (runningTally >= 0)
+            {
+                int x = Random.Range(0 , amp - runningTally) - _crestlimit;
+                initializerCircles[i] = x;
+                runningTally += x;
+            }
+            if (runningTally < 0)
+            {
+                int x = Random.Range(-runningTally , amp) - _crestlimit;
+                initializerCircles[i] = x;
+                runningTally += x;
+            }
+        }
+        initializerCircles[_waveLength - 1] = initializerCircles[0] - runningTally;
+        
 
-
-		initializerCircles[0] = 1; 
-		initializerCircles[1] = -1;
-		initializerCircles [2] = -3;
-		initializerCircles[3] = -2;
-		initializerCircles[4] = 0;
-		initializerCircles[5] = 3;
-
-
-/*
-        initializerCircles[0] = 1; //0 == 1
-        initializerCircles[1] = -1;
-        initializerCircles[2] = -2;
-        initializerCircles[3] = -2;
-        initializerCircles[4] = 0;
-        initializerCircles[5] = 2;
-*/
-
+        runningTally += initializerCircles[_waveLength - 1];
+        //Debug.Log(runningTally);
         return (initializerCircles);
     } 
 
@@ -65,7 +70,7 @@ public class WaveHash : MonoBehaviour {
     {
         for (int y = 0; y < wavelength; y++)
         {
-            waveArray[0, y] = initializer(wavelength)[y]; 
+            waveArray[0, y] = initializer(wavelength, crestlimit)[y]; 
         }
 			
 		for (int y = 0; y < wavelength; y++) {
@@ -94,6 +99,7 @@ public class WaveHash : MonoBehaviour {
 
 			}
 		}
+       
     } 
 		
 
