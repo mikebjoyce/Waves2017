@@ -61,31 +61,39 @@ public class WaveHash : MonoBehaviour {
 		totalWaveDistance = retTotalWaveDistance (crestlimit, wavelength);
 	}
 
-
 	public void PopulateWaveArray()
     {
-		//InitializeArr (wavelength); //happens b4 we populate anyways
         for (int y = 0; y < wavelength; y++)
         {
             waveArray[0, y] = initializer(wavelength)[y]; 
-            for(int x = 1; x <= wavelength; x++)
-            {
-                if(y == 0)
-                {
-                    waveArray[x,y] = waveArray[x - 1, wavelength-1] - waveArray[x - 1, y];
-                }
-                else
-                {
-                    waveArray[x, y] = waveArray[x - 1, y - 1] - waveArray[x - 1, y];
-                }
-                
-            }
-			if (debugger) {
-				Debug.Log (pCount);
-				printDubArr (waveArray);
-				pCount++;
-			}
         }
+			
+		for (int y = 0; y < wavelength; y++) {
+			int x = 1;
+			if(y == 0)
+			{
+				waveArray[x,y] = waveArray[x - 1, wavelength - 1] -  waveArray[x - 1, y];
+			}
+			else
+			{
+				waveArray[x, y] = waveArray[x - 1, y - 1] -  waveArray[x - 1, y];
+			}
+		}
+
+		for(int x = 2; x <= wavelength; x++)
+		{
+			for (int y = 0; y < wavelength; y++) {
+				if(y == 0)
+				{
+					waveArray[x,y] = waveArray[x - 1, wavelength - 1];
+				}
+				else
+				{
+					waveArray[x, y] = waveArray[x - 1, y - 1];
+				}
+
+			}
+		}
     } 
 		
 
