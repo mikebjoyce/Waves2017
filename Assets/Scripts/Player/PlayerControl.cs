@@ -8,6 +8,7 @@ public class PlayerControl : MonoBehaviour {
 
 	//digLocator
 	public GameObject digLoc;
+	public MeshRenderer digMesh;
 
 	//Vars
 	public Collider collBox;
@@ -27,6 +28,7 @@ public class PlayerControl : MonoBehaviour {
 	public void Initialize(Vector3 loc){
 		transform.position = loc;
 		visibleDropPillar (true);
+		digMesh = digLoc.GetComponent<MeshRenderer> ();
 		moveDigIndic ();
 	}
 
@@ -37,11 +39,22 @@ public class PlayerControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
 		position = new Vector2 (transform.position.x, transform.position.z);
 		forward = transform.forward;
 
 		moveDigIndic ();
+		if (isHolding) {
+			if (canDrop ())
+				digMesh.material.color = Color.blue;
+			else
+				digMesh.material.color = Color.red;
+				return;
+		} else {
+			if (canDig ())
+				digMesh.material.color = Color.green;
+			else
+				digMesh.material.color = Color.red;
+		}
 	}
 
 
@@ -54,12 +67,13 @@ public class PlayerControl : MonoBehaviour {
 		}
 	} 
 
-	void OnCollision(Collider collision){
+	/*
+	void OnCollisionStay(Collider collision){
 		if (collision.gameObject.layer == 8 && !isGrounded) {
 			isGrounded = true;
 			lockMove = false;
 		}
-	}
+	} */
 
 	void OnCollisionExit(Collision collision){
 		if (collision.gameObject.layer == 8 && isGrounded) {
@@ -100,23 +114,19 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	public void Dig(){
-		
 		if (isHolding)
 			Drop ();
 		else {
-			Debug.Log ("in dig");
-			//do dig stuff
-			int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
-			Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-			int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
 
-			if (standingHigh + 1 <= diggingHight) {
-				Debug.Log ("Can Dig");
+			//do dig stuff
+			Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+			if (canDig()) {
+
 				WorldGrid.Instance.ModGround(roundV2(position) + trueDir, -1);
 				isHolding = true;
 			} else {
 				//too low to dig
-				Debug.Log ("Cannot Dig");
+
 			}
 		}
 	}
@@ -124,20 +134,18 @@ public class PlayerControl : MonoBehaviour {
 
 
 	public void Drop(){
-		Debug.Log ("in Drop");
+
 		//do opposite of dig stuff
-		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
 		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
-		if (standingHigh + 1 >= diggingHight) {
-			Debug.Log ("Can Drop");
+		if (canDrop()) {
+
 			WorldGrid.Instance.ModGround (roundV2 (position) + trueDir, 1);
 			isHolding = false;
-			Debug.Log("B4 "+ transform.position);
-			transform.position.Set (roundV2 (position).x, transform.position.y, roundV2 (position).y);
-			Debug.Log("A4 "+transform.position);
+			//Debug.Log("B4 "+ transform.position);
+			//transform.position.Set (roundV2 (position).x, transform.position.y, roundV2 (position).y);
+			//Debug.Log("A4 "+transform.position);
 		} else {
-			Debug.Log ("Cannot Drop");
+
 			//too high to place
 		}
 	}
@@ -181,11 +189,19 @@ public class PlayerControl : MonoBehaviour {
 	}
 		
 	private bool canDig(){
-		return true;
+		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
+		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
+
+		return standingHigh + 2 >= diggingHight && standingHigh - 1 <= diggingHight;
 	}
 
 	private bool canDrop(){
-		return true;
+		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
+		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
+
+		return standingHigh + 1 >= diggingHight;
 	}
 }
 

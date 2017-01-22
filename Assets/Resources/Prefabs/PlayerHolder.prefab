@@ -122,8 +122,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1075715953646306}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.571, z: 0.988}
-  m_LocalScale: {x: 0.1, y: 5, z: 0.1}
+  m_LocalPosition: {x: 0, y: 1.8, z: 0.988}
+  m_LocalScale: {x: 0.1, y: 2.5, z: 0.1}
   m_Children: []
   m_Father: {fileID: 4506125458086660}
   m_RootOrder: 2
@@ -176,7 +176,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1122520401268742}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 22.084225, y: -2.3993652, z: 25.698355}
+  m_LocalPosition: {x: 29.487236, y: -0.93379784, z: 22.4719}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4321031228853036}
@@ -375,7 +375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9fb932843f6b3c4291c7b92fb8819fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlType: 0
+  controlType: 3
   pControl: {fileID: 114943946398458892}
 --- !u!114 &114943946398458892
 MonoBehaviour:
@@ -390,6 +390,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCam: {fileID: 20686258336416370}
   digLoc: {fileID: 1075715953646306}
+  digMesh: {fileID: 23088513990301886}
   collBox: {fileID: 135324602237694484}
   body: {fileID: 54206051537079718}
   isGrounded: 0
