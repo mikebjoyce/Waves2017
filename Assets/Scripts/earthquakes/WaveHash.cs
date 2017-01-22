@@ -4,27 +4,47 @@ using UnityEngine;
 
 public class WaveHash : MonoBehaviour {
 
-    public int wavelength = 6;
-    public int crestlimit = 3;
+	public int wavelength;
+	public int crestlimit;
+
+	public int numberOfWaves;
+	public int totalPossibleIterations;
+	public int totalWaveDistance;
+
+	private int _count;
+	public int counter {set{_count = (value <= wavelength - 1)? value: 0;} get{return _count;}} //current collumn
+
+	public int iteration = 0; 
 
     public int[,] waveArray; 
     public int[] initializer(int _waveLength)
     {
-        waveArray = new int[_waveLength + 1, _waveLength];
+		//wavelength = _waveLength;
+        //waveArray = new int[_waveLength + 1, _waveLength];
         int[] initializerCircles = new int[_waveLength];
-        wavelength = _waveLength;
-        initializerCircles[1] = 1;
-        initializerCircles[2] = -1;
-        initializerCircles[3] = -3;
-        initializerCircles[4] = -2;
-        initializerCircles[5] = 0;
-        initializerCircles[6] = 3;
+        initializerCircles[0] = 1; //0 == 1
+        initializerCircles[1] = -1;
+        initializerCircles[2] = -3;
+        initializerCircles[3] = -2;
+        initializerCircles[4] = 0;
+        initializerCircles[5] = 3;
 
         return (initializerCircles);
     } 
 
-     public void PopulateWaveArray()
+	public void InitializeArr(int _waveLength, int _crestLimit,int _numberOfWaves){
+		wavelength = _waveLength;
+		crestlimit = _crestLimit;
+		waveArray = new int[_waveLength + 1, _waveLength];
+		numberOfWaves = _numberOfWaves;
+		totalPossibleIterations = numberOfWaves * wavelength;
+		totalWaveDistance = retTotalWaveDistance (crestlimit, wavelength);
+	}
+
+
+	public void PopulateWaveArray()
     {
+		//InitializeArr (wavelength); //happens b4 we populate anyways
         for (int y = 0; y < wavelength; y++)
         {
             waveArray[0, y] = initializer(wavelength)[y]; 
@@ -41,8 +61,21 @@ public class WaveHash : MonoBehaviour {
                 
             }
         }
-        
     }
+		
+	public int lowestBound(){
+		return iteration - totalPossibleIterations;
+	}
+
+	public int retTotalWaveDistance(int _crestLimit, int _wavelength){
+		int waveRange = 0;
+		while (_crestLimit > 0)
+		{
+			waveRange += _crestLimit * _wavelength;
+			_crestLimit--;
+		}
+		return waveRange;
+	}
 
 	// Use this for initialization
 	void Start () {
