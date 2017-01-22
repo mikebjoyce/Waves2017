@@ -15,8 +15,8 @@ public class GV : MonoBehaviour {
         None
     };
 
-    public static readonly int World_Size_X = 100;
-	public static readonly int World_Size_Z = 100;
+    public static readonly int World_Size_X = 81;
+	public static readonly int World_Size_Z = 81;
 
 
     public static WorldLinks worldLinks;

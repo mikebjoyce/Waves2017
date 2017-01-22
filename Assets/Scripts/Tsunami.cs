@@ -8,6 +8,10 @@ public class Tsunami {
 
 	public void CreateLineTsunami(Vector2 fromPt, Vector2 toPt, int _stepsToReachMaxPeak, int _stepSpentInMaxPeak, int _ampWaterDivisionsPerStep, bool _repeats, int _repeatSteps)
     {
+        //Debug.Log("from: " + fromPt + " to pt: " + toPt + " steptopeak: " + _stepsToReachMaxPeak + " steps in peak: " + _stepSpentInMaxPeak + " divperstep: " + _ampWaterDivisionsPerStep + " rep: " + _repeats + " x " + _repeatSteps);
+        _stepsToReachMaxPeak = Mathf.Max(1, _stepsToReachMaxPeak);
+        _stepSpentInMaxPeak = Mathf.Max(1, _stepSpentInMaxPeak);
+        _ampWaterDivisionsPerStep = Mathf.Max(1, _ampWaterDivisionsPerStep);
         List<Vector2> tsunamiPts = new List<Vector2>();
         if (fromPt.x != toPt.x)
         { //horz tsunami

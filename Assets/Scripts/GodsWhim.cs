@@ -21,11 +21,11 @@ public class GodsWhim : MonoBehaviour {
 	float book_intensityIncPerSec = 20f;
 
 	public float realIntensityTsu(){
-		return intensityTsunami * tempIntensity;
+		return intensityTsunami + tempIntensity;
 	}
 
 	public float realIntensityEQ(){
-		return intensityEQ * tempIntensity;
+		return intensityEQ + tempIntensity;
 	}
 
 

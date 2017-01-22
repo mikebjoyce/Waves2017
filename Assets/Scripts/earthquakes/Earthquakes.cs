@@ -57,7 +57,9 @@ public class Earthquakes : MonoBehaviour
 
     public void CreateEarthquake(int _wavelength, int _crestLimit, int numOfWaveCycles, Vector2 _quakePos)
     {
-		currentEarthquake = gameObject.AddComponent<WaveHash>();
+        Debug.Log(string.Format("{0},{1},{2},{3}", _wavelength, _crestLimit, numOfWaveCycles, _quakePos));
+
+        currentEarthquake = gameObject.AddComponent<WaveHash>();
 		currentEarthquake.InitializeArr (_wavelength, _crestLimit, numOfWaveCycles);
         //int waveCyclesRemaining = numOfWaveCycles;
 		int waveRange = currentEarthquake.retTotalWaveDistance(_crestLimit, _wavelength);
