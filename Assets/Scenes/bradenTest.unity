@@ -241,41 +241,41 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &928686684
+--- !u!1 &2044290009
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 928686686}
-  - component: {fileID: 928686685}
+  - component: {fileID: 2044290011}
+  - component: {fileID: 2044290010}
   m_Layer: 0
-  m_Name: circles
+  m_Name: EarthquakeManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &928686685
+--- !u!114 &2044290010
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 928686684}
+  m_GameObject: {fileID: 2044290009}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48a1e92675e4a2146be65190eb99dd73, type: 3}
+  m_Script: {fileID: 11500000, guid: 9bbf43570d3b2f64280fc84a033de589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &928686686
+--- !u!4 &2044290011
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 928686684}
+  m_GameObject: {fileID: 2044290009}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.553095, y: -67.391815, z: 118.33768}
+  m_LocalPosition: {x: -4.874195, y: 1.6534367, z: 8.639154}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

@@ -32,6 +32,9 @@ public class GV : MonoBehaviour {
     public static int MapGen_Tiles_Load_Bonus = 8; //increase by that many per cycle as long as cycle time is under dt below
     public static float MapGen_Ideal_Time_Per_cycle = .50f; //in seconds
 
+    //EarthQuakes
+    public static float Earthquake_Tick_Length = .2f;
+
     //system
     public static float System_Pillar_Cleanup_Interval = 20; //perodically cleans up the strange floaters that appear
 
