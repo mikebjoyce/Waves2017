@@ -14,6 +14,7 @@ public class GameFlow : MonoBehaviour {
     int renderOrLoad = 0; //every 4 optimizes some stuff
 
 	public Earthquakes earthQ;
+	public GodsWhim god;
 
     public void Awake()
     {

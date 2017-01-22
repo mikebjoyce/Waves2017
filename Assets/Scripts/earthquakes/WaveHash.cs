@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaveHash : MonoBehaviour {
 	private int pCount = 0;
-	public bool print = false;
+	public bool outputDebugForArr = false;
 	public bool debugger = false;
 
 
@@ -118,7 +118,7 @@ public class WaveHash : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (print)
+		if (outputDebugForArr)
 			printDubArr (waveArray);
 	}
 
@@ -130,7 +130,7 @@ public class WaveHash : MonoBehaviour {
 			}
 			Debug.Log (xString);
 		}
-		print = false;
+		outputDebugForArr = false;
 	}
 
 	public int[] retDecayArr(int _crestLimit, int _wavelength){
