@@ -5,6 +5,7 @@ using UnityEngine;
 public class GV : MonoBehaviour {
 
     public enum PillarType { Ground, Water}
+    public enum Coord {  North, East, South , West}
 
     public enum InputType
     {
@@ -15,8 +16,8 @@ public class GV : MonoBehaviour {
         None
     };
 
-    public static readonly int World_Size_X = 71;
-	public static readonly int World_Size_Z = 71;
+    public static readonly int World_Size_X = 91;
+	public static readonly int World_Size_Z = 91;
 
 
     public static WorldLinks worldLinks;
@@ -26,7 +27,7 @@ public class GV : MonoBehaviour {
     //Water
     public static readonly float Water_Sea_Width = 3;
     public static readonly float Water_Time_Spent_Updating = 333f; //In milliseconds, max time
-    public static readonly float Water_Time_Between_Updates = .33f; //In milliseconds 
+    public static readonly float Water_Time_Between_Updates = .5f; //In milliseconds 
  
 
     private static readonly float Water_Sections = 5; //Using 1/this in calculations does not yeild .2f... it just yeilds a nonsensical number that outputs as .2f... use the function below
@@ -37,9 +38,6 @@ public class GV : MonoBehaviour {
     public static readonly float Water_Chance_To_Break_From_Current = .2f;
     public static readonly float Water_Current_Power_Per_Bonus_Mult = .5f;
     public static readonly float Water_Value_Where_Runs_Renderer_Optz = 20;
-
-    //Tsunami
-    public static readonly float Tsunami_Update_Step = .5f;
 
 	//GOD GV
 	public static readonly Vector2 GOD_RiseIteration = new Vector2(1,3);
@@ -54,7 +52,7 @@ public class GV : MonoBehaviour {
     public static float MapGen_Ideal_Time_Per_cycle = .50f; //in seconds
 
     //EarthQuakes
-    public static float Earthquake_Tick_Length = 0.3f;
+    public static float Earthquake_Tick_Length = 0f;
 
     //system
     public static float System_Pillar_Cleanup_Interval = 40; //perodically cleans up the strange floaters that appear

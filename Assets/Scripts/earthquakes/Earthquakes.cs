@@ -100,7 +100,7 @@ public class Earthquakes : MonoBehaviour
 			} else {
 				isActive = false;
 			}
-            refresher.UpdateWorld();
+            //refresher.UpdateWorld();
         }
     }
 }

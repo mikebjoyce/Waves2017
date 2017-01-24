@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class Book : MonoBehaviour {
 
+    public GodsWhim god;
     public BoxCollider physicalCollider;
     public bool isHeld;
+
+    public void Awake()
+    {
+        god = GameObject.FindObjectOfType<GodsWhim>();
+    }
 
     public void SetHeld(bool setHeld)
     {
         isHeld = setHeld;
+        god.holdingBook = setHeld;
         if(isHeld)
         {
             physicalCollider.isTrigger = true;

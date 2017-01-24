@@ -13,6 +13,8 @@ public class GameFlow : MonoBehaviour {
     RoundSetup roundSetup;
     
     bool worldIsLoaded = false;
+    bool landIsLoaded = false;
+    bool waterIsLoaded = false;
     int renderOrLoad = 0; //every 4 optimizes some stuff
 
 	public Earthquakes earthQ;
@@ -32,9 +34,13 @@ public class GameFlow : MonoBehaviour {
         //next step goes into update
     }
 
+    public void FinishLandLoad()
+    { //now to load water
+        mapGen.OceanFiller();
+    }
+
     public void FinishLoad()
     { //called after map loads
-        mapGen.OceanFiller();
         WorldGrid.Instance.Initialize();
         timeAtNextSystemCleanup = Time.time + 12; //bit of buffer for first cleanup
         cameraVisible.UpdateWorld();
@@ -53,19 +59,30 @@ public class GameFlow : MonoBehaviour {
 
     public void Update()
     {
-        if (!worldIsLoaded)
+        if (!landIsLoaded || !waterIsLoaded)
         {
             if(renderOrLoad < 3)
             {
-                
                 if (mapGen.tilesLoadedTwoUpdateAgo.Count > 0)
                     cameraVisible.UpdatePartial(mapGen.tilesLoadedTwoUpdateAgo);
             }
             else
             {
-                worldIsLoaded = mapGen.LoadTiles();
-                if (worldIsLoaded)
+                if(!landIsLoaded)
+                {
+                    landIsLoaded = mapGen.LoadTiles();
+                    if (landIsLoaded)
+                        mapGen.OceanFiller();
+                }
+                else if(!waterIsLoaded)
+                {
+                    waterIsLoaded = mapGen.LoadWaterTiles();
+                }
+                else
+                {
+                    worldIsLoaded = true;
                     FinishLoad();
+                }
             }
             renderOrLoad++;
             renderOrLoad %= 4;

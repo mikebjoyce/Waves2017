@@ -62,27 +62,49 @@ public class WaterManager  {
         {
             timeAtNextUpdate = Time.time + GV.Water_Time_Between_Updates;
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            for (int i = 0; i < GV.World_Size_X; i++)
-                for (int ii = 0; ii < GV.World_Size_Z; ii++)
+            bool onePass = true;
+            bool canExit = false;
+            int initialUpdateIndex = currentUpdateIndex;
+
+            while (!canExit)
+            {
+                for (int i = currentUpdateIndex; i < GV.World_Size_X; i++)
                 {
-                    Vector2 v2 = new Vector2(i, ii);
-                    if (toUpdate.ContainsKey(v2))
+                    for (int ii = 0; ii < GV.World_Size_Z; ii++)
                     {
-                        if (toUpdate[v2].isDisturbed)
+                        Vector2 v2 = new Vector2(i, ii);
+                        if (toUpdate.ContainsKey(v2))
                         {
-                            UpdateWater(toUpdate[v2]);
+                            if (toUpdate[v2].isDisturbed)
+                            {
+                                UpdateWater(toUpdate[v2]);
+                            }
+                            else
+                            {
+                                toUpdate.Remove(v2);
+                            }
                         }
+                        if (watch.ElapsedMilliseconds > GV.Water_Time_Spent_Updating)
+                        {
+                            currentUpdateIndex = i;
+                            timeExit++;
+                            return;
+                        }
+                    }
+                    if (i == initialUpdateIndex)
+                    {
+                        if (onePass)
+                            onePass = false;
                         else
                         {
-                            toUpdate.Remove(v2);
+                            currentUpdateIndex = i;
+                            loopExit++;
+                            return;
                         }
                     }
-                    if (watch.ElapsedMilliseconds > GV.Water_Time_Spent_Updating)
-                    {
-                        timeExit++;
-                        return;
-                    }
                 }
+                currentUpdateIndex = 0;
+            }
 
         }
         //Debug.Log(watch.Elapsed.Milliseconds);
@@ -212,25 +234,28 @@ public class WaterManager  {
         List<Vector2> spreadDirections = new List<Vector2>(GV.Valid_Directions.OrderBy(item => Random.Range(0, 4)));
         List<Pillar> neighborPillars = new List<Pillar>();
         Pillar flowDirectionPillar = null;
-        if (pillarToUpdate.DebugLogs) Debug.Log("3");
         foreach (Vector2 offset in spreadDirections)
         {
-            if (pillarToUpdate.DebugLogs) Debug.Log("4");
             Vector2 neighborLoc = new Vector2(offset.x + pillarToUpdate.pos.x, offset.y + pillarToUpdate.pos.z);
             float neighborHeight = WorldGrid.Instance.GetHeightAt(neighborLoc);
             float heightDiff = pillarToUpdate.GetHeight() - neighborHeight;
             if (heightDiff > 0)
             {
-                if (pillarToUpdate.DebugLogs) Debug.Log("5");
                 heightDiff = MathHelper.RoundFloat(heightDiff, 1);
                 Pillar otherPillar = WorldGrid.Instance.GetPillarAt(neighborLoc);
                 if (CanTransfer(heightDiff,otherPillar.pillarType))
                 //if (heightDiff > GV.GetWaterFlowRate())// (1 / GV.Water_Sections))
                 {
-                    if (pillarToUpdate.DebugLogs) Debug.Log("6");
-                    neighborPillars.Add(otherPillar);
-                    if (offset == pillarToUpdate.GetCurrent(true) && Random.Range(0f,1f) > GV.Water_Chance_To_Break_From_Current)
+                    if(pillarToUpdate.GetCurrent(true) == new Vector2() || offset != pillarToUpdate.GetCurrent(true)*-1)
+                    {
+                        neighborPillars.Add(otherPillar);
+                    }
+                    
+                    if (offset == pillarToUpdate.GetCurrent(true) && Random.Range(0f, 1f) > GV.Water_Chance_To_Break_From_Current)
+                    {
                         flowDirectionPillar = otherPillar;
+                    }
+
                 }
             }
         }
@@ -250,6 +275,10 @@ public class WaterManager  {
             if (pillarToUpdate.DebugLogs) Debug.Log("9");
             neighborPillars.Remove(flowDirectionPillar);
             neighborPillars.Insert(0, flowDirectionPillar);
+            /*if(Random.Range(0,.5f) > .5f)
+            {
+                neighborPillars.Remove(-1 * pillarToUpdate.GetCurrent(true));
+            }*/
         }
 
         if(neighborPillars.Count == 0)
@@ -270,13 +299,11 @@ public class WaterManager  {
         //for(int i = spreadDirections.Count - 1; i >= 0; i--)
         foreach(Pillar neighborPillar in neighborPillars)
         {
-            if (pillarToUpdate.DebugLogs) Debug.Log("11");
             Vector2 neighborLoc = new Vector2(neighborPillar.pos.x, neighborPillar.pos.z);
             float neighborHeight = WorldGrid.Instance.GetHeightAt(neighborLoc);
             float heightDiff = pillarToUpdate.GetHeight() - neighborHeight;
             if (CanTransfer(heightDiff,neighborPillar.pillarType))// > (1/GV.Water_Sections) || neighborPillar.pillarType == GV.PillarType.Water)
             {
-                if (pillarToUpdate.DebugLogs) Debug.Log("12");
                 //Calculate the flow rate
                 float groundHeight = WorldGrid.Instance.GetHeightAt(new Vector2(pillarToUpdate.pos.x, pillarToUpdate.pos.z),true);
                 float waterDepth = (pillarToUpdate.GetHeight() - groundHeight);
@@ -318,7 +345,6 @@ public class WaterManager  {
                 //Now spread the water
                 if (neighborPillar.pillarType == GV.PillarType.Water && !neighborPillar.isStaticPillar)
                 {//spread water to existing water
-                    if (pillarToUpdate.DebugLogs) Debug.Log("13");
                     if (pillarToUpdate.DebugLogs)
                     {
                         Debug.Log(string.Format("Water at {0} of height {1}, is adding water to {2} at height {3}, the flowrate calculated: {4}", pillarToUpdate.pos, pillarToUpdate.GetHeight(), neighborLoc, neighborHeight, flowRate));
@@ -330,10 +356,8 @@ public class WaterManager  {
                 else if(neighborPillar.pillarType == GV.PillarType.Ground)
                 {//do not spread water
                     Pillar hiddenWaterP = WorldGrid.Instance.waterGrid[(int)neighborLoc.x, (int)neighborLoc.y];
-                    if (pillarToUpdate.DebugLogs) Debug.Log("14");
                     if (hiddenWaterP)
                     {
-                        if (pillarToUpdate.DebugLogs) Debug.Log("15");
                         hiddenWaterP.SetIsActive(true);
                         hiddenWaterP.Disturb(true);
                         hiddenWaterP.ModHeight(flowRate);
@@ -341,16 +365,12 @@ public class WaterManager  {
                     }
                     else
                     {
-                        if (pillarToUpdate.DebugLogs) Debug.Log("16");
                         CreateWater(neighborLoc, flowRate + neighborHeight);
                     }
                 }
 
-                if (pillarToUpdate.DebugLogs) Debug.Log("17");
-
                 if (!pillarToUpdate.isStaticPillar)
                 {
-                    if (pillarToUpdate.DebugLogs) Debug.Log("18");
                     pillarToUpdate.ModHeight(-flowRate);
                     pillarToUpdate.AddCurrent(new Vector2(neighborLoc.x, neighborLoc.y), -flowRate);
                 }

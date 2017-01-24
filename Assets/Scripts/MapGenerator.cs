@@ -22,13 +22,16 @@ public class MapGenerator : MonoBehaviour {
     [HideInInspector]
     public List<Vector3> tilesToLoad;
     [HideInInspector]
+    List<Vector2> toAddWater = new List<Vector2>();
+    [HideInInspector]
     public List<Vector3> tilesLoadedOneUpdateAgo; //for graphics loading
     [HideInInspector]
     public List<Vector3> tilesLoadedTwoUpdateAgo;
     int tileLoadingIndex = 0;
-   // public float loadWaitCycle = false;
+    int waterTileLoadingIndex = 0;
+    // public float loadWaitCycle = false;
 
-	public void GenerateLand()
+    public void GenerateLand()
 	{
         tilesToLoad = new List<Vector3>();
         tileLoadingIndex = 0;
@@ -130,7 +133,7 @@ public class MapGenerator : MonoBehaviour {
     {
         List<Vector2> openList = new List<Vector2>();
         List<Vector2> closedList = new List<Vector2>();
-        List<Vector2> toAddWater = new List<Vector2>();
+        
 
         //start at inner ring, since outer ring has sea tiles already
         for (int x = 1; x < GV.World_Size_X; x++)
@@ -159,9 +162,13 @@ public class MapGenerator : MonoBehaviour {
            closedList.Add(openList[0]);
            openList.RemoveAt(0);
         }
+    }
 
-        foreach(Vector2 addLoc in toAddWater)
-            WorldGrid.Instance.waterManager.CreateWater(addLoc, GV.Water_Sea_Level, false);
+    public bool LoadWaterTiles()
+    {
+        for (int i = 0; waterTileLoadingIndex < toAddWater.Count && i < GV.MapGen_Tiles_Load_Per_Cycle; i++, waterTileLoadingIndex++)
+            WorldGrid.Instance.waterManager.CreateWater(toAddWater[waterTileLoadingIndex], GV.Water_Sea_Level, false);
+        return waterTileLoadingIndex == toAddWater.Count - 1;
     }
 
     public bool LoadTiles()
