@@ -6,7 +6,7 @@ public class GodsWhim : MonoBehaviour {
 	List<Earthquakes> EarthQuakes = new List<Earthquakes> ();
 
 	public bool isOn = false;
-    bool dynamicGodMode = false;
+    bool dynamicGodMode = true;
 
 	GameFlow owner;
 	public Earthquakes EQ;
