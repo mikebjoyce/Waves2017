@@ -168,7 +168,7 @@ public class MapGenerator : MonoBehaviour {
     {
         for (int i = 0; waterTileLoadingIndex < toAddWater.Count && i < GV.MapGen_Tiles_Load_Per_Cycle; i++, waterTileLoadingIndex++)
             WorldGrid.Instance.waterManager.CreateWater(toAddWater[waterTileLoadingIndex], GV.Water_Sea_Level, false);
-        return waterTileLoadingIndex == toAddWater.Count - 1;
+        return waterTileLoadingIndex >= toAddWater.Count - 1;
     }
 
     public bool LoadTiles()

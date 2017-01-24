@@ -77,11 +77,8 @@ public class GameFlow : MonoBehaviour {
                 else if(!waterIsLoaded)
                 {
                     waterIsLoaded = mapGen.LoadWaterTiles();
-                }
-                else
-                {
-                    worldIsLoaded = true;
-                    FinishLoad();
+                    if (waterIsLoaded)
+                        FinishLoad();
                 }
             }
             renderOrLoad++;
