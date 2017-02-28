@@ -104,8 +104,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4995873043421036}
-  - component: {fileID: 114926177838868688}
   - component: {fileID: 65499117422718166}
+  - component: {fileID: 114291677543646828}
   m_Layer: 8
   m_Name: Pillar
   m_TagString: Untagged
@@ -467,7 +467,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 15, z: 1}
   m_Center: {x: 0, y: -7.5, z: 0}
---- !u!114 &114926177838868688
+--- !u!114 &114291677543646828
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -475,13 +475,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1743674193793708}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46b8d99634b8685449a2a09a83504ef9, type: 3}
+  m_Script: {fileID: 11500000, guid: ab5930cad557ccd448fea5b50510bbe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pillarType: 0
-  pos: {x: 0, y: 0, z: 0}
-  pillarCollider: {fileID: 65499117422718166}
-  DebugLogs: 0
   segments:
   - {fileID: 1040493381689138}
   - {fileID: 1323430915387412}
@@ -489,6 +485,4 @@ MonoBehaviour:
   - {fileID: 1417918184485976}
   - {fileID: 1671199601462556}
   - {fileID: 1860131780494792}
-  isActive: 1
-  isStaticPillar: 0
-  isDisturbed: 0
+  coliBox: {fileID: 65499117422718166}

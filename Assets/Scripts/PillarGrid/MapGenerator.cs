@@ -22,7 +22,7 @@ public class MapGenerator : MonoBehaviour {
     [HideInInspector]
     public List<Vector3> tilesToLoad;
     [HideInInspector]
-    List<Vector2> toAddWater = new List<Vector2>();
+    List<GridPos> toAddWater = new List<GridPos>();
     [HideInInspector]
     public List<Vector3> tilesLoadedOneUpdateAgo; //for graphics loading
     [HideInInspector]
@@ -106,56 +106,41 @@ public class MapGenerator : MonoBehaviour {
 	{
         if ((_pillarPos.x <= GV.Water_Sea_Width || _pillarPos.x >= GV.World_Size_X - GV.Water_Sea_Width) || (_pillarPos.z <= GV.Water_Sea_Width || _pillarPos.z >= GV.World_Size_Z - GV.Water_Sea_Width))
         {
-            _pillarPos.y = -10;
+            _pillarPos.y = -15; //Outmost edges are dropped super low for the sea
         }
 
-        GameObject newPillar = (GameObject)Instantiate (Resources.Load ("Prefabs/Pillar"), _pillarPos, Quaternion.identity);
-        newPillar.transform.SetParent(GV.worldLinks.groundParent);
-        Pillar p = newPillar.GetComponent<Pillar>();
-        WorldGrid.Instance.groundGrid [(int)_pillarPos.x,(int)_pillarPos.z] = p;
-        p.Initialize(_pillarPos, GV.PillarType.Ground);
-
-        if ((_pillarPos.x == 0 || _pillarPos.x == GV.World_Size_X - 1) || (_pillarPos.z == 0 || _pillarPos.z == GV.World_Size_Z - 1)) //is edge sea piece
-        {
-            //Vector3 seaPos = _pillarPos;
-            //seaPos.y = GV.Water_Sea_Level;
-            WorldGrid.Instance.waterManager.CreateWater(new Vector2(_pillarPos.x, _pillarPos.z), GV.Water_Sea_Level, true);
-            //GameObject seaPillarObj = (GameObject)Instantiate(Resources.Load("Prefabs/Pillar"), seaPos, Quaternion.identity);
-            //seaPillarObj.transform.SetParent(GameObject.FindObjectOfType<WorldLinks>().waterParent);
-            //Pillar seaPillar = seaPillarObj.GetComponent<Pillar>();
-            //seaPillar.Initialize(seaPos, GV.PillarType.Water);
-            //WorldGrid.Instance.groundGrid[(int)seaPos.x, (int)seaPos.z] = newPillar.GetComponent<Pillar>();
-        }
-
+        WorldGrid.Instance.worldGrid[(int)_pillarPos.x, (int)_pillarPos.z].InitializePillarStruct(GV.PillarType.Ground, _pillarPos.y);
     }
 
     public void OceanFiller()
     {
-        List<Vector2> openList = new List<Vector2>();
-        List<Vector2> closedList = new List<Vector2>();
-        
+        List<GridPos> openList = new List<GridPos>();
+        List<GridPos> closedList = new List<GridPos>();
 
         //start at inner ring, since outer ring has sea tiles already
-        for (int x = 1; x < GV.World_Size_X; x++)
+        for (int x = 0; x < GV.World_Size_X; x++)
         {
-            openList.Add(new Vector2(x, 1));
-            openList.Add(new Vector2(x, GV.World_Size_X - 2));
+            openList.Add(new GridPos(x, 0));
+            openList.Add(new GridPos(x, GV.World_Size_X - 1));
         }
-        for (int z = 1; z < GV.World_Size_Z; z++)
+        for (int z = 0; z < GV.World_Size_Z; z++)
         {
-            openList.Add(new Vector2(1,z));
-            openList.Add(new Vector2(GV.World_Size_Z - 2,z));
+            openList.Add(new GridPos(0,z));
+            openList.Add(new GridPos(GV.World_Size_Z - 1,z));
         }
 
         while(openList.Count > 0)
         {
-           if(WorldGrid.Instance.GetHeightAt(openList[0]) < GV.Water_Sea_Level)
+           if(WorldGrid.Instance.GetPillarStaticHeight(openList[0], GV.PillarType.Ground) < GV.Water_Sea_Level)
            {
-                toAddWater.Add(openList[0]);
-                foreach(Vector2 offset in GV.Valid_Directions)
+                if(!toAddWater.Contains(openList[0]))
+                    toAddWater.Add(openList[0]);
+                foreach(GridPos offset in GV.Valid_Directions)
                 {
-                    if (!openList.Contains(openList[0] + offset) && !closedList.Contains(openList[0] + offset) && !toAddWater.Contains(openList[0] + offset))
-                        openList.Add(openList[0] + offset);
+                    GridPos posToCheck = openList[0] + offset;
+                    if(WorldGrid.Instance.InBounds(posToCheck))
+                        if (!openList.Contains(posToCheck) && !closedList.Contains(posToCheck) && !toAddWater.Contains(posToCheck))
+                            openList.Add(openList[0] + offset);
                 }
             
            }
@@ -167,11 +152,11 @@ public class MapGenerator : MonoBehaviour {
     public bool LoadWaterTiles()
     {
         for (int i = 0; waterTileLoadingIndex < toAddWater.Count && i < GV.MapGen_Tiles_Load_Per_Cycle; i++, waterTileLoadingIndex++)
-            WorldGrid.Instance.waterManager.CreateWater(toAddWater[waterTileLoadingIndex], GV.Water_Sea_Level, false);
-        return waterTileLoadingIndex >= toAddWater.Count - 1;
+            WorldGrid.Instance.GetPillarAt(toAddWater[waterTileLoadingIndex]).InitializePillarStruct(GV.PillarType.Water, GV.Water_Sea_Level);
+        return !(waterTileLoadingIndex < toAddWater.Count); //if not less than, returns true to indicate its finished
     }
 
-    public bool LoadTiles()
+    public bool LoadGroundTiles()
     {
         float startTime = Time.time;
         tilesLoadedTwoUpdateAgo = new List<Vector3>(tilesLoadedOneUpdateAgo);

@@ -13,9 +13,9 @@ public class RoundSetup : MonoBehaviour {
         {
             GameObject go = Instantiate(Resources.Load("Prefabs/PlayerHolder")) as GameObject;
             PlayerControl pcs = go.GetComponentInChildren<PlayerControl>();
-            float xcord = Random.Range(0.3f, .7f) * GV.World_Size_X;
-            float zcord = Random.Range(0.3f, .7f) * GV.World_Size_Z;
-            float yCord = WorldGrid.Instance.GetHeightAt(new Vector2(xcord, zcord)) + 3;
+            int xcord =  (int)(Random.Range(0.3f, .7f) * GV.World_Size_X);
+            int zcord =  (int)(Random.Range(0.3f, .7f) * GV.World_Size_Z);
+            float yCord = WorldGrid.Instance.GetPillarStaticHeight(new GridPos(xcord, zcord)) + 3;
             pcs.Initialize(new Vector3(xcord, yCord, zcord));
             go.GetComponentInChildren<InputManager>().controlType = cntrlType;
             go.GetComponentInChildren<InputManager>().Initialize(cntrlType);
@@ -27,9 +27,9 @@ public class RoundSetup : MonoBehaviour {
 
     private void DropBook()
     {
-        float x = Random.Range(0.4f, .6f) * GV.World_Size_X;
-        float z = Random.Range(0.5f, .6f) * GV.World_Size_Z;
-        float y = WorldGrid.Instance.GetHeightAt(new Vector2(x, z)) + 1;
+        int x = (int)(Random.Range(0.4f, .6f) * GV.World_Size_X);
+        int z = (int)(Random.Range(0.5f, .6f) * GV.World_Size_Z);
+        float y = WorldGrid.Instance.GetPillarStaticHeight(new GridPos(x, z)) + 1;
         GameObject go = Instantiate(Resources.Load("Prefabs/Book")) as GameObject;
         go.transform.position = new Vector3(x, y, z);
         GV.theOneBook = go.GetComponent<Book>();

@@ -4,16 +4,7 @@ using UnityEngine;
 
 public class CameraVisible : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
     public void UpdateWorld()
     {
         for(int x=0; x < GV.World_Size_X; x++)
@@ -33,34 +24,34 @@ public class CameraVisible : MonoBehaviour {
 
     public void UpdateLocation(Vector2 atLoc)
     {
-        Pillar pillarG = WorldGrid.Instance.GetPillarAt(atLoc, true);
-        Pillar pillarP = WorldGrid.Instance.GetPillarAt(atLoc);
-        UpdatePillar(pillarG);
-        if (pillarP && pillarP.pillarType == GV.PillarType.Water)
-            UpdatePillar(pillarP);
+        //Pillar pillarG = WorldGrid.Instance.GetPillarAt(atLoc, true);
+        //Pillar pillarP = WorldGrid.Instance.GetPillarAt(atLoc);
+        //UpdatePillar(pillarG);
+        //if (pillarP && pillarP.pillarType == GV.PillarType.Water)
+        //    UpdatePillar(pillarP);
     }
 
 
     public void UpdatePillar(Pillar p)
     {
-        Vector2 atLoc = new Vector2(p.pos.x, p.pos.z);
-        Vector2 neighbourLoc = new Vector2();
-        float neighbourHeight;
-        float minHeight = 9999;
-
-        foreach (Vector2 dir in GV.Valid_Directions)
-        {
-            neighbourLoc = atLoc + dir;
-            if (WorldGrid.Instance.GetPillarAt(neighbourLoc, true))
-            {
-                neighbourHeight = WorldGrid.Instance.GetHeightAt(neighbourLoc);
-                if (neighbourHeight < minHeight)
-                    minHeight = neighbourHeight;
-            }
-            else
-                return;
-        }
-        int segBelowMinHeight = p.FindSegmentBelow(minHeight);
-        p.SetInvisibleBelow(segBelowMinHeight);
+        //Vector2 atLoc = new Vector2(p.pos.x, p.pos.z);
+        //Vector2 neighbourLoc = new Vector2();
+        //float neighbourHeight;
+        //float minHeight = 9999;
+        //
+        //foreach (Vector2 dir in GV.Valid_Directions)
+        //{
+        //    neighbourLoc = atLoc + dir;
+        //    if (WorldGrid.Instance.GetPillarAt(neighbourLoc, true))
+        //    {
+        //        neighbourHeight = WorldGrid.Instance.GetHeightAt(neighbourLoc);
+        //        if (neighbourHeight < minHeight)
+        //            minHeight = neighbourHeight;
+        //    }
+        //    else
+        //        return;
+        //}
+        //int segBelowMinHeight = p.FindSegmentBelow(minHeight);
+        //p.SetInvisibleBelow(segBelowMinHeight);
     }
 }

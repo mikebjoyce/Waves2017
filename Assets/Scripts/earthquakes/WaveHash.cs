@@ -185,13 +185,13 @@ public class WaveHash : MonoBehaviour {
 					if (currentCircle > lowestBound () && currentCircle < totalWaveDistance) {
 						//Debug.Log ("moded by " + modifyWaveRet (waveArray [c, counter], c + (int)(wavelength + 1) * i));
 						foreach (Vector2 v in arrayOfCircles[currentCircle]) {
-							if (WorldGrid.Instance.InBounds (v)) {
+							if (WorldGrid.Instance.InBounds (GridPos.ToGP(v))) {
 								int tempWaveRet = modifyWaveRet (waveArray [c, counter], c + (int)(wavelength + 1) * i);
 								if (tempWaveRet > 5 && debugger) {
 									Debug.Log ("wave Arr ret > 5. Raw = " + waveArray [c, counter] +" Ret = " + tempWaveRet + " iteration " + iteration +"  Curr Circle " + currentCircle + " Time " + Time.time);
 								}
-								Pillar tempP = WorldGrid.Instance.GetPillarAt (v, true);
-								tempP.ModHeight (tempWaveRet*GV.Water_Flow_Rate);
+								Pillar tempP = WorldGrid.Instance.GetPillarAt (GridPos.ToGP(v));
+								tempP.ModHeight (GV.PillarType.Ground ,tempWaveRet*GV.Pillar_Min_Division);
 								//Debug.Log ("toModBy " + tempWaveRet);
 							}
 						}
@@ -203,15 +203,15 @@ public class WaveHash : MonoBehaviour {
 				if (currentCircle > lowestBound () && currentCircle < totalWaveDistance) {
 					//Debug.Log ("moded by " +modifyWaveRet (waveArray [r, counter], r + (int)howManyCycles * (wavelength + 1)));
 					foreach (Vector2 v in arrayOfCircles[currentCircle]) {
-						if (WorldGrid.Instance.InBounds (v)) {
+						if (WorldGrid.Instance.InBounds (GridPos.ToGP(v))) {
 							//Debug.Log ("Pillar " + WorldGrid.Instance.GetPillarAt (v, true).ToString ());
 							//Debug.Log ("Vector 2 current pillar loc " + v.ToString());
 							//Debug.Log ("currentEarthquake.waveArray [r, currentEarthquake.counter] " + currentEarthquake.waveArray [r, currentEarthquake.counter]);
 							int tempWaveRet = modifyWaveRet (waveArray [r, counter], r + (int)howManyCycles * (wavelength + 1));
-							Pillar tempP =	WorldGrid.Instance.GetPillarAt (v, true);
-							tempP.ModHeight (tempWaveRet * GV.Water_Flow_Rate);
-							//Debug.Log ("toModBy " +tempWaveRet);
-						}
+                            Pillar tempP = WorldGrid.Instance.GetPillarAt(GridPos.ToGP(v));
+                            tempP.ModHeight(GV.PillarType.Ground, tempWaveRet * GV.Pillar_Min_Division);
+                            //Debug.Log ("toModBy " +tempWaveRet);
+                        }
 					}
 				}
 			}

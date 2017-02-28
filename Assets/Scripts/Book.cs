@@ -32,7 +32,7 @@ public class Book : MonoBehaviour {
     {
         if (!isHeld)
         {
-            float heightBelow = WorldGrid.Instance.GetHeightAt(MathHelper.V3toV2xz(transform.position));
+            float heightBelow = WorldGrid.Instance.GetPillarStaticHeight(GridPos.ToGP(transform));
             if (transform.position.y < heightBelow)
                 transform.position = new Vector3(transform.position.x, heightBelow, transform.position.z);
         }

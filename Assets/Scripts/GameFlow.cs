@@ -29,19 +29,14 @@ public class GameFlow : MonoBehaviour {
     {
         mapGen = GetComponent<MapGenerator>();
         roundSetup = GetComponent<RoundSetup>();
+        WorldGrid.Instance.Initialize();
         mapGen.GenerateLand();
 
         //next step goes into update
     }
 
-    public void FinishLandLoad()
-    { //now to load water
-        mapGen.OceanFiller();
-    }
-
     public void FinishLoad()
     { //called after map loads
-        WorldGrid.Instance.Initialize();
         timeAtNextSystemCleanup = Time.time + 12; //bit of buffer for first cleanup
         cameraVisible.UpdateWorld();
         //Debug.Log (p1.gameObject.isActiveAndEnabled);
@@ -56,7 +51,6 @@ public class GameFlow : MonoBehaviour {
 		//Debug.Log (p1.isActiveAndEnabled);
     }
 
-
     public void Update()
     {
         if (!landIsLoaded || !waterIsLoaded)
@@ -70,7 +64,7 @@ public class GameFlow : MonoBehaviour {
             {
                 if(!landIsLoaded)
                 {
-                    landIsLoaded = mapGen.LoadTiles();
+                    landIsLoaded = mapGen.LoadGroundTiles();
                     if (landIsLoaded)
                         mapGen.OceanFiller();
                 }
@@ -84,7 +78,7 @@ public class GameFlow : MonoBehaviour {
             renderOrLoad++;
             renderOrLoad %= 4;
         }
-        else
+        /*else
         {
             WorldGrid.Instance.tsunamiManager.UpdateTsunami();
             WorldGrid.Instance.waterManager.UpdateWaterManager();
@@ -94,6 +88,6 @@ public class GameFlow : MonoBehaviour {
                 WorldGrid.Instance.PreformSnapCleanup();
                 timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval;
             }
-        }
+        }*/
     }
 }

@@ -10,9 +10,14 @@ public class PlayerControl : MonoBehaviour {
 	//digLocator
 	public GameObject digLoc;
 	public MeshRenderer digMesh;
-
-	//Vars
-	public Rigidbody body;
+    private bool isDigging = false;
+    private float dirtStored = 0;
+    private float digRateStored = 0;
+    private float dropRateStored = 0;
+    private float modGroundRate = GV.Pillar_Min_Division * 5; //same amt as water can mod
+    
+    //Vars
+    public Rigidbody body;
 
 	public bool isGrounded = false;
     public Book book;
@@ -23,8 +28,10 @@ public class PlayerControl : MonoBehaviour {
 	private bool lockMove = false;
     private float air = GameVariable.maxBreath;
 
+    
 
-	public Vector2 position;
+
+	public GridPos gridPos;
 
 	/*public void Initialize(){
 		forward = transform.forward;
@@ -34,7 +41,8 @@ public class PlayerControl : MonoBehaviour {
 	public void Initialize(Vector3 loc){
         camManager = playerCam.transform.parent.GetComponent<CameraManager>();
         transform.position = loc;
-		visibleDropPillar (true);
+        gridPos = GridPos.ToGP(loc);
+        visibleDropPillar (true);
 		digMesh = digLoc.GetComponent<MeshRenderer> ();
 		moveDigIndic ();
 	}
@@ -46,7 +54,12 @@ public class PlayerControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		position = new Vector2 (transform.position.x, transform.position.z);
+        digRateStored += Time.deltaTime* modGroundRate;
+        dropRateStored += Time.deltaTime * modGroundRate;
+        digRateStored = Mathf.Clamp(digRateStored, 0, GV.Pillar_Min_Division);
+        dropRateStored = Mathf.Clamp(dropRateStored, 0, GV.Pillar_Min_Division);
+
+        gridPos = GridPos.ToGP(transform); // new Vector2 (transform.position.x, transform.position.z);
 		forward = transform.forward;
 
 		moveDigIndic ();
@@ -82,7 +95,7 @@ public class PlayerControl : MonoBehaviour {
 
 
 	//player Movement and Actions
-	public void Move(Vector3 input){
+	public void Move(Vector3 input){  //move to FixedUpdate and use RigidBody.Move for optimal
 		//moves with constant speed 
 		//Debug.Log("Input " + input.ToString());
 		if (!isMaxSpeed()) {
@@ -145,9 +158,11 @@ public class PlayerControl : MonoBehaviour {
 
 			//do dig stuff
 			Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-			if (canDig()) {
-
-				WorldGrid.Instance.ModGround(roundV2(position) + trueDir, -1);
+			if (canDig() && digRateStored >= GV.Pillar_Min_Division) {
+                WorldGrid.Instance.ModPillarHeight(gridPos + trueDir, GV.PillarType.Ground , -GV.Pillar_Min_Division);
+                digRateStored = 0;
+                dirtStored += GV.Pillar_Min_Division;
+                //dirtStored += m
 				isHolding = true;
 			} else {
 				//too low to dig
@@ -165,9 +180,11 @@ public class PlayerControl : MonoBehaviour {
 
 		//do opposite of dig stuff
 		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-		if (canDrop()) {
-
-			WorldGrid.Instance.ModGround (roundV2 (position) + trueDir, 1);
+		if (dirtStored > 0 && dropRateStored >= GV.Pillar_Min_Division && canDrop()) {
+            WorldGrid.Instance.ModPillarHeight(gridPos + trueDir, GV.PillarType.Ground, GV.Pillar_Min_Division);
+            //WorldGrid.Instance.ModGround (roundV2 (gridPos) + trueDir, GV.Pillar_Min_Division);
+            dropRateStored = 0;
+            dirtStored -= GV.Pillar_Min_Division;
 			isHolding = false;
 			//Debug.Log("B4 "+ transform.position);
 			//transform.position.Set (roundV2 (position).x, transform.position.y, roundV2 (position).y);
@@ -202,14 +219,14 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	private Vector3 DigLoc(){
-		Vector2 digPos = roundV2 (position) + strongestDir (new Vector2(forward.x,forward.z));
-		int hight = (int) WorldGrid.Instance.GetHeightAt (digPos, true);
+		GridPos digPos = gridPos + strongestDir (new Vector2(forward.x,forward.z));
+		int hight = (int) WorldGrid.Instance.GetPillarStaticHeight (digPos, GV.PillarType.Ground);
 		return new Vector3 (digPos.x, hight, digPos.y);
 	}
 		
 	private void moveDigIndic(){
-		Vector2 digPos = roundV2 (position) + strongestDir (new Vector2(forward.x,forward.z));
-		digLoc.transform.position = new Vector3 (digPos.x, WorldGrid.Instance.GetHeightAt (digPos), digPos.y);
+        GridPos digPos = gridPos + strongestDir (new Vector2(forward.x,forward.z));
+		digLoc.transform.position = new Vector3 (digPos.x, WorldGrid.Instance.GetPillarStaticHeight(digPos), digPos.y);
 	}
 
 	private void visibleDropPillar(bool input){
@@ -217,19 +234,19 @@ public class PlayerControl : MonoBehaviour {
 	}
 		
 	private bool canDig(){
-		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
+        
+		int standingHigh = (int) WorldGrid.Instance.GetPillarStaticHeight(gridPos, GV.PillarType.Ground);
 		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
+		int diggingHight = (int) WorldGrid.Instance.GetPillarStaticHeight(gridPos  + trueDir, GV.PillarType.Ground);
 
 		return standingHigh + 2 >= diggingHight && standingHigh - 1 <= diggingHight;
 	}
 
 	private bool canDrop(){
-		int standingHigh = (int) WorldGrid.Instance.GetHeightAt (roundV2(position) , true);
-		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-		int diggingHight = (int) WorldGrid.Instance.GetHeightAt (roundV2(position)  + trueDir, true);
-
-		return standingHigh + 1 >= diggingHight;
+		int standingHigh = (int)WorldGrid.Instance.GetPillarStaticHeight(gridPos, GV.PillarType.Ground);
+        Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
+        int diggingHight = (int)WorldGrid.Instance.GetPillarStaticHeight(gridPos + trueDir, GV.PillarType.Ground);
+        return standingHigh + 1 >= diggingHight;
 	}
 
 	private bool isMaxSpeed(){
@@ -252,10 +269,11 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	private void ApplyCurrentForce(){
-		Pillar underUs = WorldGrid.Instance.GetPillarAt (roundV2(position));
-		if (underUs && underUs.pillarType == GV.PillarType.Water && transform.position.y < underUs.GetHeight()){
+        float heightOfWaterUnderUs = (int)WorldGrid.Instance.GetPillarStaticHeight(gridPos, GV.PillarType.Water);
+		if (transform.position.y < heightOfWaterUnderUs)
+        {
             air -= Time.deltaTime;
-			body.AddForce(underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime, ForceMode.Impulse);
+			//body.AddForce(underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime, ForceMode.Impulse);
 			//Debug.Log ("Force added to body from current " + underUs.GetCurrent (false) * PlayerGV.G_WaterForcePerCurrent * Time.deltaTime);
 		}
         else

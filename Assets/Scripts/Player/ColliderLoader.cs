@@ -28,7 +28,7 @@ public class ColliderLoader : MonoBehaviour {
 		Vector3 pos = transform.position;
 		for (int x = -rad; x < rad; x++) {
 			for (int y = -rad; y < rad; y++) {
-				pillars [x + rad,y + rad] = WorldGrid.Instance.GetPillarAt (new Vector2 (x + pos.x, y + pos.z),true);
+				pillars [x + rad,y + rad] = WorldGrid.Instance.GetPillarAt (new GridPos (x + (int)pos.x, y + (int)pos.z));
 			}
 		}
 	}
@@ -37,7 +37,7 @@ public class ColliderLoader : MonoBehaviour {
 		foreach (Pillar p in pillars) {
             if (p != null)
             {
-                p.pillarCollider.enabled = true;
+                p.SetColliderActive(true);
             }
 		}
 	}
@@ -45,7 +45,7 @@ public class ColliderLoader : MonoBehaviour {
 	public void DeactivatePillarCol(){
 		foreach (Pillar p in pillars) {
 			if(p != null)
-				p.pillarCollider.enabled = false;
-		}
+                p.SetColliderActive(true);
+        }
 	}
 }

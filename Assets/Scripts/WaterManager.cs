@@ -27,31 +27,6 @@ public class WaterManager  {
             renderers[i] = 0;
     }
 
-    public void WasDisturbed(Pillar disturbedPillar, bool setDisturbed)
-    {
-        //bool dbg = (disturbedAtLoc == new Vector2(15, 30));
-        //if (dbg) Debug.Log("setDisturbed: " + setDisturbed);
-        if (setDisturbed)
-        {
-            //Pillar p = WorldGrid.Instance.GetPillarAt(disturbedAtLoc);
-            //if (dbg) Debug.Log("p was found at " + disturbedAtLoc + " : " + (p != null));
-              //if (p.DebugLogs) Debug.Log("water type");
-              if (!toUpdate.ContainsKey(disturbedPillar.xypos))
-              {
-                 // if (p.DebugLogs) Debug.Log("added to update manager");
-                  toUpdate.Add(disturbedPillar.xypos, disturbedPillar);
-              }
-        }
-        else if (!setDisturbed)
-        {
-            // if (disturbedAtLoc == new Vector2(15, 30))
-            //     Debug.Log("DISTRUBED DELTED");
-            toUpdate.Remove(disturbedPillar.xypos);
-            //Debug.Log("2");
-        }
-    }
-
-
     public static float safetyExit = 0;
     public static float timeExit = 0;
     public static float loopExit = 0;
@@ -77,7 +52,7 @@ public class WaterManager  {
                         {
                             if (toUpdate[v2].isDisturbed)
                             {
-                                UpdateWater(toUpdate[v2]);
+                                //UpdateWater(toUpdate[v2]);
                             }
                             else
                             {
@@ -216,9 +191,81 @@ public class WaterManager  {
     {
         if (heightDiff <= 0)
             return false;
-        return ((heightDiff > GV.Water_Flow_Rate && otherPillarType == GV.PillarType.Ground) || (heightDiff >= GV.Water_Flow_Rate && otherPillarType == GV.PillarType.Water));
+        return ((heightDiff > GV.Pillar_Min_Division && otherPillarType == GV.PillarType.Ground) || (heightDiff >= GV.Pillar_Min_Division && otherPillarType == GV.PillarType.Water));
     }
 
+    private void UpdateStaticWater(Pillar pillarToUpdate)
+    {
+        if (!pillarToUpdate.waterActive)
+        {
+            pillarToUpdate.isDisturbed = false; //okay if ground done first for landslides
+            return;
+        }
+        float ptu_waterVolume = pillarToUpdate.GetVolume(GV.PillarType.Water);
+        if (ptu_waterVolume <= 0)
+        {
+            pillarToUpdate.waterActive = false;
+            pillarToUpdate.isDisturbed = false;
+            Debug.Log("water trying to update with no volume");
+            return;
+        }
+
+        float[] amountsToEven = new float[] { 0, 0, 0, 0 };
+        int lowestNeighborIndex = 0;
+        float lowestNeighborHeight = 999;
+        GridPos[] neighborGridLoc = new GridPos[4];
+        Pillar[] neighborPillars = new Pillar[4];
+
+        float pillarStaticHeight = pillarToUpdate.GetStaticHeight();
+        float lowestNeighborEvenAmt;
+        float c = 0;
+        float a = 0;
+
+        for (int i = 0; i < 4; i++) //(Vector2 offset in GV.Valid_Directions)
+        {
+            neighborGridLoc[i] = pillarToUpdate.pos + GV.Valid_Directions[i];
+            neighborPillars[i] = WorldGrid.Instance.GetPillarAt(neighborGridLoc[i]);
+            float neighborStaticHeight = neighborPillars[i].GetStaticHeight();
+            if (neighborStaticHeight >= pillarStaticHeight)
+                amountsToEven[i] = 0;
+            else
+                amountsToEven[i] = (pillarStaticHeight - neighborStaticHeight) / 2;
+
+            if (neighborStaticHeight < lowestNeighborHeight)
+            {
+                lowestNeighborHeight = neighborStaticHeight;
+                lowestNeighborIndex = i;
+            }
+
+            c += amountsToEven[i];
+        }
+
+        if (lowestNeighborHeight >= pillarStaticHeight)
+            return; //Lowest neighbor is taller or even then no transfer
+        else
+            lowestNeighborEvenAmt = amountsToEven[lowestNeighborIndex];
+
+        c = (c - amountsToEven[lowestNeighborIndex]) / amountsToEven[lowestNeighborIndex];
+        a = (pillarStaticHeight - amountsToEven[lowestNeighborIndex]) / c;
+        float totalWouldGive = a * (c + 1);
+        if(totalWouldGive > ptu_waterVolume) //if not enough water to give
+            a = ptu_waterVolume / (c + 1);
+
+        for (int i = 0; i < 4; i++)
+        {
+            float amtToGive = (amountsToEven[i] / amountsToEven[lowestNeighborIndex]) * a;
+            if(amtToGive > 0)
+                CreateWaterCurrentAt(neighborGridLoc[i], amtToGive, GV.Valid_Directions[i]);
+        }
+
+        pillarToUpdate.ModHeight(GV.PillarType.Water,a * (c + 1));
+    }
+
+    public void CreateWaterCurrentAt(GridPos pos, float amt, GridPos dir)
+    {
+
+    }
+    /*
     private void UpdateWater(Pillar pillarToUpdate)
     {
         if (!pillarToUpdate.isActive)
@@ -275,10 +322,10 @@ public class WaterManager  {
             if (pillarToUpdate.DebugLogs) Debug.Log("9");
             neighborPillars.Remove(flowDirectionPillar);
             neighborPillars.Insert(0, flowDirectionPillar);
-            /*if(Random.Range(0,.5f) > .5f)
-            {
-                neighborPillars.Remove(-1 * pillarToUpdate.GetCurrent(true));
-            }*/
+            //if(Random.Range(0,.5f) > .5f)
+            //{
+            //    neighborPillars.Remove(-1 * pillarToUpdate.GetCurrent(true));
+            //}
         }
 
         if(neighborPillars.Count == 0)
@@ -289,11 +336,11 @@ public class WaterManager  {
             return;
         }
 
-        /*if (spreadDirections.Contains(flowDir))
-        {
-            spreadDirections.Remove(flowDir);
-            spreadDirections.Insert(0, flowDir);
-        }*/
+        //if (spreadDirections.Contains(flowDir))
+        //{
+        //    spreadDirections.Remove(flowDir);
+        //    spreadDirections.Insert(0, flowDir);
+        //}
 
         //Trim the list to only lower heights
         //for(int i = spreadDirections.Count - 1; i >= 0; i--)
@@ -316,30 +363,30 @@ public class WaterManager  {
                 int rounded = Mathf.RoundToInt(waterDepth * percentSurfaceDistributing);
                 rounded = Mathf.Max(1, rounded);
                 //float flowRate = waterDepth * percentSurfaceDistributing * GV.Water_Flow_Rate;
-                float flowRate = rounded * GV.Water_Flow_Rate;// * potentialPowerMultiplier;
-                /*if(flowDirectionPillar && flowDirectionPillar == neighborPillar)
-                { //can apply current bonus
-                    Vector2 flowDir = toUpdate.GetCurrent(false);
-                    float maxTransfer;
-                    if((heightDiff / GV.Water_Flow_Rate) % 2 == 0)
-                    {
-                        maxTransfer = heightDiff / 2;
-                    }
-                    else
-                    {
-                        maxTransfer = heightDiff / 2 + GV.Water_Flow_Rate;
-                    }
-
-                    float flowBonus = Mathf.Max(flowDir.x, flowDir.y);
-                    flowBonus /= GV.Water_Current_Power_Per_Bonus_Mult;
-                    if (flowBonus > 1)
-                    {
-                        //Debug.Log("flow Rate/bonus/total: " + flowRate + "/" + flowBonus + "/" + (flowRate * flowBonus));
-                        flowRate *= flowBonus;
-                    }
-                    flowRate = Mathf.Min(flowRate, maxTransfer);
-                    
-                }*/
+                float flowRate = rounded * GV.Pillar_Min_Division;// * potentialPowerMultiplier;
+                //if(flowDirectionPillar && flowDirectionPillar == neighborPillar)
+                //{ //can apply current bonus
+                //    Vector2 flowDir = toUpdate.GetCurrent(false);
+                //    float maxTransfer;
+                //    if((heightDiff / GV.Water_Flow_Rate) % 2 == 0)
+                //    {
+                //        maxTransfer = heightDiff / 2;
+                //    }
+                //    else
+                //    {
+                //        maxTransfer = heightDiff / 2 + GV.Water_Flow_Rate;
+                //    }
+                //
+                //    float flowBonus = Mathf.Max(flowDir.x, flowDir.y);
+                //    flowBonus /= GV.Water_Current_Power_Per_Bonus_Mult;
+                //    if (flowBonus > 1)
+                //    {
+                //        //Debug.Log("flow Rate/bonus/total: " + flowRate + "/" + flowBonus + "/" + (flowRate * flowBonus));
+                //        flowRate *= flowBonus;
+                //    }
+                //    flowRate = Mathf.Min(flowRate, maxTransfer);
+                //    
+                //}
                 //if(toUpdate.DebugLogs) Debug.Log(string.Format("Flow Rate {0} = waterDepth{1} * percDistr{2} * GV{3}; For pos{4}", flowRate, waterDepth, percentSurfaceDistributing, GV.GetWaterFlowRate(), new Vector2(spreadDirections[i].x + toUpdate.pos.x, spreadDirections[i].y + toUpdate.pos.z)));
 
                 //Now spread the water
@@ -377,20 +424,9 @@ public class WaterManager  {
             }
         }
     }
+    */
 
-    public void CreateWater(Vector2 loc, float initialHeight, bool staticWater = false)
-    {
-        GameObject go = MonoBehaviour.Instantiate(Resources.Load("Prefabs/Pillar"), new Vector3((int)loc.x, initialHeight, (int)loc.y), Quaternion.identity) as GameObject;
-        go.transform.SetParent(GV.worldLinks.waterParent);
-        Pillar newWater = go.GetComponent<Pillar>();
-        newWater.Initialize(new Vector3(loc.x, initialHeight, loc.y), GV.PillarType.Water);
-        //activeWater.Add(newWater);
-        if (staticWater)
-            newWater.isStaticPillar = true;
-        if (!newWater)
-            Debug.Log("is null");
-        WorldGrid.Instance.waterGrid[(int)loc.x, (int)loc.y] = newWater;
-    }
+    
 
     private float CalculateFlow(float flowingHeight, float neighborHeight)
     {

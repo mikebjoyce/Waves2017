@@ -485,3 +485,11 @@ MonoBehaviour:
   isOn: 0
   EQ: {fileID: 45912020}
   holdingBook: 0
+  eventCountdown: 15
+  timeBetweenEvents: 15
+  timeBetweenEventsDimish: 0.5
+  probEventIsTsunami: 1
+  probEventIsCatacylsmic: 0.2
+  godsCurrentRage: 0
+  godsMaxRage: 5
+  godsCalmAfterEvent: 0.1

@@ -15,7 +15,7 @@ public class Tsunami {
 	public void CreateLineTsunami(Vector2 fromPt, Vector2 toPt, int _stepsToReachMaxPeak, int _stepSpentInMaxPeak, int _ampWaterDivisionsPerStep, bool _repeats, int _repeatSteps)
     {
         //Debug.Log("from: " + fromPt + " to pt: " + toPt + " steptopeak: " + _stepsToReachMaxPeak + " steps in peak: " + _stepSpentInMaxPeak + " divperstep: " + _ampWaterDivisionsPerStep + " rep: " + _repeats + " x " + _repeatSteps);
-        _stepsToReachMaxPeak = Mathf.Max(1, _stepsToReachMaxPeak);
+        /*_stepsToReachMaxPeak = Mathf.Max(1, _stepsToReachMaxPeak);
         _stepSpentInMaxPeak = Mathf.Max(1, _stepSpentInMaxPeak);
         _ampWaterDivisionsPerStep = Mathf.Max(1, _ampWaterDivisionsPerStep);
         List<Vector2> tsunamiPts = new List<Vector2>();
@@ -44,7 +44,7 @@ public class Tsunami {
 
         ActiveTsunami newTsunami = new ActiveTsunami(_stepSpentInMaxPeak, _stepsToReachMaxPeak, _ampWaterDivisionsPerStep, _repeats, _repeatSteps);
         newTsunami.pts = tsunamiPts;
-        activeTsunamis.Add(newTsunami);
+        activeTsunamis.Add(newTsunami);*/
     }
 
     private Vector2[] directionToMapEdge(GV.Coord fromCord)
@@ -109,7 +109,7 @@ public class Tsunami {
     }
 	// Update is called once per frame
 	public void UpdateTsunami () {
-
+        /*
 
         List<ActiveTsunami> toDel = new List<ActiveTsunami>();
         foreach (ActiveTsunami at in activeTsunamis)
@@ -135,7 +135,7 @@ public class Tsunami {
                         else
                         {
                             foreach (Vector2 pt in at.pts)
-                                WorldGrid.Instance.ModGround(pt, -at.ampWaterDivisionsPerStep * GV.Water_Flow_Rate);
+                                WorldGrid.Instance.ModGround(pt, -at.ampWaterDivisionsPerStep * GV.Pillar_Min_Division);
                             at.ampStepsApplied--;
                         }
                     }                    
@@ -149,7 +149,7 @@ public class Tsunami {
                     else
                     {
                         foreach (Vector2 pt in at.pts)
-                            WorldGrid.Instance.ModGround(pt, at.ampWaterDivisionsPerStep * GV.Water_Flow_Rate);
+                            WorldGrid.Instance.ModGround(pt, at.ampWaterDivisionsPerStep * GV.Pillar_Min_Division);
                         at.ampStepsApplied++;
                     }
                 }
@@ -158,7 +158,7 @@ public class Tsunami {
         }
 
         foreach (ActiveTsunami del in toDel)
-            activeTsunamis.Remove(del);
+            activeTsunamis.Remove(del);*/
 	}
 
     private void ResetTsunami(ActiveTsunami toReset)
