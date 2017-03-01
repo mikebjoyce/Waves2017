@@ -16,8 +16,8 @@ public class GV : MonoBehaviour {
         None
     };
 
-    public static readonly int World_Size_X = 21;
-	public static readonly int World_Size_Z = 21;
+    public static readonly int World_Size_X = 51;
+	public static readonly int World_Size_Z = 51;
 
 
     public static WorldLinks worldLinks;
@@ -58,6 +58,9 @@ public class GV : MonoBehaviour {
     public static int colliderUpdateSize = 2;  //2 out in each direction
     //system
     public static float System_Pillar_Cleanup_Interval = 40; //perodically cleans up the strange floaters that appear
+
+    //Players
+    public static float Player_Dirt_Store_Max = 20;
 
     public static void SetupWaterFlowRate()
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour {
 	public GameVariable.controlerType controlType;
-	private string[] keyList = new string[5];
+	private string[] keyList = new string[7];
 	public PlayerControl pControl;
     bool initialized = false;
 
@@ -27,6 +27,8 @@ public class InputManager : MonoBehaviour {
 		keyList [2] = controlType.ToString () + "_Jump";
 		keyList [3] = controlType.ToString () + "_Dig";
         keyList [4]  = controlType.ToString() + "_PanCam";
+        keyList [5] = controlType.ToString() + "_Drop";
+        keyList [6] = controlType.ToString() + "_BookAction";
     }
 
 	// Use this for initialization
@@ -41,8 +43,12 @@ public class InputManager : MonoBehaviour {
 			pControl.Move (new Vector3(moveDirection.x, moveDirection.y, 0));
 		if (Input.GetButtonDown (keyList [2]))
 			pControl.Jump ();
-		if (Input.GetButtonDown (keyList [3]))
-			pControl.ActionButton();
+		if (Input.GetButton(keyList [3]))
+			pControl.DigButton();
+        if (Input.GetButtonDown(keyList[6]))
+            pControl.BookActionButton();
+        if (Input.GetButton(keyList[5]))
+            pControl.Drop();
         if (Input.GetAxis(keyList[4]) > .2f || Input.GetAxis(keyList[4]) < -.2f)
             pControl.PanCam(Input.GetAxis(keyList[4]));
         

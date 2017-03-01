@@ -28,8 +28,7 @@ public class PlayerControl : MonoBehaviour {
 	private bool lockMove = false;
     private float air = GameVariable.maxBreath;
 
-    
-
+    public Vector2 trueDir = new Vector2();
 
 	public GridPos gridPos;
 
@@ -54,6 +53,7 @@ public class PlayerControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        trueDir = strongestDir(new Vector2(forward.x, forward.z));
         digRateStored += Time.deltaTime* modGroundRate;
         dropRateStored += Time.deltaTime * modGroundRate;
         digRateStored = Mathf.Clamp(digRateStored, 0, GV.Pillar_Min_Division);
@@ -131,12 +131,12 @@ public class PlayerControl : MonoBehaviour {
 		}
 	}
 
-    public void ActionButton()
+    public void BookActionButton()
     {
-        if (!book && Vector3.Distance(GV.theOneBook.transform.position,transform.position) < 2)
+        if (!book && Vector3.Distance(GV.theOneBook.transform.position, transform.position) < 2)
         {
             book = GV.theOneBook;
-            book.isHeld = true;            
+            book.isHeld = true;
             book.transform.SetParent(holdingSpot);
             //picks up book
         }
@@ -147,28 +147,22 @@ public class PlayerControl : MonoBehaviour {
             book = null;
             //will drop book
         }
-        else
-            Dig();
+    }
+
+    public void DigButton()
+    {
+       Dig();
     }
 
 	public void Dig(){
-		if (isHolding)
-			Drop ();
-		else {
-
-			//do dig stuff
-			Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-			if (canDig() && digRateStored >= GV.Pillar_Min_Division) {
-                WorldGrid.Instance.ModPillarHeight(gridPos + trueDir, GV.PillarType.Ground , -GV.Pillar_Min_Division);
-                digRateStored = 0;
-                dirtStored += GV.Pillar_Min_Division;
-                //dirtStored += m
-				isHolding = true;
-			} else {
-				//too low to dig
-
-			}
-		}
+        //do dig stuff
+        if (dirtStored < GV.Player_Dirt_Store_Max && digRateStored >= GV.Pillar_Min_Division && canDig())
+        {
+            WorldGrid.Instance.ModPillarHeight(gridPos + trueDir, GV.PillarType.Ground, -GV.Pillar_Min_Division);
+            digRateStored = 0;
+            dirtStored += GV.Pillar_Min_Division;
+            //dirtStored += m
+        }
 	}
 
     public void PanCam(float amt)
@@ -176,23 +170,18 @@ public class PlayerControl : MonoBehaviour {
         camManager.Pan(amt);
     }
 
-	public void Drop(){
-
-		//do opposite of dig stuff
-		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
-		if (dirtStored > 0 && dropRateStored >= GV.Pillar_Min_Division && canDrop()) {
+	public void Drop()
+    {
+        if (dirtStored >= GV.Pillar_Min_Division && dropRateStored >= GV.Pillar_Min_Division && canDrop())
+        {
             WorldGrid.Instance.ModPillarHeight(gridPos + trueDir, GV.PillarType.Ground, GV.Pillar_Min_Division);
             //WorldGrid.Instance.ModGround (roundV2 (gridPos) + trueDir, GV.Pillar_Min_Division);
             dropRateStored = 0;
             dirtStored -= GV.Pillar_Min_Division;
-			isHolding = false;
-			//Debug.Log("B4 "+ transform.position);
-			//transform.position.Set (roundV2 (position).x, transform.position.y, roundV2 (position).y);
-			//Debug.Log("A4 "+transform.position);
-		} else {
-
-			//too high to place
-		}
+            //Debug.Log("B4 "+ transform.position);
+            //transform.position.Set (roundV2 (position).x, transform.position.y, roundV2 (position).y);
+            //Debug.Log("A4 "+transform.position);
+        }
 	}
 
 	//internal
@@ -219,13 +208,13 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	private Vector3 DigLoc(){
-		GridPos digPos = gridPos + strongestDir (new Vector2(forward.x,forward.z));
+		GridPos digPos = gridPos + trueDir;
 		int hight = (int) WorldGrid.Instance.GetPillarStaticHeight (digPos, GV.PillarType.Ground);
 		return new Vector3 (digPos.x, hight, digPos.y);
 	}
 		
 	private void moveDigIndic(){
-        GridPos digPos = gridPos + strongestDir (new Vector2(forward.x,forward.z));
+        GridPos digPos = gridPos + trueDir;
 		digLoc.transform.position = new Vector3 (digPos.x, WorldGrid.Instance.GetPillarStaticHeight(digPos), digPos.y);
 	}
 
@@ -236,7 +225,6 @@ public class PlayerControl : MonoBehaviour {
 	private bool canDig(){
         
 		int standingHigh = (int) WorldGrid.Instance.GetPillarStaticHeight(gridPos, GV.PillarType.Ground);
-		Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
 		int diggingHight = (int) WorldGrid.Instance.GetPillarStaticHeight(gridPos  + trueDir, GV.PillarType.Ground);
 
 		return standingHigh + 2 >= diggingHight && standingHigh - 1 <= diggingHight;
@@ -244,7 +232,6 @@ public class PlayerControl : MonoBehaviour {
 
 	private bool canDrop(){
 		int standingHigh = (int)WorldGrid.Instance.GetPillarStaticHeight(gridPos, GV.PillarType.Ground);
-        Vector2 trueDir = strongestDir (new Vector2(forward.x,forward.z));
         int diggingHight = (int)WorldGrid.Instance.GetPillarStaticHeight(gridPos + trueDir, GV.PillarType.Ground);
         return standingHigh + 1 >= diggingHight;
 	}
@@ -253,19 +240,12 @@ public class PlayerControl : MonoBehaviour {
 		return new Vector2 (body.velocity.x, body.velocity.z).magnitude >= PlayerGV.G_MaxSpeed;
 	}
 
-	private void ChangeDigLocColor(){
-		if (isHolding) {
-			if (canDrop ())
-				digMesh.material.color = Color.blue;
-			else
-				digMesh.material.color = Color.red;
-		} else {
-			if (canDig ())
-				digMesh.material.color = Color.green;
-			else
-				digMesh.material.color = Color.red;
-		}
-
+	private void ChangeDigLocColor()
+    {
+		if (canDig ())
+			digMesh.material.color = Color.green;
+		else
+			digMesh.material.color = Color.red;
 	}
 
 	private void ApplyCurrentForce(){

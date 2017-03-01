@@ -1,0 +1,12 @@
+Left Keybvoard
+wasd
+q-e-left shift
+
+right keyboard
+arrow keys
+rcntrl,rshift,enter
+
+Joypads
+stick
+x,b,right bumper
+
