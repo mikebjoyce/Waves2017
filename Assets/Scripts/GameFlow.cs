@@ -6,19 +6,19 @@ public class GameFlow : MonoBehaviour {
 
     float timeAtNextSystemCleanup;
 
-	//public PlayerControl[] players = new PlayerControl[4];
+    //public PlayerControl[] players = new PlayerControl[4];
     public CameraVisible cameraVisible;
     public GameObject cinematicCamera;
     MapGenerator mapGen;
     RoundSetup roundSetup;
-    
+
     bool worldIsLoaded = false;
     bool landIsLoaded = false;
     bool waterIsLoaded = false;
     int renderOrLoad = 0; //every 4 optimizes some stuff
 
-	public Earthquakes earthQ;
-	public GodsWhim god;
+    public Earthquakes earthQ;
+    public GodsWhim god;
 
     public void Awake()
     {
@@ -47,47 +47,55 @@ public class GameFlow : MonoBehaviour {
             roundSetup.SetupPlayers(new List<GameVariable.controlerType>() { GameVariable.controlerType.KeyLeft });//, GameVariable.controlerType.Joy1, GameVariable.controlerType.Joy2, GameVariable.controlerType.KeyRight });
         else
             roundSetup.SetupPlayers(GameVariable.activePlayerCntrls);
-		god.isOn = true;
-		//Debug.Log (p1.isActiveAndEnabled);
+        god.isOn = true;
+        //Debug.Log (p1.isActiveAndEnabled);
+    }
+
+    private void LandCreationUpdate()
+    {
+        if (renderOrLoad < 3)
+        {
+            if (mapGen.tilesLoadedTwoUpdateAgo.Count > 0)
+                cameraVisible.UpdatePartial(mapGen.tilesLoadedTwoUpdateAgo);
+        }
+        else
+        {
+            if (!landIsLoaded)
+            {
+                landIsLoaded = mapGen.LoadGroundTiles();
+                if (landIsLoaded)
+                    mapGen.OceanFiller();
+            }
+            else if (!waterIsLoaded)
+            {
+                waterIsLoaded = mapGen.LoadWaterTiles();
+                if (waterIsLoaded)
+                    FinishLoad();
+            }
+        }
+        renderOrLoad++;
+        renderOrLoad %= 4;
     }
 
     public void Update()
     {
         if (!landIsLoaded || !waterIsLoaded)
         {
-            if(renderOrLoad < 3)
-            {
-                if (mapGen.tilesLoadedTwoUpdateAgo.Count > 0)
-                    cameraVisible.UpdatePartial(mapGen.tilesLoadedTwoUpdateAgo);
-            }
-            else
-            {
-                if(!landIsLoaded)
-                {
-                    landIsLoaded = mapGen.LoadGroundTiles();
-                    if (landIsLoaded)
-                        mapGen.OceanFiller();
-                }
-                else if(!waterIsLoaded)
-                {
-                    waterIsLoaded = mapGen.LoadWaterTiles();
-                    if (waterIsLoaded)
-                        FinishLoad();
-                }
-            }
-            renderOrLoad++;
-            renderOrLoad %= 4;
+            LandCreationUpdate();
         }
-        /*else
+        else
         {
-            WorldGrid.Instance.tsunamiManager.UpdateTsunami();
             WorldGrid.Instance.waterManager.UpdateWaterManager();
+            WorldGrid.Instance.tsunamiManager.UpdateTsunami();
+            //Update god and earthquakes should go here
+            /*
             if (Time.time >= timeAtNextSystemCleanup)
             {
                 cameraVisible.UpdateWorld();
                 WorldGrid.Instance.PreformSnapCleanup();
                 timeAtNextSystemCleanup = Time.time + GV.System_Pillar_Cleanup_Interval;
             }
-        }*/
+            */
+        }
     }
 }

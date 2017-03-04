@@ -68,6 +68,7 @@ public class PillarStruct
 
     public void ModStaticHeight(float modBy)
     {
+        Debug.Log("mod static height: " + staticHeight);
         SetStaticHeight(staticHeight + modBy);
     }
 

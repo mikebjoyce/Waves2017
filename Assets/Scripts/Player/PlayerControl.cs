@@ -6,9 +6,9 @@ public class PlayerControl : MonoBehaviour {
 
 	public Camera playerCam;
     CameraManager camManager;
-
-	//digLocator
-	public GameObject digLoc;
+    public GridPos gridPos;
+    //digLocator
+    public GameObject digLoc;
 	public MeshRenderer digMesh;
     private bool isDigging = false;
     private float dirtStored = 0;
@@ -30,14 +30,18 @@ public class PlayerControl : MonoBehaviour {
 
     public Vector2 trueDir = new Vector2();
 
-	public GridPos gridPos;
+    float unstuckTimer = 0;
+    GridPos lastGridPos = new GridPos(-512,-512);
+
+	
 
 	/*public void Initialize(){
 		forward = transform.forward;
 		transform.position = new Vector3(WorldGrid.worldCenterPoint.x, WorldGrid.Instance.GetHeightAt(WorldGrid.worldCenterPoint) + 5, WorldGrid.worldCenterPoint.y);
 	}*/
 
-	public void Initialize(Vector3 loc){
+	public void Initialize(Vector3 loc)
+    {
         camManager = playerCam.transform.parent.GetComponent<CameraManager>();
         transform.position = loc;
         gridPos = GridPos.ToGP(loc);
@@ -47,20 +51,35 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 
-	void Start () {
+	void Start ()
+    {
 		body.constraints = RigidbodyConstraints.FreezeRotation;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        float dt = Time.deltaTime;
         trueDir = strongestDir(new Vector2(forward.x, forward.z));
-        digRateStored += Time.deltaTime* modGroundRate;
-        dropRateStored += Time.deltaTime * modGroundRate;
-        digRateStored = Mathf.Clamp(digRateStored, 0, GV.Pillar_Min_Division);
+        digRateStored  += dt * modGroundRate;
+        dropRateStored += dt * modGroundRate;
+        digRateStored  = Mathf.Clamp(digRateStored, 0, GV.Pillar_Min_Division);
         dropRateStored = Mathf.Clamp(dropRateStored, 0, GV.Pillar_Min_Division);
 
         gridPos = GridPos.ToGP(transform); // new Vector2 (transform.position.x, transform.position.z);
-		forward = transform.forward;
+        if (gridPos == lastGridPos)
+            unstuckTimer += Time.deltaTime;
+        else
+            unstuckTimer = 0;
+        lastGridPos = gridPos;
+
+        if(unstuckTimer > GV.PLAYER_UNSTUCK_TIME)
+        {
+            transform.position = transform.position + new Vector3(0, .2f , 0);
+            unstuckTimer = 0;
+        }
+
+        forward = transform.forward;
 
 		moveDigIndic ();
 
@@ -72,7 +91,8 @@ public class PlayerControl : MonoBehaviour {
 
 
 	void OnTriggerEnter(Collider other){
-		if (other.gameObject.layer == 8) {
+		if (other.gameObject.layer == 8)
+        {
 			isGrounded = true;
 			lockMove = false;
 		}
@@ -87,7 +107,8 @@ public class PlayerControl : MonoBehaviour {
 	} */
 
 	void OnTriggerExit(Collider other){
-		if (other.gameObject.layer == 8) {
+		if (other.gameObject.layer == 8)
+        {
 			isGrounded = false;
 			lockMove = true;
 		}
@@ -95,27 +116,25 @@ public class PlayerControl : MonoBehaviour {
 
 
 	//player Movement and Actions
-	public void Move(Vector3 input){  //move to FixedUpdate and use RigidBody.Move for optimal
-		//moves with constant speed 
-		//Debug.Log("Input " + input.ToString());
-		if (!isMaxSpeed()) {
+	public void Move(Vector3 input)
+    {  //move to FixedUpdate and use RigidBody.Move for optimal
+        if (!isMaxSpeed())
+        {
 			float xAxis = (input.x != 0) ? input.x / Mathf.Abs (input.x) : 0;
 			//Debug.Log ("yAxis " + xAxis);
 			//Debug.Log ("rotate b4 " + transform.rotation);
 			transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
 
-			if (!lockMove) {
+			if (!lockMove) 
 				body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime, ForceMode.Impulse);
-			} else {
+			else 
 				body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime * PlayerGV.G_NonGroundedMoveModifier, ForceMode.Impulse);
-			}
+			
 			//Debug.Log ("force applied " + PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime);
 			//Debug.Log ("forward " + forward + " Time.DeltaTime" + Time.deltaTime);
 
 			//body.AddForce (moveDir * PlayerGV.G_PlayerRunForce, ForceMode.Impulse);
-		} else {
-			//Debug.Log ("Hit Max Speed");
-		}
+		} //else hit max speed
 	}
 
 	/*
@@ -126,9 +145,8 @@ public class PlayerControl : MonoBehaviour {
 
 	public void Jump(){
 		//jumps a certain high always
-		if (isGrounded) {
+		if (isGrounded)
 			body.AddForce (Vector3.up * PlayerGV.G_PlayerJumpForce, ForceMode.Impulse);
-		}
 	}
 
     public void BookActionButton()
@@ -194,11 +212,12 @@ public class PlayerControl : MonoBehaviour {
 		input = input.normalized;
 		if (input == Vector2.zero)
 			return input;
-		if (Mathf.Abs (input.x) > Mathf.Abs (input.y)) {
+
+        if (Mathf.Abs (input.x) > Mathf.Abs (input.y)) 
 			return new Vector2 (input.x/Mathf.Abs(input.x), 0).normalized;
-		} else {
+		else
 			return new Vector2 (0, input.y/Mathf.Abs(input.y)).normalized;
-		}
+		
 	}
 
 	private Vector2 roundV2(Vector2 input){

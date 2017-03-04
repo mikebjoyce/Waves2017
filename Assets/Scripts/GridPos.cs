@@ -44,6 +44,16 @@ public class GridPos : ICloneable
         return string.Format("({0},{1})", x, y);
     }
 
+    public static bool operator !=(GridPos lhs, GridPos rhs)
+    {
+        return !lhs.Equals(rhs);
+    }
+
+    public static bool operator ==(GridPos lhs, GridPos rhs)
+    {
+        return lhs.Equals(rhs);
+    }
+
     public override bool Equals(object obj)
     {
         if (obj == null || GetType() != obj.GetType())

@@ -16,8 +16,8 @@ public class GV : MonoBehaviour {
         None
     };
 
-    public static readonly int World_Size_X = 51;
-	public static readonly int World_Size_Z = 51;
+    public static readonly int World_Size_X = 31;
+	public static readonly int World_Size_Z = 31;
 
 
     public static WorldLinks worldLinks;
@@ -26,7 +26,7 @@ public class GV : MonoBehaviour {
 
     //Water
     public static readonly float Water_Sea_Width = 3;
-    public static readonly float Water_Time_Spent_Updating = 333f; //In milliseconds, max time
+    public static readonly float Water_Time_Spent_Updating = 32f; //In milliseconds, max time
     public static readonly float Water_Time_Between_Updates = .5f; //In milliseconds 
  
 
@@ -61,6 +61,7 @@ public class GV : MonoBehaviour {
 
     //Players
     public static float Player_Dirt_Store_Max = 20;
+    public static float PLAYER_UNSTUCK_TIME = 3;
 
     public static void SetupWaterFlowRate()
     {

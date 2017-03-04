@@ -7,10 +7,10 @@ public class WaterManager  {
 
     float timeAtNextUpdate = 0;
 
-    public Dictionary<Vector2,Pillar> toUpdate = new Dictionary<Vector2, Pillar>();
+    //public Dictionary<Vector2,Pillar> toUpdate = new Dictionary<Vector2, Pillar>();
 
-    List<Vector2> toAddToUpdate = new List<Vector2>();
-    List<Vector2> toRemoveFromUpdate = new List<Vector2>();
+    //List<Vector2> toAddToUpdate = new List<Vector2>();
+    //List<Vector2> toRemoveFromUpdate = new List<Vector2>();
     int currentUpdateIndex = 0;
 
     //sorting algo
@@ -47,22 +47,18 @@ public class WaterManager  {
                 {
                     for (int ii = 0; ii < GV.World_Size_Z; ii++)
                     {
-                        Vector2 v2 = new Vector2(i, ii);
-                        if (toUpdate.ContainsKey(v2))
-                        {
-                            if (toUpdate[v2].isDisturbed)
-                            {
-                                //UpdateWater(toUpdate[v2]);
-                            }
-                            else
-                            {
-                                toUpdate.Remove(v2);
-                            }
-                        }
+                        GridPos atLoc = new GridPos(i, ii);  //reason doing this is to check each spot in order, so I can timebox cut things off if it takes too long
+                        Pillar toUpdate = WorldGrid.Instance.GetPillarAt(atLoc);
+                        if (toUpdate.waterActive && toUpdate.isDisturbed)
+                            UpdateStaticWater(toUpdate);
+                        else
+                            Debug.Log(string.Format("water pillar at [{0},{1}] waterActive {2} vs {3} disturbed", atLoc.x, atLoc.y, toUpdate.waterActive, toUpdate.isDisturbed));
+
                         if (watch.ElapsedMilliseconds > GV.Water_Time_Spent_Updating)
                         {
                             currentUpdateIndex = i;
                             timeExit++;
+                            //Debug.Log("Time exit occured, running slow: ");
                             return;
                         }
                     }
@@ -196,16 +192,20 @@ public class WaterManager  {
 
     private void UpdateStaticWater(Pillar pillarToUpdate)
     {
+        Debug.Log("updating as static water");
         if (!pillarToUpdate.waterActive)
         {
-            pillarToUpdate.isDisturbed = false; //okay if ground done first for landslides
+            pillarToUpdate.SetDisturbed(false); //okay if ground done first for landslides
+            Debug.Log("but was not disturbed");
             return;
         }
+        
         float ptu_waterVolume = pillarToUpdate.GetVolume(GV.PillarType.Water);
+        Debug.Log("with volume: " + ptu_waterVolume);
         if (ptu_waterVolume <= 0)
         {
             pillarToUpdate.waterActive = false;
-            pillarToUpdate.isDisturbed = false;
+            pillarToUpdate.SetDisturbed(false);
             Debug.Log("water trying to update with no volume");
             return;
         }
@@ -220,6 +220,7 @@ public class WaterManager  {
         float lowestNeighborEvenAmt;
         float c = 0;
         float a = 0;
+
 
         for (int i = 0; i < 4; i++) //(Vector2 offset in GV.Valid_Directions)
         {
@@ -246,24 +247,33 @@ public class WaterManager  {
             lowestNeighborEvenAmt = amountsToEven[lowestNeighborIndex];
 
         c = (c - amountsToEven[lowestNeighborIndex]) / amountsToEven[lowestNeighborIndex];
-        a = (pillarStaticHeight - amountsToEven[lowestNeighborIndex]) / c;
-        float totalWouldGive = a * (c + 1);
-        if(totalWouldGive > ptu_waterVolume) //if not enough water to give
-            a = ptu_waterVolume / (c + 1);
 
-        for (int i = 0; i < 4; i++)
+        if (c >= 0)
         {
-            float amtToGive = (amountsToEven[i] / amountsToEven[lowestNeighborIndex]) * a;
-            if(amtToGive > 0)
-                CreateWaterCurrentAt(neighborGridLoc[i], amtToGive, GV.Valid_Directions[i]);
-        }
+            a = (pillarStaticHeight - amountsToEven[lowestNeighborIndex]) / c;
+            float totalWouldGive = a * (c + 1);
+            if (totalWouldGive > ptu_waterVolume) //if not enough water to give
+                a = ptu_waterVolume / (c + 1);
 
-        pillarToUpdate.ModHeight(GV.PillarType.Water,a * (c + 1));
+            for (int i = 0; i < 4; i++)
+            {
+                float amtToGive = (amountsToEven[i] / amountsToEven[lowestNeighborIndex]) * a;
+                if (amtToGive > 0)
+                    CreateWaterCurrentAt(neighborGridLoc[i], amtToGive, GV.Valid_Directions[i]);
+            }
+
+            pillarToUpdate.ModHeight(GV.PillarType.Water, a * (c + 1));
+        }
+        else  //then formula has a /0
+        {
+            float amtToGive = a;
+            CreateWaterCurrentAt(neighborGridLoc[lowestNeighborIndex], amtToGive, GV.Valid_Directions[lowestNeighborIndex]);
+        }
     }
 
     public void CreateWaterCurrentAt(GridPos pos, float amt, GridPos dir)
     {
-
+        Debug.Log(string.Format("a current was created at pos {0} heading {1} at {2} power", pos, amt, dir));
     }
     /*
     private void UpdateWater(Pillar pillarToUpdate)

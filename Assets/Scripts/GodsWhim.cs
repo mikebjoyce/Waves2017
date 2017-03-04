@@ -5,7 +5,9 @@ using UnityEngine;
 public class GodsWhim : MonoBehaviour {
 	List<Earthquakes> EarthQuakes = new List<Earthquakes> ();
 
-	public bool isOn = false;
+    public bool Editor_Set_God_Mode = false;
+    [HideInInspector]
+    public bool isOn = false;
     bool dynamicGodMode = false;
 
 	GameFlow owner;
