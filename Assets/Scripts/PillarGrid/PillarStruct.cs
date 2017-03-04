@@ -35,7 +35,8 @@ public class PillarStruct
     {
         //When creating prefab, have prefab default set to false, so they can be turned on if needed. Also weary the collider
         //also theskinning of water
-        
+        pillarType = ptype;
+
         GameObject newPillar = (GameObject)MonoBehaviour.Instantiate(Resources.Load("Prefabs/Pillar"), new Vector3(parentPillar.pos.x,staticHeight,parentPillar.pos.y), Quaternion.identity);
         pillarUI = newPillar.GetComponent<PillarUI>();
         if (ptype == GV.PillarType.Ground)
@@ -55,6 +56,7 @@ public class PillarStruct
             }
             else
             {
+                Debug.Log("is active set to true");
                 isActive = true;
             }
         }
@@ -75,12 +77,13 @@ public class PillarStruct
     public void SetStaticHeight(float newValue)
     {
         staticHeight = newValue;
-        
         if (pillarType == GV.PillarType.Water)
         {
+            Debug.Log("Setting water");
             float groundHeight = parentPillar.GetStaticHeight(GV.PillarType.Ground);
             if (staticHeight <= groundHeight)
             {
+                Debug.Log("Below Ground");
                 isActive = false;
                 parentPillar.waterActive = false;
                 pillarUI.SetVisible(false);
@@ -88,12 +91,14 @@ public class PillarStruct
             }
             else if (!isActive && staticHeight > groundHeight)
             {
+                Debug.Log("Wasnt active but is above ground");
+                Debug.Log("water active set to true");
                 isActive = true;
                 parentPillar.waterActive = true;
                 pillarUI.SetVisible(true);
             }
         }
-
+        WorldGrid.Instance.DisturbTargetAndNeighbors(parentPillar.pos);
         pillarUI.HeightModified(staticHeight);
     }
 

@@ -16,8 +16,8 @@ public class GV : MonoBehaviour {
         None
     };
 
-    public static readonly int World_Size_X = 31;
-	public static readonly int World_Size_Z = 31;
+    public static readonly int World_Size_X = 16;
+	public static readonly int World_Size_Z = 16;
 
 
     public static WorldLinks worldLinks;
@@ -25,7 +25,7 @@ public class GV : MonoBehaviour {
     public static Book theOneBook;
 
     //Water
-    public static readonly float Water_Sea_Width = 3;
+    public static readonly float Water_Sea_Width = 2;
     public static readonly float Water_Time_Spent_Updating = 32f; //In milliseconds, max time
     public static readonly float Water_Time_Between_Updates = .5f; //In milliseconds 
  

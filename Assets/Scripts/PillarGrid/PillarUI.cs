@@ -6,6 +6,7 @@ public class PillarUI : MonoBehaviour {
 
     public List<GameObject> segments; //set in editor
     public Collider coliBox;
+    public bool DebugLogs = false;
     bool isVisible = true;
     float setHeight = 0;
 

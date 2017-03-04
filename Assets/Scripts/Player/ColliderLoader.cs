@@ -36,9 +36,7 @@ public class ColliderLoader : MonoBehaviour {
 	public void ActivatePillarCol(){
 		foreach (Pillar p in pillars) {
             if (p != null)
-            {
                 p.SetColliderActive(true);
-            }
 		}
 	}
 

@@ -7,7 +7,6 @@ public class Pillar {
     //public GV.PillarType pillarType;
     public GridPos pos;
     Dictionary<GV.PillarType, PillarStruct> pillarStructs;
-    public bool DebugLogs = false;
     public bool isActive = true;
    // public bool isStaticPillar = false;
     public bool isDisturbed = false;
@@ -88,6 +87,8 @@ public class Pillar {
 
     public void SetDisturbed(bool _disturb)
     {
+        //if (_disturb)
+        //    Debug.Log("disturbed: " + _disturb);
         isDisturbed = _disturb;         
     }
 
@@ -102,7 +103,6 @@ public class Pillar {
         //toClean.SetHeight(toClean.pos.y);
 
     }
-
 
     public float GetHeight()
     {

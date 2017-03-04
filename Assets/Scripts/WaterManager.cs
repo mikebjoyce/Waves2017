@@ -49,16 +49,25 @@ public class WaterManager  {
                     {
                         GridPos atLoc = new GridPos(i, ii);  //reason doing this is to check each spot in order, so I can timebox cut things off if it takes too long
                         Pillar toUpdate = WorldGrid.Instance.GetPillarAt(atLoc);
+                        if(atLoc == new GridPos(5,5))
+                            Debug.Log("updating pillar " + atLoc + "toUpdate.waterActive && toUpdate.isDisturbed " + toUpdate.waterActive + " && " + toUpdate.isDisturbed);
                         if (toUpdate.waterActive && toUpdate.isDisturbed)
+                        {
                             UpdateStaticWater(toUpdate);
+                        }
                         else
-                            Debug.Log(string.Format("water pillar at [{0},{1}] waterActive {2} vs {3} disturbed", atLoc.x, atLoc.y, toUpdate.waterActive, toUpdate.isDisturbed));
+                        {
+                           
+                        }
+
+                        //else
+                        //    Debug.Log(string.Format("water pillar at [{0},{1}] waterActive {2} vs {3} disturbed", atLoc.x, atLoc.y, toUpdate.waterActive, toUpdate.isDisturbed));
 
                         if (watch.ElapsedMilliseconds > GV.Water_Time_Spent_Updating)
                         {
                             currentUpdateIndex = i;
                             timeExit++;
-                            //Debug.Log("Time exit occured, running slow: ");
+                            Debug.Log("Time exit occured, running slow: ");
                             return;
                         }
                     }
