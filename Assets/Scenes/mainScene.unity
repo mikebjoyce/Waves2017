@@ -365,6 +365,7 @@ GameObject:
   - component: {fileID: 2129472748}
   - component: {fileID: 2129472749}
   - component: {fileID: 2129472750}
+  - component: {fileID: 2129472751}
   m_Layer: 0
   m_Name: MainScripts
   m_TagString: Untagged
@@ -482,6 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 123866dd2309c4446a0d43173746c0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Editor_Set_God_Mode: 0
   isOn: 0
   EQ: {fileID: 45912020}
   holdingBook: 0
@@ -493,3 +495,16 @@ MonoBehaviour:
   godsCurrentRage: 0
   godsMaxRage: 5
   godsCalmAfterEvent: 0.1
+--- !u!114 &2129472751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2129472742}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd1759c0eb2ad50449140c45b4ee0c6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  x: 0
+  y: 0

@@ -45,6 +45,8 @@ public class GV : MonoBehaviour {
 	public static readonly float GOD_flowRatePerPercentAngre = .50f; //range is 0 -> 1
 	public static readonly Vector2 GOD_repeats = new Vector2(1,3);
 
+    //Pillar
+    public static readonly float Pillar_Height = 15;
 
     //Map Generator
     public static int MapGen_Tiles_Load_Per_Cycle = 25;

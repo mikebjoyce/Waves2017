@@ -10,7 +10,7 @@ public class PillarStruct
     public PillarUI pillarUI;
     float[] current;
     float[] storedCurrent;
-    bool isActive = true;
+    public bool isActive = true;
 
     public PillarStruct(GV.PillarType _pillarType, float _staticHeight, Pillar _parentPillar)
     {
@@ -18,12 +18,18 @@ public class PillarStruct
         current = new float[] { 0, 0, 0, 0 };
         storedCurrent = new float[] { 0, 0, 0, 0 };
         if (_pillarType == GV.PillarType.Water)
-            isActive = false; //a catch incase, should be actived in setstaticheight
-        staticHeight = _staticHeight; //weird order of precedence, hard set here, then ui uses, then SetStaticHeight does visible calculations
-        CreatePillarUI(_pillarType);
+            isActive = false; //will enable in setstaticheight
+        CreatePillarUI(_pillarType, _staticHeight);
         SetStaticHeight(_staticHeight);
         //If water, be sure to check ground height to see if to enable or not
 
+    }
+
+    private void InitializeWater()
+    {
+        isActive = true;
+        parentPillar.waterActive = true;
+        pillarUI.SetVisible(true);
     }
 
     public void SetColliderActive(bool setActive)
@@ -31,13 +37,13 @@ public class PillarStruct
         pillarUI.SetColliderActive(setActive);
     }
 
-    private void CreatePillarUI(GV.PillarType ptype)
+    private void CreatePillarUI(GV.PillarType ptype, float _staticHeight)
     {
         //When creating prefab, have prefab default set to false, so they can be turned on if needed. Also weary the collider
         //also theskinning of water
         pillarType = ptype;
 
-        GameObject newPillar = (GameObject)MonoBehaviour.Instantiate(Resources.Load("Prefabs/Pillar"), new Vector3(parentPillar.pos.x,staticHeight,parentPillar.pos.y), Quaternion.identity);
+        GameObject newPillar = (GameObject)MonoBehaviour.Instantiate(Resources.Load("Prefabs/Pillar"), new Vector3(parentPillar.pos.x, _staticHeight, parentPillar.pos.y), Quaternion.identity);
         pillarUI = newPillar.GetComponent<PillarUI>();
         if (ptype == GV.PillarType.Ground)
         {
@@ -47,18 +53,6 @@ public class PillarStruct
         {
             newPillar.transform.SetParent(GV.worldLinks.waterParent);
             MonoBehaviour.Destroy(newPillar.GetComponent<Collider>());
-            float groundHeight = parentPillar.GetStaticHeight(GV.PillarType.Ground);
-            if (staticHeight <= groundHeight)
-            {
-                pillarUI.SetVisible(false);
-                staticHeight = groundHeight;
-                isActive = false;
-            }
-            else
-            {
-                Debug.Log("is active set to true");
-                isActive = true;
-            }
         }
         pillarUI.Initialize(ptype);
     }
@@ -70,7 +64,7 @@ public class PillarStruct
 
     public void ModStaticHeight(float modBy)
     {
-        Debug.Log("mod static height: " + staticHeight);
+        //Debug.Log("mod static height: " + staticHeight);
         SetStaticHeight(staticHeight + modBy);
     }
 
@@ -79,11 +73,9 @@ public class PillarStruct
         staticHeight = newValue;
         if (pillarType == GV.PillarType.Water)
         {
-            Debug.Log("Setting water");
             float groundHeight = parentPillar.GetStaticHeight(GV.PillarType.Ground);
             if (staticHeight <= groundHeight)
             {
-                Debug.Log("Below Ground");
                 isActive = false;
                 parentPillar.waterActive = false;
                 pillarUI.SetVisible(false);
@@ -91,8 +83,6 @@ public class PillarStruct
             }
             else if (!isActive && staticHeight > groundHeight)
             {
-                Debug.Log("Wasnt active but is above ground");
-                Debug.Log("water active set to true");
                 isActive = true;
                 parentPillar.waterActive = true;
                 pillarUI.SetVisible(true);
@@ -104,10 +94,13 @@ public class PillarStruct
 
     public float GetVolume()
     {
-        Debug.Log("not initialized");
-        return 0;
+        if(pillarType == GV.PillarType.Ground)
+            return Mathf.Max(GV.Pillar_Height - GetStaticHeight(),0);
+        else
+            return GetStaticHeight() - parentPillar.GetStaticHeight(GV.PillarType.Ground);
     }
 
+   
     /*
 
      public void ModHeight(float modAmt)

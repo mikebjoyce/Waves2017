@@ -7,7 +7,6 @@ public class Pillar {
     //public GV.PillarType pillarType;
     public GridPos pos;
     Dictionary<GV.PillarType, PillarStruct> pillarStructs;
-    public bool isActive = true;
    // public bool isStaticPillar = false;
     public bool isDisturbed = false;
     public bool waterActive = false;
@@ -90,6 +89,12 @@ public class Pillar {
         //if (_disturb)
         //    Debug.Log("disturbed: " + _disturb);
         isDisturbed = _disturb;         
+    }
+
+    public string DebugOut()
+    {
+        //return "ground is active: " + pillarStructs[GV.PillarType.Ground].isActive;
+        return " waterActive: " + waterActive + " waterInitialized:" + waterInitialized + "internal pillar is active: " + pillarStructs[GV.PillarType.Water].isActive + " ps type: " + pillarStructs[GV.PillarType.Water].pillarType;
     }
 
     public void CleanPillar()
