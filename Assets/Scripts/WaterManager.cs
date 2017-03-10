@@ -23,7 +23,6 @@ public class WaterManager  {
 
     public WaterManager()
     {
-        GV.SetupWaterFlowRate();
         renderers = new int[GV.World_Size_X];
         for(int i = 0; i < GV.World_Size_X; i++)
             renderers[i] = 0;
@@ -220,6 +219,8 @@ public class WaterManager  {
         }
 
         float[] amountsToEven = new float[] { 0, 0, 0, 0 };
+        float[] ratiosToEven = new float[] { 0, 0, 0, 0 };
+        float[] amountsGiving = new float[] { 0, 0, 0, 0 };
         int lowestNeighborIndex = 0;
         float lowestNeighborHeight = 999;
         GridPos[] neighborGridLoc = new GridPos[4];
@@ -227,9 +228,10 @@ public class WaterManager  {
 
         float pillarStaticHeight = pillarToUpdate.GetStaticHeight();
         float lowestNeighborEvenAmt;
-        float c = 0;
-        float a = 0;
-
+        float Gr = 0; //giving to rest per unit given to lowest
+        float X = 0; //giving to lowest
+        float colDelta = 0; //difference between highest and lowest
+        float totalGiving = 0;
 
         for (int i = 0; i < 4; i++) //(Vector2 offset in GV.Valid_Directions)
         {
@@ -245,9 +247,7 @@ public class WaterManager  {
             {
                 lowestNeighborHeight = neighborStaticHeight;
                 lowestNeighborIndex = i;
-            }
-
-            c += amountsToEven[i];
+            }            
         }
 
         if (lowestNeighborHeight >= pillarStaticHeight)
@@ -258,6 +258,60 @@ public class WaterManager  {
         else
             lowestNeighborEvenAmt = amountsToEven[lowestNeighborIndex];
 
+        for (int i = 0; i < 4; i++)
+        {
+            ratiosToEven[i] = amountsToEven[i] / amountsToEven[lowestNeighborIndex];
+            Gr += ratiosToEven[i];
+        }
+
+        Gr -= ratiosToEven[lowestNeighborIndex];
+        Gr /= ratiosToEven[lowestNeighborIndex];         
+        colDelta = pillarStaticHeight - lowestNeighborHeight;
+        X = colDelta / (2 + Gr);
+
+        //if X < GV && colDeta > GV, then we should employ the following instead
+        //BasicDistribution
+        //while (colDelta > GV)
+        //   distribute(GV) to lowest neighbor
+        //   find new lowest
+        //   recalc colDelta
+        /////
+        // This should get a random index of all possible combos of search: NEWS, EWNS, ... Created once at runtime
+        //This occurs when you have something like NEW = .2, S = 999, and M = 1.2
+
+        for (int i = 0; i < 4; i++)
+        {
+            amountsGiving[i] = GV.RndToMinDiv(ratiosToEven[i] * X);
+            totalGiving += amountsGiving[i];
+        }
+
+        float finalTotalGiven = 0;
+        if(totalGiving > ptu_waterVolume)
+        {
+            float vr = ptu_waterVolume / totalGiving;
+            for (int i = 0; i < 4; i++)
+            {
+                amountsGiving[i] = GV.RndToMinDiv(amountsGiving[i] * vr);
+                if (amountsGiving[i] > 0)
+                {
+                    CreateWaterCurrentAt(neighborGridLoc[i], amountsGiving[i], GV.Valid_Directions[i]);
+                    finalTotalGiven += amountsGiving[i];
+                }
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (amountsGiving[i] > 0)
+            {
+                CreateWaterCurrentAt(neighborGridLoc[i], amountsGiving[i], GV.Valid_Directions[i]);
+                finalTotalGiven += amountsGiving[i];
+            }
+        }
+        pillarToUpdate.ModHeight(GV.PillarType.Water, -finalTotalGiven);
+
+
+        /*
         c = (c - amountsToEven[lowestNeighborIndex]) / amountsToEven[lowestNeighborIndex];
 
         if (c > 0)
@@ -284,12 +338,14 @@ public class WaterManager  {
             //Debug.Log(string.Format("total {0} would give to {1} : {2}",pillarToUpdate.pos, neighborGridLoc[lowestNeighborIndex], a));
             CreateWaterCurrentAt(neighborGridLoc[lowestNeighborIndex], amtToGive, GV.Valid_Directions[lowestNeighborIndex]);
             pillarToUpdate.ModHeight(GV.PillarType.Water, -amtToGive);  
-        }
+        }*/
     }
+
+    
 
     public void CreateWaterCurrentAt(GridPos pos, float amt, GridPos dir)
     {
-        //Debug.Log(string.Format("a current was created at pos {0} heading {1} at {2} power", pos, dir , amt));
+        Debug.Log(string.Format("a current was created at pos {0} heading {1} at {2} power", pos, dir , amt));
     }
     /*
     private void UpdateWater(Pillar pillarToUpdate)

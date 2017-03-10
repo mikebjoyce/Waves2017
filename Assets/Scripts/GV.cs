@@ -30,8 +30,8 @@ public class GV : MonoBehaviour {
     public static readonly float Water_Time_Between_Updates = .5f; //In milliseconds 
  
 
-    private static readonly float Water_Sections = 5; //Using 1/this in calculations does not yeild .2f... it just yeilds a nonsensical number that outputs as .2f... use the function below
-    public static float Pillar_Min_Division; //not readonly, so careful dont overite it
+    //private static readonly float Water_Sections = 5; //Using 1/this in calculations does not yeild .2f... it just yeilds a nonsensical number that outputs as .2f... use the function below
+    public static readonly float Pillar_Min_Division = .2f; //not readonly, so careful dont overite it
     public static readonly List<GridPos> Valid_Directions = new List<GridPos>() { new GridPos(0, 1), new GridPos(0, -1), new GridPos(1, 0), new GridPos(-1, 0) }; //randomly selected for even distribution
     public static readonly Vector2 Water_Render_Direction = new Vector2(0, 1);
     public static readonly float Water_Sea_Level = 0;
@@ -65,8 +65,9 @@ public class GV : MonoBehaviour {
     public static float Player_Dirt_Store_Max = 20;
     public static float PLAYER_UNSTUCK_TIME = 3;
 
-    public static void SetupWaterFlowRate()
+    public static float RndToMinDiv(float amt)
     {
-        Pillar_Min_Division = MathHelper.RoundFloat(1 / Water_Sections, 1);
+        int mult = (int)(amt / Pillar_Min_Division);
+        return (float)mult * Pillar_Min_Division;
     }
 }
