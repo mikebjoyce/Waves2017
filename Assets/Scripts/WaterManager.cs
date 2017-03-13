@@ -345,7 +345,8 @@ public class WaterManager  {
 
     public void CreateWaterCurrentAt(GridPos pos, float amt, GridPos dir)
     {
-        Debug.Log(string.Format("a current was created at pos {0} heading {1} at {2} power", pos, dir , amt));
+        WorldGrid.Instance.ModPillarHeight(pos, GV.PillarType.Water, amt);
+        //Debug.Log(string.Format("a current was created at pos {0} heading {1} at {2} power", pos, dir , amt));
     }
     /*
     private void UpdateWater(Pillar pillarToUpdate)

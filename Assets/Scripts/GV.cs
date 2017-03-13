@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GV : MonoBehaviour {
+public class GV  {
 
     public enum PillarType { Ground, Water}
     public enum Coord {  North, East, South , West}
@@ -63,7 +63,9 @@ public class GV : MonoBehaviour {
 
     //Players
     public static float Player_Dirt_Store_Max = 20;
-    public static float PLAYER_UNSTUCK_TIME = 3;
+    public static float PLAYER_UNSTUCK_TIME = 30;
+    public static float Player_speed_max = 4;
+    public static float Player_Ungrounded_max = .2f; //how long ungrounded till lose all jump force
 
     public static float RndToMinDiv(float amt)
     {

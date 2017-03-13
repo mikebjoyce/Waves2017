@@ -19,7 +19,10 @@ public class PlayerControl : MonoBehaviour {
     //Vars
     public Rigidbody body;
 
-	public bool isGrounded = false;
+    float timeUngrounded = 0; //goes to 0 when ungrounded too long
+	public bool isGrounded { get { return groundColliders.Count > 0; } }
+    private List<Transform> groundColliders;
+
     public Book book;
     public Transform holdingSpot;  //-38 degrees in x
 
@@ -33,16 +36,22 @@ public class PlayerControl : MonoBehaviour {
     float unstuckTimer = 0;
     GridPos lastGridPos = new GridPos(-512,-512);
 
-	
+    private float nextMoveStep      = 0;
+    private float nextRotationStep  = 0;
+    private float jumpForceStored   = 0;
 
-	/*public void Initialize(){
+    /*public void Initialize(){
 		forward = transform.forward;
 		transform.position = new Vector3(WorldGrid.worldCenterPoint.x, WorldGrid.Instance.GetHeightAt(WorldGrid.worldCenterPoint) + 5, WorldGrid.worldCenterPoint.y);
 	}*/
 
-	public void Initialize(Vector3 loc)
+    public void Initialize(Vector3 loc)
     {
-        camManager = playerCam.transform.parent.GetComponent<CameraManager>();
+        groundColliders = new List<Transform>();
+
+        GameObject cam = Instantiate(Resources.Load("Prefabs/CameraManager")) as GameObject;
+        camManager = cam.GetComponent<CameraManager>();
+        camManager.player = this;
         transform.position = loc;
         gridPos = GridPos.ToGP(loc);
         visibleDropPillar (true);
@@ -68,7 +77,7 @@ public class PlayerControl : MonoBehaviour {
 
         gridPos = GridPos.ToGP(transform); // new Vector2 (transform.position.x, transform.position.z);
         if (gridPos == lastGridPos)
-            unstuckTimer += Time.deltaTime;
+            unstuckTimer += dt;
         else
             unstuckTimer = 0;
         lastGridPos = gridPos;
@@ -77,6 +86,15 @@ public class PlayerControl : MonoBehaviour {
         {
             transform.position = transform.position + new Vector3(0, .2f , 0);
             unstuckTimer = 0;
+        }
+
+        if (isGrounded)
+        {
+            timeUngrounded = 0;
+        }
+        else
+        {
+            timeUngrounded += dt;
         }
 
         forward = transform.forward;
@@ -91,10 +109,10 @@ public class PlayerControl : MonoBehaviour {
 
 
 	void OnTriggerEnter(Collider other){
-		if (other.gameObject.layer == 8)
+		if (other.gameObject.layer == LayerMask.NameToLayer("Terrain"))
         {
-			isGrounded = true;
-			lockMove = false;
+            groundColliders.Add(other.transform);
+			//isGrounded = true;
 		}
     } 
 
@@ -107,10 +125,10 @@ public class PlayerControl : MonoBehaviour {
 	} */
 
 	void OnTriggerExit(Collider other){
-		if (other.gameObject.layer == 8)
+		if (other.gameObject.layer == LayerMask.NameToLayer("Terrain"))
         {
-			isGrounded = false;
-			lockMove = true;
+            groundColliders.Remove(other.transform);
+            //isGrounded = false;
 		}
     }
 
@@ -121,14 +139,13 @@ public class PlayerControl : MonoBehaviour {
         if (!isMaxSpeed())
         {
 			float xAxis = (input.x != 0) ? input.x / Mathf.Abs (input.x) : 0;
-			//Debug.Log ("yAxis " + xAxis);
-			//Debug.Log ("rotate b4 " + transform.rotation);
-			transform.Rotate (new Vector3 (0, -xAxis, 0) * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime);
-
-			if (!lockMove) 
-				body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime, ForceMode.Impulse);
-			else 
-				body.AddForce (PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime * PlayerGV.G_NonGroundedMoveModifier, ForceMode.Impulse);
+            //Debug.Log ("yAxis " + xAxis);
+            //Debug.Log ("rotate b4 " + transform.rotation);
+            nextRotationStep += -xAxis * PlayerGV.G_PlayerRotateSpeed * Time.deltaTime;
+            nextMoveStep += -PlayerGV.G_PlayerRunForce * input.y  * Time.deltaTime;
+            //transform.Rotate (new Vector3 (0, , 0) *  * Time.deltaTime);
+            //Debug.Log("applying force: " + (-PlayerGV.G_PlayerRunForce * input.y * forward));
+			//body.AddRelativeForce (, ForceMode.Impulse);
 			
 			//Debug.Log ("force applied " + PlayerGV.G_PlayerRunForce * -input.y * forward * Time.deltaTime);
 			//Debug.Log ("forward " + forward + " Time.DeltaTime" + Time.deltaTime);
@@ -137,16 +154,30 @@ public class PlayerControl : MonoBehaviour {
 		} //else hit max speed
 	}
 
+    public void FixedUpdate()
+    {
+        Quaternion deltaRotation = Quaternion.Euler(new Vector3(0,nextRotationStep,0));
+        body.MoveRotation(body.rotation * deltaRotation);
+        nextRotationStep = 0;
+
+        body.AddForce(nextMoveStep * forward, ForceMode.Impulse);
+        if (body.velocity.magnitude > GV.Player_speed_max)
+            body.velocity = body.velocity.normalized * GV.Player_speed_max;
+        nextMoveStep = 0;
+
+        body.AddForce(Vector3.up * jumpForceStored, ForceMode.Impulse);
+        jumpForceStored = 0;
+    }
+
 	/*
 	public void Move(){
 		Debug.Log ("Move");
 		Move (forward);
 	}*/
 
-	public void Jump(){
-		//jumps a certain high always
-		if (isGrounded)
-			body.AddForce (Vector3.up * PlayerGV.G_PlayerJumpForce, ForceMode.Impulse);
+	public void Jump()
+    {
+        jumpForceStored += PlayerGV.G_PlayerJumpForce * (Mathf.Clamp01(1 - (timeUngrounded / GV.Player_Ungrounded_max))) * Time.deltaTime;
 	}
 
     public void BookActionButton()
@@ -267,7 +298,7 @@ public class PlayerControl : MonoBehaviour {
 			digMesh.material.color = Color.red;
 	}
 
-	private void ApplyCurrentForce(){
+	private void ApplyCurrentForce(){ 
         float heightOfWaterUnderUs = (int)WorldGrid.Instance.GetPillarStaticHeight(gridPos, GV.PillarType.Water);
 		if (transform.position.y < heightOfWaterUnderUs)
         {

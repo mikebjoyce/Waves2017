@@ -11,7 +11,7 @@ public class RoundSetup : MonoBehaviour {
         players = new List<PlayerControl>();
         foreach(GameVariable.controlerType cntrlType in cntrlTypes)
         {
-            GameObject go = Instantiate(Resources.Load("Prefabs/PlayerHolder")) as GameObject;
+            GameObject go = Instantiate(Resources.Load("Prefabs/PlayerChar")) as GameObject;
             PlayerControl pcs = go.GetComponentInChildren<PlayerControl>();
             int xcord =  (int)(Random.Range(0.3f, .7f) * GV.World_Size_X);
             int zcord =  (int)(Random.Range(0.3f, .7f) * GV.World_Size_Z);
@@ -20,6 +20,9 @@ public class RoundSetup : MonoBehaviour {
             go.GetComponentInChildren<InputManager>().controlType = cntrlType;
             go.GetComponentInChildren<InputManager>().Initialize(cntrlType);
             players.Add(pcs);
+
+
+
         }
         SetupCameras(players);
         DropBook();
